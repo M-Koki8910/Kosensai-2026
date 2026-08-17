@@ -4,23 +4,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="./style.css">
-    <script src="./scripts/script.js" defer></script>
     <link rel="icon" type="image/png" href="./images/tab-resize.png">
 
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIINfQ3eQ2r7J5Q3jZ5Q3Q3Q3Q3Q3Q3Q3Q3=" crossorigin="">
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script src="./scripts/script.js" defer></script>
+
     <title>会場マップ</title>
+
+    <style>
+        /* ==========================
+   Map Page
+========================== */
+
+        .map-page {
+            width: 100%;
+            max-width: 1100px;
+            margin: 20px auto;
+        }
+
+        /* --------------------------------
+   マップタブ
+-------------------------------- */
+
+        .map-tabs {
+            display: flex;
+            gap: 10px;
+
+            margin-bottom: 12px;
+        }
+
+        .map-tabs button {
+            flex: 1;
+
+            border: none;
+            border-radius: 999px;
+
+            padding: 12px;
+
+            font-size: 1rem;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            background: #ddd;
+            color: #333;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.1s ease;
+        }
+
+        .map-tabs button:hover {
+            background: #ccc;
+        }
+
+        .map-tabs button:active {
+            transform: scale(0.98);
+        }
+
+        .map-tabs button.active {
+            background: #1aa4e8;
+            color: #fff;
+        }
+
+        /* --------------------------------
+   校舎階層タブ
+-------------------------------- */
+
+        .map-floor-tabs {
+            display: none;
+
+            gap: 10px;
+
+            margin-top: -2px;
+            margin-bottom: 12px;
+        }
+
+        .map-floor-tabs.visible {
+            display: flex;
+        }
+
+        .map-floor-tabs button {
+            flex: 1;
+
+            border: none;
+            border-radius: 999px;
+
+            padding: 10px;
+
+            font-size: 0.95rem;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .map-floor-tabs button.active {
+            background: #1aa4e8;
+            color: #fff;
+        }
+
+        /* --------------------------------
+   マップ本体
+-------------------------------- */
+
+        .map-board {
+            background: #8fd0ee;
+
+            border-radius: 32px;
+
+            padding: 16px 16px 18px;
+
+            box-sizing: border-box;
+        }
+
+        .map-main {
+            width: 100%;
+
+            aspect-ratio: 16 / 9;
+            min-height: 300px;
+
+            background: #fff;
+
+            border: 2px solid #18354a;
+
+            border-radius: 32px;
+
+            overflow: hidden;
+
+            position: relative;
+        }
+
+        /* Leaflet表示領域 */
+
+        .map-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --------------------------------
+   ポップアップ
+-------------------------------- */
+
+        .map-popup-title {
+            margin-bottom: 6px;
+
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .map-popup-description {
+            margin-bottom: 10px;
+
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        .map-popup-link {
+            display: inline-block;
+
+            padding: 8px 12px;
+
+            border-radius: 8px;
+
+            background: #1aa4e8;
+            color: #fff;
+
+            text-decoration: none;
+
+            font-weight: 700;
+        }
+
+        .map-popup-link:hover {
+            opacity: 0.85;
+        }
+
+        /* --------------------------------
+   スマートフォン
+-------------------------------- */
+
+        @media (max-width: 600px) {
+
+            .map-page {
+                margin: 16px auto;
+            }
+
+            .map-tabs {
+                gap: 8px;
+            }
+
+            .map-tabs button {
+                padding: 11px 8px;
+
+                font-size: 0.9rem;
+            }
+
+            .map-floor-tabs {
+                gap: 8px;
+            }
+
+            .map-floor-tabs button {
+                padding: 10px 8px;
+
+                font-size: 0.9rem;
+            }
+
+            .map-board {
+                border-radius: 24px;
+
+                padding: 10px;
+            }
+
+            .map-main {
+                border-radius: 22px;
+                min-height: 260px;
+            }
+
+            .map-container {
+                min-height: 0;
+            }
+        }
+    </style>
 </head>
 
+
 <body>
+
+    <!-- ==============================================
+         ヘッダー
+    =============================================== -->
+
     <div class="topbar">
+
         <a href="./index.html" class="home-link">
             <img src="./images/logo.png" alt="高専祭TOP" class="logo">
         </a>
-        <button class="menu-toggle" aria-label="メニューを開く">☰</button>
+
+        <button class="menu-toggle" aria-label="メニューを開く">
+            ☰
+        </button>
+
     </div>
 
+
+    <!-- ==============================================
+         ナビゲーション
+    =============================================== -->
+
     <nav id="nav">
+
         <ul>
+
             <li><a href="./about.html">高専祭について</a></li>
             <li><a href="./shop.html">模擬店紹介</a></li>
             <li><a href="./guest.html">ゲスト紹介</a></li>
@@ -34,30 +284,93 @@
             <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
             <li><a href="./about-kosen.html">松江高専とは</a></li>
             <li><a href="./aboutme.html">このサイトについて</a></li>
+
         </ul>
+
         <div class="nav-footer">
+
             <a class="nav-social" href="https://www.instagram.com/mct_relations/" target="_blank"
                 rel="noopener noreferrer">
-                <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学校広報
+                <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">
+                学校広報
             </a>
+
             <a class="nav-social" href="https://www.instagram.com/mct_gakuseikai/" target="_blank"
                 rel="noopener noreferrer">
-                <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学生会
+                <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">
+                学生会
             </a>
+
         </div>
+
     </nav>
 
-    <main>
-        <section class="section">
-            <h2>会場マップ</h2>
-            <div class="container">
-                <p>会場の詳細なマップをこちらに掲載します。現在作成中ですので、しばらくお待ちください。</p>
-            </div>
-        </section>
-    </main>
-        <footer>
 
-        <!-- お問い合わせ・規約等 -->
+    <!-- ==============================================
+         メイン
+    =============================================== -->
+
+    <main class="map-page">
+
+        <h2>会場マップ</h2>
+
+        <!-- 大分類 -->
+        <div class="map-tabs">
+
+            <button type="button" class="map-tab-button active" data-map-group="campus">
+                構内全体図
+            </button>
+
+            <button type="button" class="map-tab-button" data-map-group="stalls">
+                模擬店詳細図
+            </button>
+
+            <button type="button" class="map-tab-button" data-map-group="building">
+                校舎
+            </button>
+
+        </div>
+
+
+        <!-- 校舎階層 -->
+        <div class="map-floor-tabs">
+
+            <button type="button" class="map-floor-tab active" data-map="building1f">
+                1F
+            </button>
+
+            <button type="button" class="map-floor-tab" data-map="building2f">
+                2F
+            </button>
+
+            <button type="button" class="map-floor-tab" data-map="building3f">
+                3F
+            </button>
+
+        </div>
+
+
+        <!-- マップ -->
+        <div class="map-board">
+
+            <div class="map-main">
+
+                <div id="map" class="map-container" aria-label="会場マップ">
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ==============================================
+         フッター
+    =============================================== -->
+
+    <footer>
+
         <div class="footer-legal">
 
             <a href="./privacy.html">プライバシーポリシー</a>
@@ -76,12 +389,500 @@
 
         </div>
 
-
-        <!-- コピーライト -->
         <div class="footer-bottom">
-            <p> 2026 松江高専 高専祭実行委員会</p>
+            <p>2026 松江高専 高専祭実行委員会</p>
         </div>
+
     </footer>
+
+
+    <!-- Leaflet -->
+
+
+
+    <!-- ==============================================
+         マップ制御
+    =============================================== -->
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* ------------------------------------------
+               マップデータ
+            ------------------------------------------ */
+
+            const mapData = {
+
+                campus: {
+                    url: './images/maps/1.svg',
+                    width: 4106,
+                    height: 2782,
+
+                    markers: [
+                    ],
+
+                    areas: [
+                        {
+                            title: '体育館',
+
+                            bounds: [
+                                [1385, 2500],
+                                [690, 2040]
+                            ],
+
+                            link: './event.html'
+                        },
+                        {
+                            bounds: [
+                                [700, 200],
+                                [900, 500]
+                            ],
+                            title: '模擬店エリア',
+                            link: './shop.html'
+                        }
+                    ]
+                },
+
+                stalls: {
+                    url: './images/maps/2.svg',
+                    width: 3218,
+                    height: 2634,
+
+                    markers: [
+                    ],
+
+                    areas: [
+                        {
+                            bounds: [
+                                [879, 1456],
+                                [540, 724]
+                            ],
+                            title: 'J4',
+                            link: './shop.html'
+                        }
+                    ]
+                },
+
+                building1f: {
+                    url: './images/maps/3.svg',
+                    width: 4286,
+                    height: 2535,
+
+                    markers: [],
+                    areas: []
+                },
+
+                building2f: {
+                    url: './images/maps/4.svg',
+                    width: 4286,
+                    height: 2535,
+
+                    markers: [],
+                    areas: []
+                },
+
+                building3f: {
+                    url: './images/maps/5.svg',
+                    width: 4286,
+                    height: 2535,
+
+                    markers: [],
+                    areas: []
+                }
+
+            };
+
+
+            /* ------------------------------------------
+               Leaflet初期化
+            ------------------------------------------ */
+
+            const map = L.map('map', {
+
+                crs: L.CRS.Simple,
+
+                minZoom: -5,
+                maxZoom: 4,
+
+                zoomControl: true,
+
+                attributionControl: false,
+
+                // 慣性スクロール
+                inertia: true,
+
+                // 画像外へ過剰にドラッグできないようにする
+                maxBoundsViscosity: 1.0
+
+            });
+
+
+            let currentOverlay = null;
+            let currentMarkers = [];
+            let currentMapKey = null;
+            let currentBounds = null;
+
+
+            function fitMapToFrame(bounds) {
+                if (!bounds) return;
+
+                // 一旦制限を解除して計算エラーを防ぐ
+                map.setMaxBounds(null);
+                map.setMinZoom(-5);
+
+                // サイズを再計算
+                map.invalidateSize();
+
+                // 画面に収まるようにフィット
+                map.fitBounds(bounds, {
+                    animate: false,
+                    padding: [0, 0]
+                });
+
+                // フィットした後のズーム値を最小ズームとして設定
+                const fittedZoom = map.getZoom();
+                map.setMinZoom(fittedZoom);
+
+                // 移動範囲の制限を適用
+                map.setMaxBounds(bounds);
+            }
+
+
+            /* ------------------------------------------
+    バウンズ（対角座標）の正規化ヘルパー関数
+    [ [y1, x1], [y2, x2] ] を Leaflet 正しい [左下, 右上] に変換する
+ ------------------------------------------ */
+            function normalizeBounds(bounds) {
+                const y1 = bounds[0][0];
+                const x1 = bounds[0][1];
+                const y2 = bounds[1][0];
+                const x2 = bounds[1][1];
+
+                const minY = Math.min(y1, y2);
+                const maxY = Math.max(y1, y2);
+                const minX = Math.min(x1, x2);
+                const maxX = Math.max(x1, x2);
+
+                return [[minY, minX], [maxY, maxX]];
+            }
+
+            /* ------------------------------------------
+               マップ読み込み (該当部分の更新)
+            ------------------------------------------ */
+
+            function loadMap(key) {
+                const config = mapData[key];
+
+                if (!config) {
+                    console.error('マップ設定がありません:', key);
+                    return;
+                }
+
+                currentMapKey = key;
+
+                /* 既存マップ削除 */
+                if (currentOverlay) {
+                    map.removeLayer(currentOverlay);
+                    currentOverlay = null;
+                }
+
+                currentMarkers.forEach(layer => {
+                    map.removeLayer(layer);
+                });
+                currentMarkers = [];
+
+                /* マップ範囲 [[0, 0], [高さ, 幅]] */
+                const bounds = [
+                    [0, 0],
+                    [2781/* config.height */, 4106/* config.width */]
+                ];
+                currentBounds = bounds;
+
+                /* SVG読み込み */
+                currentOverlay = L.imageOverlay(
+                    config.url,
+                    bounds,
+                    {
+                        interactive: false
+                    }
+                );
+                currentOverlay.addTo(map);
+
+                /* 表示範囲調整（少し遅延させてDOM描画確定後に適用） */
+                setTimeout(() => {
+                    fitMapToFrame(bounds);
+
+                    /* --------------------------------------
+                       マーカー描画
+                    -------------------------------------- */
+                    /*  if (config.markers) {
+                         config.markers.forEach(item => {
+                             const marker = L.marker(item.coords);
+                             let popup = `
+                     <div class="map-popup-title">${item.title}</div>
+                     <div class="map-popup-description">${item.desc || ''}</div>
+                 `;
+                             if (item.link) {
+                                 popup += `<a class="map-popup-link" href="${item.link}">詳細を見る</a>`;
+                             }
+                             marker.addTo(map).bindPopup(popup);
+                             currentMarkers.push(marker);
+                         });
+                     } */
+
+                    /* --------------------------------------
+                       クリック可能領域
+                    -------------------------------------- */
+                    if (config.areas) {
+                        config.areas.forEach(area => {
+                            const correctedBounds = normalizeBounds(area.bounds);
+
+                            const clickableArea = L.rectangle(
+                                correctedBounds,
+                                {
+                                    color: '#1aa4e8',
+                                    weight: 2,
+                                    fillColor: '#1aa4e8',
+                                    fillOpacity: 0.35,
+                                    opacity: 0.9,
+                                    interactive: true,
+                                    bubblingMouseEvents: false
+                                }
+                            );
+
+                            clickableArea.addTo(map);
+
+                            // DOM要素生成後にスタイル付与
+                            setTimeout(() => {
+                                const el = clickableArea.getElement();
+                                if (el) {
+                                    el.style.pointerEvents = 'auto';
+                                    el.style.cursor = 'pointer';
+                                }
+                            }, 50);
+
+                            clickableArea.on('add', () => {
+                                const el = clickableArea.getElement();
+                                if (el) {
+                                    el.addEventListener('click', (e) => {
+                                        e.stopPropagation();
+                                        if (area.link) {
+                                            window.location.href = area.link;
+                                        }
+                                    });
+                                }
+                            });
+
+                            clickableArea.on('click', (e) => {
+                                if (e.originalEvent) {
+                                    L.DomEvent.stopPropagation(e.originalEvent);
+                                }
+                                if (area.link) {
+                                    window.location.href = area.link;
+                                }
+                            });
+
+                            currentMarkers.push(clickableArea);
+                        });
+                    }
+                }, 50);
+            }
+
+            /* ------------------------------------------
+               初期マップ
+            ------------------------------------------ */
+
+            const groupToMapKey = {
+                campus: 'campus',
+                stalls: 'stalls'
+            };
+
+            const floorTabs =
+                document.querySelector('.map-floor-tabs');
+
+            const floorButtons =
+                document.querySelectorAll('.map-floor-tab');
+
+
+            function getActiveFloorKey() {
+
+                const activeFloorButton =
+                    document.querySelector('.map-floor-tab.active');
+
+                return activeFloorButton?.dataset.map || 'building1f';
+
+            }
+
+
+            function setFloorTabVisible(visible) {
+
+                floorTabs.classList.toggle('visible', visible);
+
+            }
+
+
+            requestAnimationFrame(() => {
+                settimeout(() => {
+                    loadMap('campus');
+                }, 500);
+            });
+
+
+            /* ------------------------------------------
+               タブ
+            ------------------------------------------ */
+
+            const tabButtons =
+                document.querySelectorAll('.map-tab-button');
+
+
+            tabButtons.forEach(button => {
+
+                button.addEventListener('click', () => {
+
+                    const group =
+                        button.dataset.mapGroup;
+
+
+                    /* active切り替え */
+
+                    tabButtons.forEach(btn => {
+
+                        btn.classList.remove('active');
+
+                        btn.setAttribute(
+                            'aria-selected',
+                            'false'
+                        );
+
+                    });
+
+
+                    button.classList.add('active');
+
+                    button.setAttribute(
+                        'aria-selected',
+                        'true'
+                    );
+
+
+                    /* マップ切り替え */
+
+                    if (group === 'building') {
+
+                        setFloorTabVisible(true);
+                        loadMap(getActiveFloorKey());
+
+                    } else {
+
+                        setFloorTabVisible(false);
+
+                        const targetMapKey =
+                            groupToMapKey[group] || 'campus';
+
+                        loadMap(targetMapKey);
+
+                    }
+
+
+                    /*
+                     * コンテナのサイズをLeafletに再通知
+                     */
+
+                    setTimeout(() => {
+
+                        if (currentBounds) {
+                            fitMapToFrame(currentBounds);
+                        }
+
+                    }, 100);
+
+                });
+
+            });
+
+
+            floorButtons.forEach(button => {
+
+                button.addEventListener('click', () => {
+
+                    floorButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    button.classList.add('active');
+
+                    const buildingTab =
+                        document.querySelector('[data-map-group="building"]');
+
+                    if (!buildingTab.classList.contains('active')) {
+                        return;
+                    }
+
+                    loadMap(button.dataset.map);
+
+                });
+
+            });
+
+
+            map.on('zoomend moveend', () => {
+
+                if (!currentBounds) {
+                    return;
+                }
+
+                map.panInsideBounds(currentBounds, {
+                    animate: false
+                });
+
+            });
+
+            window.addEventListener('resize', () => {
+
+                if (!currentBounds) {
+                    return;
+                }
+
+                fitMapToFrame(currentBounds);
+
+            });
+
+            /* ------------------------------------------
+   初期マップ読み込み（確定版）
+------------------------------------------ */
+            // ブラウザのレイアウト計算（aspect-ratio等）が完了してから初回マップを読み込む
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    loadMap('campus');
+                }, 200);
+            });
+
+            
+
+
+            /* ------------------------------------------
+               マップクリック座標
+               開発用
+            ------------------------------------------ */
+
+            map.on('click', event => {
+
+                console.log(
+                    `[${currentMapKey}]`,
+                    '座標:',
+                    [
+                        Math.round(event.latlng.lat),
+                        Math.round(event.latlng.lng)
+                    ]
+                );
+
+            });
+
+        });
+
+    </script>
 
 </body>
 
