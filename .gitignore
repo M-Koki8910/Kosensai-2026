@@ -2,3 +2,4 @@ stamp.db
 node_modules/
 *.txt
 *.db
+.DS_Store
