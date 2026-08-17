@@ -3,3 +3,5 @@ node_modules/
 *.txt
 *.db
 .DS_Store
+
+!はじめに読むこと.txt
