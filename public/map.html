@@ -408,6 +408,7 @@
 
             const mapData = {
 
+                //構内全体図
                 campus: {
                     url: './images/maps/1.svg',
                     width: 4106,
@@ -419,22 +420,23 @@
                         {
                             title: '体育館',
                             bounds: [
-                                [2750, 2520],
-                                [2000, 2020]
+                                [2750, 2520],//右上
+                                [2000, 2020]//左下
                             ],
                             link: './event.html'
                         },
                         {
                             title: '模擬店エリア',
                             bounds: [
-                                [1850, 2500],
-                                [1400, 1030]
+                                [1850, 2500],//右上
+                                [1400, 1030]//左下
                             ],
                             link: './shop.html'
                         }
                     ]
                 },
 
+                //模擬店詳細図
                 stalls: {
                     url: './images/maps/2.svg',
                     width: 3218,
@@ -442,6 +444,7 @@
 
                     markers: [],
 
+                    //同じように領域を追加する
                     areas: [
                         {
                             title: 'J4',
@@ -454,6 +457,7 @@
                     ]
                 },
 
+                //校舎1F
                 building1f: {
                     url: './images/maps/3.svg',
                     width: 4286,
@@ -462,6 +466,7 @@
                     areas: []
                 },
 
+                //校舎2F
                 building2f: {
                     url: './images/maps/4.svg',
                     width: 4286,
@@ -470,6 +475,7 @@
                     areas: []
                 },
 
+                //校舎3F
                 building3f: {
                     url: './images/maps/5.svg',
                     width: 4286,
@@ -605,8 +611,8 @@
                             color: '#1aa4e8',
                             weight: 2,
                             fillColor: '#1aa4e8',
-                            fillOpacity: 0.35,
-                            opacity: 0.9
+                            fillOpacity: 0.1,//クリック領域の透明度
+                            opacity: 0.3//クリック領域の枠線
                         }
                     );
 
