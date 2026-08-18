@@ -9,11 +9,9 @@
     <link rel="icon" type="image/png" href="./images/tab-resize.png">
 
     <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIINfQ3eQ2r7J5Q3jZ5Q3Q3Q3Q3Q3Q3Q3Q3=" crossorigin="">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
     <script src="./scripts/script.js" defer></script>
 
@@ -135,7 +133,7 @@
             aspect-ratio: 16 / 9;
             min-height: 300px;
 
-            background: #fff;
+            background: #f00;
 
             border: 2px solid #18354a;
 
@@ -151,6 +149,7 @@
         .map-container {
             width: 100%;
             height: 100%;
+            background: #fff;
         }
 
         #map {
@@ -395,11 +394,6 @@
 
     </footer>
 
-
-    <!-- Leaflet -->
-
-
-
     <!-- ==============================================
          マップ制御
     =============================================== -->
@@ -419,26 +413,23 @@
                     width: 4106,
                     height: 2782,
 
-                    markers: [
-                    ],
+                    markers: [],
 
                     areas: [
                         {
                             title: '体育館',
-
                             bounds: [
-                                [1385, 2500],
-                                [690, 2040]
+                                [2750, 2520],
+                                [2000, 2020]
                             ],
-
                             link: './event.html'
                         },
                         {
-                            bounds: [
-                                [700, 200],
-                                [900, 500]
-                            ],
                             title: '模擬店エリア',
+                            bounds: [
+                                [1850, 2500],
+                                [1400, 1030]
+                            ],
                             link: './shop.html'
                         }
                     ]
@@ -449,16 +440,15 @@
                     width: 3218,
                     height: 2634,
 
-                    markers: [
-                    ],
+                    markers: [],
 
                     areas: [
                         {
+                            title: 'J4',
                             bounds: [
                                 [879, 1456],
                                 [540, 724]
                             ],
-                            title: 'J4',
                             link: './shop.html'
                         }
                     ]
@@ -468,7 +458,6 @@
                     url: './images/maps/3.svg',
                     width: 4286,
                     height: 2535,
-
                     markers: [],
                     areas: []
                 },
@@ -477,7 +466,6 @@
                     url: './images/maps/4.svg',
                     width: 4286,
                     height: 2535,
-
                     markers: [],
                     areas: []
                 },
@@ -486,120 +474,189 @@
                     url: './images/maps/5.svg',
                     width: 4286,
                     height: 2535,
-
                     markers: [],
                     areas: []
                 }
 
             };
 
-
             /* ------------------------------------------
-               Leaflet初期化
+               Leaflet
             ------------------------------------------ */
 
             const map = L.map('map', {
-
                 crs: L.CRS.Simple,
-
                 minZoom: -5,
                 maxZoom: 4,
-
                 zoomControl: true,
-
                 attributionControl: false,
-
-                // 慣性スクロール
                 inertia: true,
-
-                // 画像外へ過剰にドラッグできないようにする
                 maxBoundsViscosity: 1.0
-
             });
 
-
             let currentOverlay = null;
-            let currentMarkers = [];
-            let currentMapKey = null;
+            let currentLayers = [];
             let currentBounds = null;
+            let currentMapKey = null;
 
+            let loadToken = 0;
 
-            function fitMapToFrame(bounds) {
+            /* ------------------------------------------
+               ヘルパー
+            ------------------------------------------ */
+
+            function normalizeBounds(bounds) {
+
+                const y1 = bounds[0][0];
+                const x1 = bounds[0][1];
+
+                const y2 = bounds[1][0];
+                const x2 = bounds[1][1];
+
+                return [
+                    [
+                        Math.min(y1, y2),
+                        Math.min(x1, x2)
+                    ],
+                    [
+                        Math.max(y1, y2),
+                        Math.max(x1, x2)
+                    ]
+                ];
+
+            }
+
+            /* function fitMapToFrame(bounds) {
+
                 if (!bounds) return;
 
-                // 一旦制限を解除して計算エラーを防ぐ
-                map.setMaxBounds(null);
-                map.setMinZoom(-5);
-
-                // サイズを再計算
                 map.invalidateSize();
 
-                // 画面に収まるようにフィット
+                map.setMaxBounds(null);
+
                 map.fitBounds(bounds, {
                     animate: false,
                     padding: [0, 0]
                 });
 
-                // フィットした後のズーム値を最小ズームとして設定
                 const fittedZoom = map.getZoom();
+
                 map.setMinZoom(fittedZoom);
 
-                // 移動範囲の制限を適用
                 map.setMaxBounds(bounds);
+
+            } */
+
+            function fitMapToFrame(bounds) {
+
+                if (!bounds) return;
+
+                map.invalidateSize();
+
+                map.setMaxBounds(null);
+
+                map.fitBounds(bounds, {
+                    animate: false,
+                    padding: [0, 0]
+                });
+
+                const baseZoom = map.getZoom();
+
+                map.setMinZoom(baseZoom);
+
+                const defaultZoomOffset = 0.5; 
+                const targetZoom = baseZoom + defaultZoomOffset;
+
+                const center = [
+                    (bounds[0][0] + bounds[1][0]) / 2,
+                    (bounds[0][1] + bounds[1][1]) / 2
+                ];
+
+                map.setView(center, targetZoom, { animate: false });
+
+                map.setMaxBounds(bounds);
+
             }
 
+            function clearMap() {
 
-            /* ------------------------------------------
-    バウンズ（対角座標）の正規化ヘルパー関数
-    [ [y1, x1], [y2, x2] ] を Leaflet 正しい [左下, 右上] に変換する
- ------------------------------------------ */
-            function normalizeBounds(bounds) {
-                const y1 = bounds[0][0];
-                const x1 = bounds[0][1];
-                const y2 = bounds[1][0];
-                const x2 = bounds[1][1];
-
-                const minY = Math.min(y1, y2);
-                const maxY = Math.max(y1, y2);
-                const minX = Math.min(x1, x2);
-                const maxX = Math.max(x1, x2);
-
-                return [[minY, minX], [maxY, maxX]];
-            }
-
-            /* ------------------------------------------
-               マップ読み込み (該当部分の更新)
-            ------------------------------------------ */
-
-            function loadMap(key) {
-                const config = mapData[key];
-
-                if (!config) {
-                    console.error('マップ設定がありません:', key);
-                    return;
-                }
-
-                currentMapKey = key;
-
-                /* 既存マップ削除 */
                 if (currentOverlay) {
                     map.removeLayer(currentOverlay);
                     currentOverlay = null;
                 }
 
-                currentMarkers.forEach(layer => {
+                currentLayers.forEach(layer => {
                     map.removeLayer(layer);
                 });
-                currentMarkers = [];
 
-                /* マップ範囲 [[0, 0], [高さ, 幅]] */
+                currentLayers = [];
+
+            }
+
+            function drawAreas(config) {
+
+                if (!config.areas) return;
+
+                config.areas.forEach(area => {
+
+                    const clickableArea = L.rectangle(
+                        normalizeBounds(area.bounds),
+                        {
+                            color: '#1aa4e8',
+                            weight: 2,
+                            fillColor: '#1aa4e8',
+                            fillOpacity: 0.35,
+                            opacity: 0.9
+                        }
+                    );
+
+                    clickableArea.addTo(map);
+
+                    clickableArea.on('click', () => {
+
+                        if (area.link) {
+                            window.location.href = area.link;
+                        }
+
+                    });
+
+                    currentLayers.push(clickableArea);
+
+                });
+
+            }
+
+            /* ------------------------------------------
+               マップ読み込み
+            ------------------------------------------ */
+
+            function loadMap(key) {
+
+                console.log("loadMap", key);
+
+                const config = mapData[key];
+
+                if (!config) {
+                    console.error("マップ設定なし:", key);
+                    return;
+                }
+
+                const token = ++loadToken;
+
+                currentMapKey = key;
+
+                clearMap();
+
                 const bounds = [
                     [0, 0],
-                    [2781/* config.height */, 4106/* config.width */]
+                    [config.height, config.width]
                 ];
+
                 currentBounds = bounds;
 
-                /* SVG読み込み */
+                console.log("svg =", config.url);
+                console.log("bounds =", bounds);
+
                 currentOverlay = L.imageOverlay(
                     config.url,
                     bounds,
@@ -607,90 +664,40 @@
                         interactive: false
                     }
                 );
+
+                console.log("overlay =", currentOverlay);
+                console.log("L =", L);
+                console.log("imageOverlay =", L.imageOverlay);
+
                 currentOverlay.addTo(map);
 
-                /* 表示範囲調整（少し遅延させてDOM描画確定後に適用） */
-                setTimeout(() => {
+                console.log(
+                    "map size =",
+                    document.getElementById("map").clientWidth,
+                    document.getElementById("map").clientHeight
+                );
+
+                console.log(
+                    "overlay in map =",
+                    map.hasLayer(currentOverlay)
+                );
+
+                requestAnimationFrame(() => {
+
+                    if (token !== loadToken) {
+                        return;
+                    }
+
                     fitMapToFrame(bounds);
 
-                    /* --------------------------------------
-                       マーカー描画
-                    -------------------------------------- */
-                    /*  if (config.markers) {
-                         config.markers.forEach(item => {
-                             const marker = L.marker(item.coords);
-                             let popup = `
-                     <div class="map-popup-title">${item.title}</div>
-                     <div class="map-popup-description">${item.desc || ''}</div>
-                 `;
-                             if (item.link) {
-                                 popup += `<a class="map-popup-link" href="${item.link}">詳細を見る</a>`;
-                             }
-                             marker.addTo(map).bindPopup(popup);
-                             currentMarkers.push(marker);
-                         });
-                     } */
+                    drawAreas(config);
 
-                    /* --------------------------------------
-                       クリック可能領域
-                    -------------------------------------- */
-                    if (config.areas) {
-                        config.areas.forEach(area => {
-                            const correctedBounds = normalizeBounds(area.bounds);
+                });
 
-                            const clickableArea = L.rectangle(
-                                correctedBounds,
-                                {
-                                    color: '#1aa4e8',
-                                    weight: 2,
-                                    fillColor: '#1aa4e8',
-                                    fillOpacity: 0.35,
-                                    opacity: 0.9,
-                                    interactive: true,
-                                    bubblingMouseEvents: false
-                                }
-                            );
-
-                            clickableArea.addTo(map);
-
-                            // DOM要素生成後にスタイル付与
-                            setTimeout(() => {
-                                const el = clickableArea.getElement();
-                                if (el) {
-                                    el.style.pointerEvents = 'auto';
-                                    el.style.cursor = 'pointer';
-                                }
-                            }, 50);
-
-                            clickableArea.on('add', () => {
-                                const el = clickableArea.getElement();
-                                if (el) {
-                                    el.addEventListener('click', (e) => {
-                                        e.stopPropagation();
-                                        if (area.link) {
-                                            window.location.href = area.link;
-                                        }
-                                    });
-                                }
-                            });
-
-                            clickableArea.on('click', (e) => {
-                                if (e.originalEvent) {
-                                    L.DomEvent.stopPropagation(e.originalEvent);
-                                }
-                                if (area.link) {
-                                    window.location.href = area.link;
-                                }
-                            });
-
-                            currentMarkers.push(clickableArea);
-                        });
-                    }
-                }, 50);
             }
 
             /* ------------------------------------------
-               初期マップ
+               大分類タブ
             ------------------------------------------ */
 
             const groupToMapKey = {
@@ -701,107 +708,66 @@
             const floorTabs =
                 document.querySelector('.map-floor-tabs');
 
-            const floorButtons =
-                document.querySelectorAll('.map-floor-tab');
-
-
-            function getActiveFloorKey() {
-
-                const activeFloorButton =
-                    document.querySelector('.map-floor-tab.active');
-
-                return activeFloorButton?.dataset.map || 'building1f';
-
-            }
-
-
-            function setFloorTabVisible(visible) {
-
-                floorTabs.classList.toggle('visible', visible);
-
-            }
-
-
-            requestAnimationFrame(() => {
-                settimeout(() => {
-                    loadMap('campus');
-                }, 500);
-            });
-
-
-            /* ------------------------------------------
-               タブ
-            ------------------------------------------ */
-
             const tabButtons =
                 document.querySelectorAll('.map-tab-button');
 
+            const floorButtons =
+                document.querySelectorAll('.map-floor-tab');
+
+            function setFloorTabVisible(show) {
+
+                floorTabs.classList.toggle(
+                    'visible',
+                    show
+                );
+
+            }
+
+            function getActiveFloorKey() {
+
+                const active =
+                    document.querySelector(
+                        '.map-floor-tab.active'
+                    );
+
+                return active?.dataset.map || 'building1f';
+
+            }
 
             tabButtons.forEach(button => {
 
                 button.addEventListener('click', () => {
 
-                    const group =
-                        button.dataset.mapGroup;
-
-
-                    /* active切り替え */
-
                     tabButtons.forEach(btn => {
-
                         btn.classList.remove('active');
-
-                        btn.setAttribute(
-                            'aria-selected',
-                            'false'
-                        );
-
                     });
-
 
                     button.classList.add('active');
 
-                    button.setAttribute(
-                        'aria-selected',
-                        'true'
-                    );
-
-
-                    /* マップ切り替え */
+                    const group =
+                        button.dataset.mapGroup;
 
                     if (group === 'building') {
 
                         setFloorTabVisible(true);
-                        loadMap(getActiveFloorKey());
+
+                        loadMap(
+                            getActiveFloorKey()
+                        );
 
                     } else {
 
                         setFloorTabVisible(false);
 
-                        const targetMapKey =
-                            groupToMapKey[group] || 'campus';
-
-                        loadMap(targetMapKey);
+                        loadMap(
+                            groupToMapKey[group]
+                        );
 
                     }
-
-
-                    /*
-                     * コンテナのサイズをLeafletに再通知
-                     */
-
-                    setTimeout(() => {
-
-                        if (currentBounds) {
-                            fitMapToFrame(currentBounds);
-                        }
-
-                    }, 100);
 
                 });
 
             });
-
 
             floorButtons.forEach(button => {
 
@@ -814,9 +780,15 @@
                     button.classList.add('active');
 
                     const buildingTab =
-                        document.querySelector('[data-map-group="building"]');
+                        document.querySelector(
+                            '[data-map-group="building"]'
+                        );
 
-                    if (!buildingTab.classList.contains('active')) {
+                    if (
+                        !buildingTab.classList.contains(
+                            'active'
+                        )
+                    ) {
                         return;
                     }
 
@@ -826,52 +798,36 @@
 
             });
 
-
-            map.on('zoomend moveend', () => {
-
-                if (!currentBounds) {
-                    return;
-                }
-
-                map.panInsideBounds(currentBounds, {
-                    animate: false
-                });
-
-            });
+            /* ------------------------------------------
+               リサイズ
+            ------------------------------------------ */
 
             window.addEventListener('resize', () => {
 
-                if (!currentBounds) {
-                    return;
-                }
+                if (!currentBounds) return;
 
                 fitMapToFrame(currentBounds);
 
             });
 
             /* ------------------------------------------
-   初期マップ読み込み（確定版）
------------------------------------------- */
-            // ブラウザのレイアウト計算（aspect-ratio等）が完了してから初回マップを読み込む
+               初期ロード
+            ------------------------------------------ */
+
             window.addEventListener('load', () => {
-                setTimeout(() => {
-                    loadMap('campus');
-                }, 200);
+
+                loadMap('campus');
+
             });
 
-            
-
-
             /* ------------------------------------------
-               マップクリック座標
-               開発用
+               座標取得（開発用）
             ------------------------------------------ */
 
             map.on('click', event => {
 
                 console.log(
                     `[${currentMapKey}]`,
-                    '座標:',
                     [
                         Math.round(event.latlng.lat),
                         Math.round(event.latlng.lng)
@@ -879,6 +835,12 @@
                 );
 
             });
+
+            console.log(
+                "svg path =",
+                mapData.campus.url
+            );
+
 
         });
 
