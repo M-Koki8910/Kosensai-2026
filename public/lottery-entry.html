@@ -592,16 +592,24 @@
 
             await stopScanner();
 
-            let visitorId = localStorage.getItem("visitor_uuid");
+            let visitorId = localStorage.getItem("visitor_id");
 
             if (!visitorId) {
+              try {
+                const visitorResponse = await fetch('/api/visitor/me', { cache: 'no-store' });
+                const visitorData = await visitorResponse.json().catch(() => ({}));
+                if (visitorResponse.ok && visitorData.ok && visitorData.visitor_id) {
+                  visitorId = String(visitorData.visitor_id);
+                  localStorage.setItem('visitor_id', visitorId);
+                }
+              } catch (error) {
+                console.warn('訪問者IDの取得に失敗しました', error);
+              }
+            }
 
-              visitorId = crypto.randomUUID();
-
-              localStorage.setItem(
-                "visitor_uuid",
-                visitorId
-              );
+            if (!visitorId) {
+              setState('訪問者IDを取得できませんでした。ページを再読み込みしてください。', 'is-error');
+              return;
             }
 
             await registerAndIssue(visitorId);

@@ -20,8 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    syncVisitorIdToLocalStorage();
     initStampRally();
 });
+
+async function syncVisitorIdToLocalStorage() {
+    try {
+        const response = await fetch('/api/visitor/me', { cache: 'no-store' });
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok && result.ok && result.visitor_id) {
+            localStorage.setItem('visitor_id', String(result.visitor_id));
+        }
+    } catch (error) {
+        console.warn('訪問者IDの保存に失敗しました', error);
+    }
+}
 
 function initStampRally() {
     const storageKey = "kosensai-stamp-rally";

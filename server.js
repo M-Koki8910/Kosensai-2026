@@ -2943,6 +2943,22 @@ let page = pathname
   // 訪問者識別・スタンプラリー・抽選連携 API
   // ──────────────────────────────────────────────────────────────────────────
 
+  // GET /api/visitor/me - 現在の匿名訪問者IDを取得
+  if (req.url === '/api/visitor/me' && req.method === 'GET') {
+    let visitorId = String(getCookies(req)[SESSION_COOKIE_NAME] || '').trim();
+
+    if (!visitorId) {
+      visitorId = createVisitorSession(req, res) || '';
+    }
+
+    if (!visitorId) {
+      return sendJson(res, 500, { ok: false, error: 'Failed to create session' });
+    }
+
+    ensureVisitorRecord(visitorId, req);
+    return sendJson(res, 200, { ok: true, visitor_id: visitorId });
+  }
+
   // POST /api/visitor/register - 訪問者を登録または更新（UUID をサーバー側で管理）
   if (req.url === '/api/visitor/register' && req.method === 'POST') {
     parseBody(req, (err, payload) => {
