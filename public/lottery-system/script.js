@@ -144,7 +144,7 @@ function setupBlankCards(count) {
             <div>
                 <div class="box-label ticket">抽選番号</div>
                 <div class="ticket-box">
-                    <div class="flap-digit">?</div><div class="flap-digit">?</div><div class="flap-digit">?</div>
+                    <div class="flap-digit">?</div><div class="flap-digit">?</div><div class="flap-digit">?</div><div class="flap-digit">?</div>
                 </div>
             </div>
             <div>
@@ -221,8 +221,8 @@ function animateFlaps() {
 
     const stepDelay = 1500; // 桁が確定する時間差
     
-    // 計6ステップ (抽選3桁 + 景品3桁)
-   for (let step = 0; step < 6; step++) {
+    // 計7ステップ (抽選4桁 + 景品3桁)
+   for (let step = 0; step < 7; step++) {
         setTimeout(() => {
             // 桁が止まったかどうかを判定するフラグ
             let anyDigitStopped = false;
@@ -237,14 +237,14 @@ function animateFlaps() {
                 let targetDigit = null;
                 let finalChar = "0";
 
-                if (step < 3) {
+                if (step < 4) {
                     targetDigit = ticketDigits[step];
-                    const fullStr = String(currentTurnResults[cardIdx].participantId).padStart(3, '0');
+                    const fullStr = String(currentTurnResults[cardIdx].participantId).padStart(4, '0');
                     finalChar = fullStr[step];
                 } else {
-                    targetDigit = itemDigits[step - 3];
+                    targetDigit = itemDigits[step - 4];
                     const fullStr = String(currentTurnResults[cardIdx].itemNum).padStart(3, '0');
-                    finalChar = fullStr[step - 3];
+                    finalChar = fullStr[step - 4];
                 }
 
                 if (targetDigit && targetDigit.classList.contains('rolling')) {
@@ -262,8 +262,8 @@ function animateFlaps() {
                 cloneStopSound.play().catch(() => {});
             }
 
-            // 2. 最後の桁（ステップ5：商品番号の3桁目）が完全に止まったあ後の処理
-            if (step === 5) {
+            // 2. 最後の桁（ステップ6：商品番号の3桁目）が完全に止まったあ後の処理
+            if (step === 6) {
                 // ⏳ 1秒のタメ（静寂）を作るため、ここでドラムロールを止める
                 if (soundRoll) { soundRoll.pause(); }
 
