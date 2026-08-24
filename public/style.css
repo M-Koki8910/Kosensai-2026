@@ -99,7 +99,7 @@ body {
     transition: transform 0.25s ease;
     background: rgba(255, 255, 255, 0.98);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-    z-index: 240;
+    z-index: 2000;
     overflow-y: auto;
 }
 
@@ -1540,7 +1540,7 @@ h2::after {
     background: #405898;
 }
 
-.map {
+/* .map {
     flex: 1 1 0;
     min-width: 320px;
     background: #fff;
@@ -1555,7 +1555,7 @@ h2::after {
     min-height: 320px;
     display: block;
     border: 0;
-}
+} */
 
 @media (max-width: 820px) {
     .access-container {
@@ -1564,18 +1564,18 @@ h2::after {
     }
 
     .access-info,
-    .map {
+   /*  .map {
         flex: 1 1 100%;
         max-width: 100%;
-    }
+    } */
 
     .access-info {
         padding-bottom: 16px;
     }
 
-    .map iframe {
+    /* .map iframe {
         min-height: 260px;
-    }
+    } */
 }
 
 
@@ -1913,7 +1913,7 @@ h2::after {
 }
 
 /* 右 */
-.map {
+/* .map {
     flex: 2;
     min-width: 350px;
 }
@@ -1924,10 +1924,10 @@ h2::after {
     border: 0;
     border-radius: 15px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
+} */
 
 /* リンク */
-.map-link {
+/* .map-link {
     display: inline-block;
     margin-top: 15px;
     text-decoration: none;
@@ -1939,13 +1939,13 @@ h2::after {
     color: white;
     border-radius: 8px;
     transition: all 0.3s;
-}
+} */
 
-.map-link:hover {
+/* .map-link:hover {
     background: #405898;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
-}
+} */
 
 #userMessage {
     margin: 10px 0;
@@ -2123,9 +2123,9 @@ footer {
         padding: 30px 20px;
     }
 
-    .map iframe {
+    /* .map iframe {
         height: 280px;
-    }
+    } */
 
     h2 {
         font-size: 28px;
@@ -2190,9 +2190,9 @@ footer {
     flex-direction: column;
 }
 
-.map iframe {
+/* .map iframe {
     height: 250px;
-}
+} */
 
 /* フッター */
 /* footer {

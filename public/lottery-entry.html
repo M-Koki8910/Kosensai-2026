@@ -294,6 +294,7 @@
       <li><a href="./company.html">ご協賛企業様紹介</a></li>
       <li><a href="./schedule.html">スケジュール</a></li>
       <li><a href="./map.html">会場マップ</a></li>
+      <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
       <li><a href="./announcements.html">お知らせ</a></li>
       <li><a href="./bulletin.html">掲示板</a></li>
       <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
@@ -386,6 +387,25 @@
     let isProcessing = false;
 
     const LOTTERY_STORAGE_KEY = 'lottery-last-issued';
+    const EVENT_MASTER_URL = './event-participants.json';
+    let eventIdsPromise = null;
+
+    function loadEventIds() {
+      if (!eventIdsPromise) {
+        eventIdsPromise = fetch(EVENT_MASTER_URL, { cache: 'no-store' })
+          .then(response => response.ok ? response.json() : { events: [] })
+          .then(data => new Set(
+            Array.isArray(data.events)
+              ? data.events.map(event => String(event.event_id || '').trim()).filter(Boolean)
+              : []
+          ))
+          .catch(error => {
+            console.warn('イベント定義の読み込みに失敗しました', error);
+            return new Set();
+          });
+      }
+      return eventIdsPromise;
+    }
 
     function showReader() {
       readerCard.hidden = false;
@@ -481,6 +501,40 @@
 
     function isLotteryQR(rawValue) {
       return rawValue === "Kosensai-LotteryCode";
+    }
+
+    async function parseEventQR(rawValue) {
+      const value = String(rawValue || '').trim();
+      const prefix = 'Kosensai-EventCode:';
+      if (!value.startsWith(prefix)) return null;
+
+      const eventId = value.slice(prefix.length).trim();
+      const eventIds = await loadEventIds();
+      return eventIds.has(eventId) ? eventId : null;
+    }
+
+    async function getVisitorId() {
+      const savedVisitorId = localStorage.getItem('visitor_id');
+      if (savedVisitorId) return savedVisitorId;
+
+      const visitorResponse = await fetch('/api/visitor/me', { cache: 'no-store' });
+      const visitorData = await visitorResponse.json().catch(() => ({}));
+      if (!visitorResponse.ok || !visitorData.ok || !visitorData.visitor_id) return null;
+
+      const visitorId = String(visitorData.visitor_id);
+      localStorage.setItem('visitor_id', visitorId);
+      return visitorId;
+    }
+
+    async function registerEventParticipant(visitorId, eventId) {
+      const response = await fetch('/api/event-participant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitor_id: visitorId, event_id: eventId })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'イベント参加の記録に失敗しました');
+      return result;
     }
 
     async function registerAndIssue(visitorId) {
@@ -582,6 +636,34 @@
 
             console.log("QR読み取り:", decodedText);
 
+            if (isProcessing) return;
+
+            const eventId = await parseEventQR(decodedText);
+            if (String(decodedText || '').trim().startsWith('Kosensai-EventCode:')) {
+              isProcessing = true;
+              await stopScanner();
+
+              try {
+                if (!eventId) throw new Error('未登録のイベントQRコードです。');
+                const visitorId = await getVisitorId();
+                if (!visitorId) throw new Error('訪問者IDを取得できませんでした。ページを再読み込みしてください。');
+                const result = await registerEventParticipant(visitorId, eventId);
+                const weight = Number(result.participant?.weight || 3);
+                setState(
+                  result.existing
+                    ? `イベント参加済みです（Weight +${weight}）。`
+                    : `イベント参加を記録しました（Weight +${weight}）。`,
+                  'is-success'
+                );
+              } catch (error) {
+                console.error(error);
+                setState(error.message || 'イベント参加の記録に失敗しました。', 'is-error');
+              } finally {
+                isProcessing = false;
+              }
+              return;
+            }
+
             if (!isLotteryQR(decodedText)) {
               console.log("抽選QRではありません");
               return;
@@ -591,16 +673,16 @@
 
             await stopScanner();
 
-            let visitorId = localStorage.getItem("visitor_uuid");
+            let visitorId = null;
+            try {
+              visitorId = await getVisitorId();
+            } catch (error) {
+              console.warn('訪問者IDの取得に失敗しました', error);
+            }
 
             if (!visitorId) {
-
-              visitorId = crypto.randomUUID();
-
-              localStorage.setItem(
-                "visitor_uuid",
-                visitorId
-              );
+              setState('訪問者IDを取得できませんでした。ページを再読み込みしてください。', 'is-error');
+              return;
             }
 
             await registerAndIssue(visitorId);
