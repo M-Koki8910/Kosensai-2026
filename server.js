@@ -171,6 +171,27 @@ const LOCATION_LABELS = Object.fromEntries(
   COMPANY_MASTER.map(item => [item.id, item.name])
 );
 
+function loadEventMaster() {
+  const masterPath = path.join(STATIC_ROOT, 'event-participants.json');
+  try {
+    const parsed = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
+    if (!parsed || !Array.isArray(parsed.events)) return [];
+
+    return parsed.events
+      .map(item => ({
+        event_id: String(item.event_id || '').trim(),
+        name: String(item.name || item.event_id || '').trim()
+      }))
+      .filter(item => item.event_id);
+  } catch (error) {
+    console.error('Failed to load event master', error);
+    return [];
+  }
+}
+
+const EVENT_MASTER = loadEventMaster();
+const EVENT_IDS = new Set(EVENT_MASTER.map(item => item.event_id));
+
 if (fs.existsSync(ENV_PATH)) {
   const envContents = fs.readFileSync(ENV_PATH, 'utf8');
   envContents.split(/\r?\n/).forEach((line) => {
@@ -236,6 +257,17 @@ db.exec(`
     lottery_number TEXT NOT NULL UNIQUE,
     weight REAL NOT NULL,
     entry_time TEXT NOT NULL DEFAULT (datetime('now', '+9 hours')),
+    FOREIGN KEY (visitor_id) REFERENCES visitors(visitor_id)
+  );
+`);
+
+// イベント参加者テーブル。1イベントにつき既定で3口を加算する。
+db.exec(`
+  CREATE TABLE IF NOT EXISTS event_participants (
+    visitor_id TEXT NOT NULL,
+    event_id TEXT NOT NULL,
+    weight REAL NOT NULL DEFAULT 3,
+    PRIMARY KEY (visitor_id, event_id),
     FOREIGN KEY (visitor_id) REFERENCES visitors(visitor_id)
   );
 `);
@@ -3088,6 +3120,61 @@ let page = pathname
     return;
   }
 
+  // POST /api/event-participant - イベント参加を記録
+  if (req.url === '/api/event-participant' && req.method === 'POST') {
+    parseBody(req, (err, payload) => {
+      if (err) return sendJson(res, 400, { ok: false, error: 'Invalid JSON' });
+
+      const visitorId = String(payload.visitor_id || '').trim();
+      const eventId = String(payload.event_id || '').trim();
+
+      if (!visitorId) return sendJson(res, 400, { ok: false, error: 'visitor_id is required' });
+      if (!EVENT_IDS.has(eventId)) {
+        return sendJson(res, 400, { ok: false, error: 'Invalid event_id' });
+      }
+
+      try {
+        const visitor = db.prepare('SELECT visitor_id FROM visitors WHERE visitor_id = ?').get(visitorId);
+        if (!visitor) return sendJson(res, 404, { ok: false, error: 'Visitor not found' });
+
+        const existing = db.prepare(`
+          SELECT visitor_id, event_id, weight
+          FROM event_participants
+          WHERE visitor_id = ? AND event_id = ?
+        `).get(visitorId, eventId);
+
+        if (existing) {
+          return sendJson(res, 200, { ok: true, existing: true, participant: existing });
+        }
+
+        db.prepare(`
+          INSERT INTO event_participants (visitor_id, event_id)
+          VALUES (?, ?)
+        `).run(visitorId, eventId);
+
+        const participant = db.prepare(`
+          SELECT visitor_id, event_id, weight
+          FROM event_participants
+          WHERE visitor_id = ? AND event_id = ?
+        `).get(visitorId, eventId);
+
+        logEvent('event_participant_registered', {
+          username: null,
+          sessionId: getCookies(req)[SESSION_COOKIE_NAME],
+          userAgent: req.headers['user-agent'] || '',
+          page: pathname,
+          detail: JSON.stringify({ visitor_id: visitorId, event_id: eventId, weight: participant.weight })
+        });
+
+        return sendJson(res, 201, { ok: true, existing: false, participant });
+      } catch (e) {
+        console.error('Error registering event participant:', e);
+        return sendJson(res, 500, { ok: false, error: 'Internal server error' });
+      }
+    });
+    return;
+  }
+
   // GET /api/stamp/status/:visitorId - スタンプ取得状況を確認
   if (pathname.match(/^\/api\/stamp\/status\/(.+)$/) && req.method === 'GET') {
     const match = pathname.match(/^\/api\/stamp\/status\/(.+)$/);
@@ -3156,6 +3243,9 @@ let page = pathname
             acquired_stamps: db.prepare(
               'SELECT COUNT(*) as count FROM stamp_visits WHERE visitor_id = ? AND company_id IS NOT NULL'
             ).get(visitorId).count,
+            event_weight: db.prepare(
+              'SELECT COALESCE(SUM(weight), 0) as total FROM event_participants WHERE visitor_id = ?'
+            ).get(visitorId).total,
             total_companies: COMPANY_MASTER.length,
             existing: true
           });
@@ -3168,9 +3258,13 @@ let page = pathname
 
         const acquiredCount = stamps.count;
         const totalCompanies = COMPANY_MASTER.length;
+        const eventWeight = db.prepare(
+          'SELECT COALESCE(SUM(weight), 0) as total FROM event_participants WHERE visitor_id = ?'
+        ).get(visitorId).total;
 
         // 重みづけを算出: 1 + (獲得数 / 全ブース数)
-        const weight = 1 + (acquiredCount / totalCompanies);
+        const stampWeight = totalCompanies > 0 ? acquiredCount / totalCompanies : 0;
+        const weight = 1 + stampWeight + eventWeight;
 
         const createLotteryEntry = (entryVisitorId, entryWeight) => {
           db.exec('BEGIN IMMEDIATE TRANSACTION');
@@ -3215,6 +3309,7 @@ let page = pathname
             lottery_number: lotteryNumber,
             weight: weight,
             acquired_count: acquiredCount,
+            event_weight: eventWeight,
             total_companies: totalCompanies
           })
         });
@@ -3227,6 +3322,7 @@ let page = pathname
           lottery_number: lotteryNumber,
           weight: parseFloat(weight.toFixed(4)),
           acquired_stamps: acquiredCount,
+          event_weight: eventWeight,
           total_companies: totalCompanies
         });
       } catch (e) {
