@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".card").forEach(card => {
+    /* document.querySelectorAll(".card").forEach(card => {
         card.addEventListener("click", () => {
             card.classList.toggle("active");
         });
-    });
+    }); */
 
     const toggle = document.querySelector(".menu-toggle, #menu-toggle");
     const nav = document.getElementById("nav");

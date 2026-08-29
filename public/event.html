@@ -52,100 +52,227 @@
     <section class="container-section shop-page">
 
         <h2>ステージイベント</h2>
-        
-        <!--"grid"に全ての"card"を入れてください-->        
-         <div class="grid">
-           <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>吹奏楽部コンサート</h3>
-            </div>
-            <div class="detail">吹奏楽部によるスペシャルコンサート！</div>
-           </div>
 
-           <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>学生ライブ</h3>
-            </div>
-            <div class="detail">バンド演奏を開催！</div>
+        <div class="grid" id="event-grid">
+            <!-- JavaScriptで動的に生成 -->
         </div>
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>大食い大会</h3>
-            </div>
-            <div class="detail">模擬店の食べ物をいち早く食べきれるのはいったい誰だ！？</div>
-        </div>
+        <!-- イベント詳細モーダル -->
+        <div class="modal" id="eventModal">
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>フィジーク</h3>
-            </div>
-            <div class="detail">若きボディビルダーの美ボディーをぜひご覧ください！</div>
-        </div>
+            <div class="modal-content">
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>クイズ大会</h3>
-            </div>
-            <div class="detail">松江高専に関するクイズを多数出題！</div>
-        </div>
+                <span class="close" id="eventModalClose">&times;</span>
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>カラオケ大会</h3>
-            </div>
-            <div class="detail">今年もカラオケ大会を開催します！</div>
-        </div>
+                <img id="eventModalImage" class="modal-image" src="" alt="">
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>ダンスサークルパフォーマンス</h3>
-            </div>
-            <div class="detail">キレのあるパフォーマンスをぜひご覧ください！</div>
-        </div>
+                <div class="modal-body">
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>書道パフォーマンス</h3>
-            </div>
-            <div class="detail">書道部によるパフォーマンスをぜひご覧ください！</div>
-        </div>
+                    <h2 id="eventModalTitle"></h2>
 
-                <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>誰が一位でしょう？</h3>
-            </div>
-            <div class="detail">一緒に予想してクイズに正解しよう！</div>
-        </div>
+                    <p class="modal-product">
+                        <strong>内容：</strong>
+                        <span id="eventModalProduct"></span>
+                    </p>
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>腕相撲大会</h3>
-            </div>
-            <div class="detail">パワー系高専生による腕相撲大会です！</div>
-        </div>
+                    <p class="modal-description" id="eventModalDescription"></p>
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>抽選会</h3>
+                    <div class="modal-location">
+                        <strong>開催場所：</strong>
+                        <span id="eventModalLocation"></span>
+
+                        <a id="eventModalMapLink" href="#">
+                            マップで確認する
+                        </a>
+                    </div>
+
+                </div>
+
             </div>
-            <div class="detail">豪華景品が盛りだくさん！（※学生のみ参加可能です）</div>
-        </div>
-            
+
         </div>
 
     </section>
+
+
+    <script>
+
+        const events = [
+
+            {
+                "id": "event-1",
+                "name": "吹奏楽部コンサート",
+                "product": "吹奏楽部によるスペシャルコンサート！",
+                "description": "吹奏楽部による演奏をお楽しみください！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-2",
+                "name": "学生ライブ",
+                "product": "バンド演奏を開催！",
+                "description": "学生による迫力のライブパフォーマンスをお楽しみください！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-3",
+                "name": "大食い大会",
+                "product": "模擬店の食べ物をいち早く食べきれるのはいったい誰だ！？",
+                "description": "模擬店の食べ物を使った大食い大会です。誰が一番早く食べきるのか、ぜひご覧ください！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-4",
+                "name": "フィジーク",
+                "product": "若きボディビルダーの美ボディーをぜひご覧ください！",
+                "description": "鍛え上げられた身体を披露するパフォーマンスです。",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-5",
+                "name": "クイズ大会",
+                "product": "松江高専に関するクイズを多数出題！",
+                "description": "松江高専に関するさまざまなクイズに挑戦しよう！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-6",
+                "name": "カラオケ大会",
+                "product": "今年もカラオケ大会を開催します！",
+                "description": "学生たちが自慢の歌声を披露します！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-7",
+                "name": "ダンスサークルパフォーマンス",
+                "product": "キレのあるパフォーマンスをぜひご覧ください！",
+                "description": "ダンスサークルによる迫力のパフォーマンスをお楽しみください！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-8",
+                "name": "書道パフォーマンス",
+                "product": "書道部によるパフォーマンスをぜひご覧ください！",
+                "description": "書道部による迫力ある書道パフォーマンスをお楽しみください！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-9",
+                "name": "誰が一位でしょう？",
+                "product": "一緒に予想してクイズに正解しよう！",
+                "description": "誰が一位になるのかを予想しながら楽しめるイベントです！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-10",
+                "name": "腕相撲大会",
+                "product": "パワー系高専生による腕相撲大会です！",
+                "description": "高専生たちによる熱い腕相撲対決をお楽しみください！",
+                "map": "",
+                "location": ""
+            },
+
+            {
+                "id": "event-11",
+                "name": "抽選会",
+                "product": "豪華景品が盛りだくさん！（※学生のみ参加可能です）",
+                "description": "豪華景品が当たる抽選会を開催します！",
+                "map": "",
+                "location": ""
+            }
+
+        ];
+
+        const eventGrid = document.getElementById('event-grid');
+
+        function createEventCard(event) {
+
+            const card = document.createElement('div');
+            card.className = 'card event-card';
+
+            const productDisplay = event.product.length > 30
+                ? event.product.substring(0, 30) + '...'
+                : event.product;
+
+            card.innerHTML = `
+        <img src="./images/event.jpg" alt="${event.name}">
+        <div class="card-body">
+            <h3>${event.name}</h3>
+        </div>
+        <div class="detail" title="${event.product}">
+            ${productDisplay}
+        </div>
+    `;
+
+            card.addEventListener('click', () => openEventModal(event));
+
+            return card;
+        }
+
+        events.forEach(event => {
+            eventGrid.appendChild(createEventCard(event));
+        });
+
+        const eventModal = document.getElementById('eventModal');
+
+        function openEventModal(event) {
+
+            document.getElementById('eventModalImage').src =
+                './images/event.jpg';
+
+            document.getElementById('eventModalImage').alt =
+                event.name;
+
+            document.getElementById('eventModalTitle').textContent =
+                event.name;
+
+            document.getElementById('eventModalProduct').textContent =
+                event.product;
+
+            document.getElementById('eventModalDescription').textContent =
+                event.description;
+
+            document.getElementById('eventModalLocation').textContent =
+                event.location;
+
+            document.getElementById('eventModalMapLink').href =
+                `./map.html?map=${encodeURIComponent(event.map)}`;
+
+            eventModal.style.display = 'flex';
+        }
+
+        // ×ボタンで閉じる
+        eventModalClose.addEventListener('click', () => {
+            eventModal.style.display = 'none';
+        });
+
+
+        // 背景クリックで閉じる
+        eventModal.addEventListener('click', (event) => {
+
+            if (event.target === eventModal) {
+                eventModal.style.display = 'none';
+            }
+
+        });
+    </script>
     <footer>
 
         <!-- お問い合わせ・規約等 -->

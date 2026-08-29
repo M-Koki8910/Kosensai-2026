@@ -239,6 +239,246 @@ body {
     }
 }
 
+/* =========================
+   模擬店 詳細モーダル
+   ========================= */
+
+.modal {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    /* 背景 */
+    background: rgba(0, 0, 0, 0.55);
+
+    /* モーダルを中央配置 */
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    overflow-y: auto;
+}
+
+.modal-location {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 24px;
+    padding-top: 18px;
+
+    border-top: 1px solid #ddd;
+}
+
+.modal-location a {
+    margin-left: auto;
+
+    padding: 8px 14px;
+
+    background: #2d5aa0;
+    color: white;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.modal-location a:hover {
+    opacity: 0.85;
+}
+
+/* モーダル本体 */
+.modal-content {
+    position: relative;
+
+    width: min(680px, 100%);
+    max-height: 90vh;
+
+    background: #fff;
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+
+    animation: modalOpen 0.2s ease-out;
+}
+
+
+/* =========================
+   画像
+   ========================= */
+
+.modal-image {
+    display: block;
+
+    width: 100%;
+    height: 280px;
+
+    object-fit: cover;
+}
+
+
+/* =========================
+   閉じるボタン
+   ========================= */
+
+.close {
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    border: none;
+
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+
+    font-size: 28px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    z-index: 2;
+
+    transition: background 0.2s;
+}
+
+.close:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+
+/* =========================
+   本文
+   ========================= */
+
+.modal-body {
+    padding: 28px 30px 32px;
+}
+
+
+/* 店名 */
+.modal-body h2 {
+    margin: 0 0 18px;
+
+    font-size: 1.8rem;
+    line-height: 1.4;
+
+    color: #222;
+}
+
+
+/* 内容 */
+.modal-product {
+    margin: 0 0 20px;
+
+    padding: 12px 16px;
+
+    background: #f1f5fb;
+
+    border-left: 4px solid #2d5aa0;
+
+    border-radius: 6px;
+
+    line-height: 1.6;
+}
+
+.modal-product strong {
+    color: #2d5aa0;
+}
+
+
+/* 説明 */
+.modal-description {
+    margin: 0;
+
+    color: #444;
+
+    font-size: 1rem;
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+}
+
+
+/* =========================
+   アニメーション
+   ========================= */
+
+@keyframes modalOpen {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================
+   スマートフォン
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-height: 92vh;
+
+        border-radius: 16px;
+    }
+
+    .modal-image {
+        height: 200px;
+    }
+
+    .modal-body {
+        padding: 22px 20px 26px;
+    }
+
+    .modal-body h2 {
+        font-size: 1.4rem;
+        margin-bottom: 16px;
+    }
+
+    .modal-product {
+        font-size: 0.95rem;
+    }
+
+    .modal-description {
+        font-size: 0.95rem;
+        line-height: 1.75;
+    }
+
+    .close {
+        width: 38px;
+        height: 38px;
+
+        font-size: 25px;
+    }
+}
+
 /* カード */
 .card {
     background: #fff;
@@ -316,7 +556,7 @@ body {
 .section {
     /*padding: 18px 0 32px;*/
 
-    padding:80px 0;
+    padding: 80px 0;
 }
 
 h2 {
@@ -1564,7 +1804,7 @@ h2::after {
     }
 
     .access-info,
-   /*  .map {
+    /*  .map {
         flex: 1 1 100%;
         max-width: 100%;
     } */

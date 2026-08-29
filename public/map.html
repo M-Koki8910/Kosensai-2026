@@ -450,10 +450,10 @@
                         {
                             title: 'J4',
                             bounds: [
-                                [879, 1456],
-                                [540, 724]
+                                [550, 1620],
+                                [420, 1420]
                             ],
-                            link: './shop.html'
+                            link: './shop.html#shop-4'
                         }
                     ]
                 },
@@ -721,6 +721,69 @@
             const floorButtons =
                 document.querySelectorAll('.map-floor-tab');
 
+            function resolveRequestedMapKey(rawKey) {
+
+                if (!rawKey) {
+                    return 'campus';
+                }
+
+                const normalized = rawKey.trim().toLowerCase();
+
+                if (!normalized) {
+                    return 'campus';
+                }
+
+                if (normalized in mapData) {
+                    return normalized;
+                }
+
+                if (normalized === 'building') {
+                    return 'building1f';
+                }
+
+                if (normalized.startsWith('building')) {
+                    return normalized;
+                }
+
+                if (normalized === 'campus' || normalized === 'stalls') {
+                    return normalized;
+                }
+
+                return 'campus';
+
+            }
+
+            function applyMapSelection(selectedKey) {
+
+                const buildingKeys = ['building1f', 'building2f', 'building3f'];
+                const targetGroup = buildingKeys.includes(selectedKey)
+                    ? 'building'
+                    : (selectedKey === 'stalls' ? 'stalls' : 'campus');
+
+                tabButtons.forEach(button => {
+                    button.classList.toggle(
+                        'active',
+                        button.dataset.mapGroup === targetGroup
+                    );
+                });
+
+                if (targetGroup === 'building') {
+                    setFloorTabVisible(true);
+                    floorButtons.forEach(button => {
+                        button.classList.toggle(
+                            'active',
+                            button.dataset.map === selectedKey
+                        );
+                    });
+                } else {
+                    setFloorTabVisible(false);
+                    floorButtons.forEach(button => {
+                        button.classList.remove('active');
+                    });
+                }
+
+            }
+
             function setFloorTabVisible(show) {
 
                 floorTabs.classList.toggle(
@@ -821,9 +884,15 @@
                初期ロード
             ------------------------------------------ */
 
+            const initialMapKey = resolveRequestedMapKey(
+                new URLSearchParams(window.location.search).get('map')
+            );
+
+            applyMapSelection(initialMapKey);
+
             window.addEventListener('load', () => {
 
-                loadMap('campus');
+                loadMap(initialMapKey);
 
             });
 
