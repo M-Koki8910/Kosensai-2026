@@ -132,19 +132,22 @@ body {
     padding: 18px;
     border-top: 1px solid rgba(0, 0, 0, 0.08);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
+    justify-content: space-between;
 }
 
 .nav-footer .nav-social {
+    flex: 1;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     color: #111;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
-    padding: 12px 18px;
+    padding: 12px 10px;
     border-radius: 12px;
     background: rgba(30, 58, 138, 0.08);
     transition: background 0.3s ease, color 0.3s ease;
@@ -156,10 +159,11 @@ body {
 }
 
 .nav-footer .nav-social-icon {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     display: block;
     object-fit: contain;
+    flex-shrink: 0;
 }
 
 #nav li a:hover,
@@ -549,6 +553,24 @@ body {
 
     .topbar {
         padding: 12px 16px;
+    }
+
+    .nav-footer {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 14px 18px;
+    }
+
+    .nav-footer .nav-social {
+        width: 100%;
+        flex: 1 1 auto;
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+
+    .nav-footer .nav-social-icon {
+        width: 28px;
+        height: 28px;
     }
 }
 
@@ -1778,6 +1800,52 @@ h2::after {
 
 .access-info .map-link:hover {
     background: #405898;
+}
+
+.access-sns {
+    margin-top: 18px;
+}
+
+.access-sns h3 {
+    margin: 0 0 12px;
+    font-size: 20px;
+    color: #1e3a8a;
+}
+
+.access-sns-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.access-sns .nav-social {
+    flex: 1 1 0;
+    min-width: 150px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #111;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(30, 58, 138, 0.08);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.access-sns .nav-social:hover {
+    background: rgba(30, 58, 138, 0.16);
+    color: #1e3a8a;
+}
+
+.access-sns .nav-social-icon {
+    width: 28px;
+    height: 28px;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 /* .map {
