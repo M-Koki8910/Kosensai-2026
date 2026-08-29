@@ -266,7 +266,67 @@ body {
     overflow-y: auto;
 }
 
-.modal-location {
+#eventModal .modal-time,
+#eventModal .modal-location {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+
+    margin-top: 14px;
+    padding-top: 14px;
+
+    border-top: 1px solid #ddd;
+}
+
+#eventModal .modal-label {
+    font-weight: 700;
+    color: #1e2432;
+    white-space: nowrap;
+}
+
+#eventModal .modal-time a,
+#eventModal .modal-location a {
+    margin-left: auto;
+
+    padding: 8px 14px;
+
+    background: #2d5aa0;
+    color: white;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+#eventModal .modal-time a:hover,
+#eventModal .modal-location a:hover {
+    opacity: 0.85;
+}
+
+#eventModal .modal-time {
+    margin-top: 18px;
+}
+
+@media (max-width: 520px) {
+    #eventModal .modal-time,
+    #eventModal .modal-location {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    #eventModal .modal-time a,
+    #eventModal .modal-location a {
+        width: 100%;
+        margin-left: 0;
+        text-align: center;
+    }
+}
+
+.shop-modal-location {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -277,7 +337,7 @@ body {
     border-top: 1px solid #ddd;
 }
 
-.modal-location a {
+.shop-modal-location a {
     margin-left: auto;
 
     padding: 8px 14px;
@@ -292,7 +352,7 @@ body {
     font-weight: 600;
 }
 
-.modal-location a:hover {
+.shop-modal-location a:hover {
     opacity: 0.85;
 }
 
@@ -851,6 +911,29 @@ h2::after {
     padding: 0 20px;
 
     justify-items: stretch;
+}
+
+#event-grid {
+    display: block;
+    padding: 0;
+}
+
+.event-day-section {
+    margin-bottom: 52px;
+}
+
+.event-day-heading {
+    margin: 0 0 20px;
+    padding-left: 10px;
+    font-size: clamp(1.8rem, 2.2vw, 2.6rem);
+    font-weight: 700;
+    color: #1e3a8a;
+    border-left: 6px solid #1e3a8a;
+}
+
+.event-day-grid {
+    padding: 0;
+    margin: 0;
 }
 
 /* ===== ゲスト ===== */
@@ -1803,13 +1886,38 @@ h2::after {
 }
 
 .access-sns {
-    margin-top: 18px;
+    margin-top: 20px;
+}
+
+.access-sns-card {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.06), rgba(255, 255, 255, 0.9));
+    border: 1px solid rgba(30, 58, 138, 0.12);
+    border-radius: 20px;
+    padding: 20px 18px 18px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.access-sns-kicker {
+    margin: 0 0 8px;
+    color: #1e3a8a;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
 }
 
 .access-sns h3 {
-    margin: 0 0 12px;
-    font-size: 20px;
-    color: #1e3a8a;
+    margin: 0 0 8px;
+    font-size: 22px;
+    line-height: 1.4;
+    color: #111827;
+}
+
+.access-sns-text {
+    margin: 0 0 16px;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.7;
 }
 
 .access-sns-links {
@@ -1830,19 +1938,22 @@ h2::after {
     font-size: 15px;
     font-weight: 700;
     padding: 12px 14px;
-    border-radius: 12px;
-    background: rgba(30, 58, 138, 0.08);
-    transition: background 0.3s ease, color 0.3s ease;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    transition: transform 0.2s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .access-sns .nav-social:hover {
-    background: rgba(30, 58, 138, 0.16);
+    background: rgba(30, 58, 138, 0.08);
     color: #1e3a8a;
+    box-shadow: 0 8px 18px rgba(30, 58, 138, 0.12);
+    transform: translateY(-1px);
 }
 
 .access-sns .nav-social-icon {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     display: block;
     object-fit: contain;
     flex-shrink: 0;
