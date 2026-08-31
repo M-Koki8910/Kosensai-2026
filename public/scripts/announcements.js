@@ -129,7 +129,7 @@ const Announcements = (() => {
 
             <small>
 
-                ${formatDate(item.published_at)}
+                ${item.always_publish ? "常時公開" : `${formatDate(item.published_at)} ～ ${formatDate(item.expires_at)}`}
 
             </small>
 

@@ -227,7 +227,7 @@ const Announcements = (() => {
       <div class="announcement-item ${a.importance}">
         <h4>${escapeHtml(a.title)}</h4>
         <p>${escapeHtml(a.content)}</p>
-        <small>${formatDate(a.published_at)}</small>
+            <small>${a.always_publish ? "常時公開" : `${formatDate(a.published_at)} ～ ${formatDate(a.expires_at)}`}</small>
       </div>
     `;
   }
@@ -380,11 +380,26 @@ const AnnouncementPost = (() => {
 
   const API = "/api/announcements";
   const ADMIN_API = "/api/admin/announcements";
+  let initialized = false;
+
+  function updatePublicationInputs() {
+    const alwaysPublish = document.getElementById("announcementAlwaysPublish");
+    const publishedAt = document.getElementById("announcementPublishedAt");
+    const expiresAt = document.getElementById("announcementExpiresAt");
+    if (!alwaysPublish || !publishedAt || !expiresAt) return;
+
+    const disabled = alwaysPublish.checked;
+    publishedAt.disabled = disabled;
+    expiresAt.disabled = disabled;
+    publishedAt.required = !disabled;
+    expiresAt.required = !disabled;
+  }
 
   function init() {
 
     const form = document.getElementById("announcementForm");
-    if (!form) return;
+    if (!form || initialized) return;
+    initialized = true;
 
     const content = document.getElementById("announcementContent");
 
@@ -394,6 +409,10 @@ const AnnouncementPost = (() => {
     });
 
     form.addEventListener("submit", submitAnnouncement);
+
+    const alwaysPublish = document.getElementById("announcementAlwaysPublish");
+    alwaysPublish?.addEventListener("change", updatePublicationInputs);
+    updatePublicationInputs();
 
     loadAnnouncements();
   }
@@ -417,11 +436,13 @@ const AnnouncementPost = (() => {
     const expires_at =
       document.getElementById("announcementExpiresAt").value;
 
+    const always_publish =
+      document.getElementById("announcementAlwaysPublish")?.checked || false;
+
     if (
       !title ||
       !content ||
-      !published_at ||
-      !expires_at
+      (!always_publish && (!published_at || !expires_at))
     ) {
 
       showMessage(
@@ -429,6 +450,11 @@ const AnnouncementPost = (() => {
         "error"
       );
 
+      return;
+    }
+
+    if (!always_publish && new Date(published_at) >= new Date(expires_at)) {
+      showMessage("公開終了日時は公開開始日時より後にしてください", "error");
       return;
     }
 
@@ -448,7 +474,8 @@ const AnnouncementPost = (() => {
           content,
           importance,
           published_at,
-          expires_at
+          expires_at,
+          always_publish
 
         })
 
@@ -472,6 +499,8 @@ const AnnouncementPost = (() => {
       );
 
       e.target.reset();
+
+      updatePublicationInputs();
 
       document.getElementById("charCount").textContent = "0";
 
@@ -539,8 +568,7 @@ const AnnouncementPost = (() => {
           <h4>${escapeHtml(a.title)}</h4>
 
           <div class="manage-meta">
-            ${formatDate(a.published_at)}
-            ～ ${formatDate(a.expires_at)}
+            ${a.always_publish ? "常時公開" : `${formatDate(a.published_at)} ～ ${formatDate(a.expires_at)}`}
           </div>
 
           <p>${escapeHtml(a.content)}</p>

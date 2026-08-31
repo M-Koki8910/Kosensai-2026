@@ -893,7 +893,7 @@ async function loadAnnouncements() {
         <td>${ann.id}</td>
         <td>${escapeHtml(ann.title)}</td>
         <td>${getImportanceLabel(ann.importance)}</td>
-        <td>${new Date(ann.published_at).toLocaleString('ja-JP')} ～ ${new Date(ann.expires_at).toLocaleString('ja-JP')}</td>
+        <td>${ann.always_publish ? '常時公開' : `${new Date(ann.published_at).toLocaleString('ja-JP')} ～ ${new Date(ann.expires_at).toLocaleString('ja-JP')}`}</td>
         <td>${ann.created_by || '-'}</td>
         <td>
           <button class="btn btn-danger" onclick="deleteAnnouncement(${ann.id})">削除</button>
