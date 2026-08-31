@@ -1890,7 +1890,7 @@ h2::after {
 }
 
 .access-sns-card {
-    background: linear-gradient(135deg, rgba(30, 58, 138, 0.06), rgba(255, 255, 255, 0.9));
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.06), rgba(30, 58, 138, 0.06));
     border: 1px solid rgba(30, 58, 138, 0.12);
     border-radius: 20px;
     padding: 20px 18px 18px;

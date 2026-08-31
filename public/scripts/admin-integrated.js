@@ -360,7 +360,7 @@ async function loadCompanyScopes() {
   const list = document.getElementById('scope-list');
 
   try {
-    const response = await fetch('companies.json');
+    const response = await fetch('scripts/companies.json');
     if (!response.ok) throw new Error();
 
     const companies = await response.json();
