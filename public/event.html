@@ -21,49 +21,49 @@
     </div>
 
     <nav id="nav">
-            <div class="announcement-wrapper">
+        <div class="announcement-wrapper">
 
-                <!-- お知らせ -->
-                <div class="announcement-ticker info-ticker">
-                    <div class="ticker-label">
-                        お知らせ
-                    </div>
-
-                    <div class="ticker-container">
-                        <div id="ticker-content" class="ticker-content"></div>
-                    </div>
+            <!-- お知らせ -->
+            <div class="announcement-ticker info-ticker">
+                <div class="ticker-label">
+                    お知らせ
                 </div>
 
-                <!-- 注意 -->
-                <div class="announcement-ticker warning-ticker">
-                    <div class="ticker-label">
-                        ⚠ 重要
-                    </div>
-
-                    <div class="ticker-container">
-                        <div class="ticker-content ticker-scroll">
-                            ＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。
-                        </div>
-                    </div>
+                <div class="ticker-container">
+                    <div id="ticker-content" class="ticker-content"></div>
                 </div>
-
             </div>
-            <ul>
-                <li><a href="./about.html">高専祭について</a></li>
-                <li><a href="./shop.html">模擬店紹介</a></li>
-                <li><a href="./guest.html">ゲスト紹介</a></li>
-                <li><a href="./event.html">イベント紹介</a></li>
-                <li><a href="./stamp-rally.html">スタンプラリー</a></li>
-                <li><a href="./company.html">ご協賛企業様紹介</a></li>
-                <li><a href="./schedule.html">スケジュール</a></li>
-                <li><a href="./map.html">会場マップ</a></li>
-                <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
-                <li><a href="./announcements.html">お知らせ</a></li>
-                <li><a href="./bulletin.html">掲示板</a></li>
-                <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
-                <li><a href="./aboutme.html">このサイトについて</a></li>
-            </ul>
-        </nav>
+
+            <!-- 注意 -->
+            <div class="announcement-ticker warning-ticker">
+                <div class="ticker-label">
+                    ⚠ 重要
+                </div>
+
+                <div class="ticker-container">
+                    <div class="ticker-content ticker-scroll">
+                        ＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <ul>
+            <li><a href="./about.html">高専祭について</a></li>
+            <li><a href="./shop.html">模擬店紹介</a></li>
+            <li><a href="./guest.html">ゲスト紹介</a></li>
+            <li><a href="./event.html">イベント紹介</a></li>
+            <li><a href="./stamp-rally.html">スタンプラリー</a></li>
+            <li><a href="./company.html">ご協賛企業様紹介</a></li>
+            <li><a href="./schedule.html">スケジュール</a></li>
+            <li><a href="./map.html">会場マップ</a></li>
+            <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
+            <li><a href="./announcements.html">お知らせ</a></li>
+            <li><a href="./bulletin.html">掲示板</a></li>
+            <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
+            <li><a href="./aboutme.html">このサイトについて</a></li>
+        </ul>
+    </nav>
 
 
     <section class="container-section shop-page">
@@ -92,27 +92,41 @@
                         <span id="eventModalProduct"></span>
                     </p>
 
-                    
+
 
                     <p class="modal-description" id="eventModalDescription"></p>
 
-                    <div class="modal-time">
-                        <span class="modal-label">開催時間：</span>
-                        <span id="eventModalTime"></span>
+                    <div class="modal-meta-row">
+                        <div class="modal-time">
+                            <span class="modal-label">開催時間：</span>
+                            <span id="eventModalTime"></span>
+                        </div>
+                        <div class="modal-meta-links">
+                            <a id="eventModalScheduleLink" href="./schedule.html">
+                                スケジュールを見る
+                            </a>
+                        </div>
+
+                        <div class="modal-location">
+                            <span class="modal-label">開催場所：</span>
+                            <span id="eventModalLocation"></span>
+                        </div>
+                        <div class="modal-meta-links">
+                            <a id="eventModalMapLink" href="#">
+                                マップで確認する
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- <div class="modal-meta-links">
                         <a id="eventModalScheduleLink" href="./schedule.html">
                             スケジュールを見る
                         </a>
-                    </div>
-
-                    <div class="modal-location">
-                        <span class="modal-label">開催場所：</span>
-                        <span id="eventModalLocation"></span>
-
                         <a id="eventModalMapLink" href="#">
                             マップで確認する
                         </a>
                     </div>
-
+ -->
                 </div>
 
             </div>

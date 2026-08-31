@@ -420,33 +420,7 @@
 
 
         <nav id="nav">
-            <div class="announcement-wrapper">
-
-                <!-- お知らせ -->
-                <div class="announcement-ticker info-ticker">
-                    <div class="ticker-label">
-                        お知らせ
-                    </div>
-
-                    <div class="ticker-container">
-                        <div id="ticker-content" class="ticker-content"></div>
-                    </div>
-                </div>
-
-                <!-- 注意 -->
-                <div class="announcement-ticker warning-ticker">
-                    <div class="ticker-label">
-                        ⚠ 重要
-                    </div>
-
-                    <div class="ticker-container">
-                        <div class="ticker-content ticker-scroll">
-                            ＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+           
             <ul>
                 <li><a href="./about.html">高専祭について</a></li>
                 <li><a href="./shop.html">模擬店紹介</a></li>
@@ -564,6 +538,28 @@
                 <div class="logo-slider reverse">
                     <div class="logo-track" id="logoTrack2">
                         <!-- JavaScriptで生成 -->
+                    </div>
+                </div>
+            </section>
+
+            <section class="announcement-section" aria-label="お知らせと重要案内">
+                
+                    <h2>お知らせ・重要案内</h2>
+                
+
+                <div class="announcement-wrapper">
+                    <div class="announcement-ticker info-ticker">
+                        <div class="ticker-label">お知らせ</div>
+                        <div class="ticker-container">
+                            <div class="ticker-content" data-ticker-type="normal" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <div class="announcement-ticker warning-ticker">
+                        <div class="ticker-label">⚠ 重要</div>
+                        <div class="ticker-container">
+                            <div class="ticker-content" data-ticker-type="important" aria-live="polite"></div>
+                        </div>
                     </div>
                 </div>
             </section>

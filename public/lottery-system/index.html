@@ -3,16 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高専祭 抽選システム</title>
+    <title>高専祭 抽選会用ページ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
 
+        <div id="screen-waiting" class="screen" style="display: none;">
+            <header class="waiting-header">
+                <div class="waiting-brand">
+                    <span class="brand-badge">高専祭 2026</span>
+                    <h1>抽選会開始まで以下をお読みになってお待ちください</h1>
+                </div>
+                <div id="waiting-clock" class="waiting-clock">--:--</div>
+            </header>
+
+            <main class="waiting-lanes">
+                <section class="waiting-lane lane-text">
+                    <h2>抽選の進め方</h2>
+                    <div class="lane-track">
+                        <div id="wait-step-list" class="lane-track-inner"></div>
+                    </div>
+                </section>
+
+                <section class="waiting-lane lane-text">
+                    <h2>注意事項</h2>
+                    <div class="lane-track">
+                        <div id="wait-note-list" class="lane-track-inner"></div>
+                    </div>
+                </section>
+
+                <section class="waiting-lane lane-prizes">
+                    <h2>景品情報</h2>
+                    <div class="lane-track">
+                        <div id="wait-prize-list" class="lane-track-inner"></div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="waiting-footer">
+                <button id="back-to-start-from-waiting" class="btn-secondary">戻る</button>
+                <button id="open-draw-from-waiting" class="btn-primary">抽選を開始</button>
+            </footer>
+        </div>
+
         <div id="screen-start" class="screen">
             <h1 class="main-title">高専祭 抽選会</h1>
             <div class="menu-buttons">
                 <button id="start-draw-btn" class="btn-primary">抽選を開始する</button>
+                <button id="open-waiting-btn" class="btn-secondary">待機画面を表示</button>
                 <button id="open-config-btn" class="btn-secondary">システム設定・データ確認</button>
             </div>
             <div id="start-load-status" class="data-badge">データ読込中...</div>

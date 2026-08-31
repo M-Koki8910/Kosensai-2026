@@ -39,7 +39,7 @@ body.scan-modal-open {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 250;
+    z-index: 4000;
 
     display: flex;
     justify-content: space-between;
@@ -66,6 +66,8 @@ body.scan-modal-open {
 }
 
 .menu-toggle {
+    position: relative;
+    z-index: 4100;
     display: block;
     border: none;
     background: none;
@@ -99,8 +101,13 @@ body {
     transition: transform 0.25s ease;
     background: rgba(255, 255, 255, 0.98);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-    z-index: 2000;
+    z-index: 3500;
     overflow-y: auto;
+    pointer-events: none;
+}
+
+#nav.active {
+    pointer-events: auto;
 }
 
 #nav.active {
@@ -266,17 +273,22 @@ body {
     overflow-y: auto;
 }
 
+#eventModal .modal-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid #ddd;
+}
+
 #eventModal .modal-time,
 #eventModal .modal-location {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-
-    margin-top: 14px;
-    padding-top: 14px;
-
-    border-top: 1px solid #ddd;
+    gap: 6px;
+    white-space: nowrap;
+    line-height: 1.6;
 }
 
 #eventModal .modal-label {
@@ -285,50 +297,49 @@ body {
     white-space: nowrap;
 }
 
-#eventModal .modal-time a,
-#eventModal .modal-location a {
-    margin-left: auto;
+#eventModal .modal-meta-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
 
+#eventModal .modal-meta-links a {
     padding: 8px 14px;
-
     background: #2d5aa0;
     color: white;
-
     border-radius: 6px;
-
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 600;
     line-height: 1.4;
 }
 
-#eventModal .modal-time a:hover,
-#eventModal .modal-location a:hover {
+#eventModal .modal-meta-links a:hover {
     opacity: 0.85;
 }
 
-#eventModal .modal-time {
-    margin-top: 18px;
-}
-
 @media (max-width: 520px) {
-    #eventModal .modal-time,
-    #eventModal .modal-location {
-        align-items: flex-start;
+    #eventModal .modal-meta-row {
         flex-direction: column;
+        align-items: flex-start;
     }
 
-    #eventModal .modal-time a,
-    #eventModal .modal-location a {
+    #eventModal .modal-time,
+    #eventModal .modal-location {
+        white-space: normal;
+    }
+
+    #eventModal .modal-meta-links a {
         width: 100%;
-        margin-left: 0;
         text-align: center;
     }
 }
 
 .shop-modal-location {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
 
     margin-top: 24px;
@@ -337,16 +348,20 @@ body {
     border-top: 1px solid #ddd;
 }
 
+.shop-modal-location-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    line-height: 1.6;
+}
+
 .shop-modal-location a {
-    margin-left: auto;
-
+    display: inline-block;
     padding: 8px 14px;
-
     background: #2d5aa0;
     color: white;
-
     border-radius: 6px;
-
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 600;
@@ -504,11 +519,14 @@ body {
 
     .modal {
         padding: 12px;
+        align-items: flex-start;
+        padding-top: 20px;
     }
 
     .modal-content {
         width: 100%;
         max-height: 92vh;
+        margin-top: 20px;
 
         border-radius: 16px;
     }
@@ -955,7 +973,7 @@ h2::after {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
+    animation: rotate 30s linear infinite;
 }
 
 @keyframes rotate {
@@ -2901,6 +2919,29 @@ body.modal-open {
     color: #075985;
 }
 
+.announcement-section {
+    padding: 12px 0 20px;
+}
+
+.announcement-section-header {
+    width: min(1100px, calc(100%));
+    margin: 0 auto 12px;
+}
+
+.announcement-section-header h2 {
+    margin: 0;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    text-align: center;
+}
+
+.announcement-wrapper {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 /* =========================
    お知らせティッカー
    ========================= */
@@ -2908,53 +2949,43 @@ body.modal-open {
 .announcement-ticker {
     display: flex;
     align-items: center;
-
-    width: 100%;
+    width: 100vw;
     height: 42px;
-
+    margin-left: calc(50% - 50vw);
     overflow: hidden;
 }
 
 .ticker-label {
     flex-shrink: 0;
     height: 100%;
-
     display: flex;
     align-items: center;
-
     padding: 0 15px;
-
     font-weight: bold;
+    z-index: 1;
 }
 
 .ticker-container {
-    flex: 1;
     position: relative;
+    flex: 1;
     height: 100%;
     overflow: hidden;
-
     display: flex;
     align-items: center;
 }
 
 .ticker-content {
-    position: absolute;
-    top: 50%;
+    position: relative;
+    display: inline-block;
     white-space: nowrap;
-    transform: translateY(-100%);
-    animation: ticker-move 10s linear infinite;
-
     font-size: 14px;
     font-weight: 500;
+    will-change: transform;
 }
 
 .ticker-scroll {
     display: inline-block;
     white-space: nowrap;
-
-    padding-left: 100%;
-
-    animation: ticker-move 10s linear infinite;
 }
 
 /* 無限横スクロール */

@@ -197,3 +197,285 @@ th, td { padding: 0.6rem; text-align: left; border-bottom: 1px solid #e2e8f0; co
 th { background: #f1f5f9; color: #475569; position: sticky; top: 0; font-weight: bold; }
 code { background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: #0f172a; font-family: monospace; font-size: 0.9rem;}
 #screen-config footer { display: flex; justify-content: center; margin-top: 1rem; }
+
+#screen-waiting {
+    background: #f8fafc;
+    color: #172033;
+    justify-content: flex-start;
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   ヘッダー
+========================= */
+
+.waiting-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.waiting-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.brand-badge {
+    display: inline-block;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.45rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+.waiting-brand h1 {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 3rem);
+    letter-spacing: 0.08em;
+    color: #172033;
+}
+
+.waiting-clock {
+    background: #ffffff;
+    color: #172033;
+    border: 1px solid #dbe2ea;
+    border-radius: 14px;
+    padding: 0.7rem 1.2rem;
+    font-size: clamp(1.2rem, 2vw, 2rem);
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =========================
+   レーン全体
+========================= */
+
+.waiting-lanes {
+    width: 100%;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    gap: 1rem;
+    min-height: 0;
+}
+
+
+/* =========================
+   各レーン
+========================= */
+
+.waiting-lane {
+    width: 100%;
+    height: 0;
+    flex: 1;
+
+    min-height: 170px;
+
+    background: #ffffff;
+    border: 1px solid #dbe2ea;
+    border-radius: 18px;
+
+    padding: 1rem 1.2rem;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+}
+
+.waiting-lane h2 {
+    margin: 0 0 0.7rem 0;
+
+    font-size: clamp(1.4rem, 2vw, 2.1rem);
+
+    color: #172033;
+    letter-spacing: 0.06em;
+
+    flex-shrink: 0;
+
+    border-left: 6px solid #2563eb;
+    padding-left: 0.7rem;
+}
+
+
+/* =========================
+   スクロール領域
+========================= */
+
+.lane-track {
+    position: relative;
+
+    width: 100%;
+    flex: 1;
+
+    overflow: hidden;
+    min-height: 0;
+
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+
+/* =========================
+   流れるコンテンツ
+========================= */
+
+.lane-track-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+
+    gap: 0.8rem;
+
+    width: max-content;
+    height: 100%;
+
+    animation: laneScrollX 60s linear infinite;
+
+    will-change: transform;
+}
+
+.lane-text .lane-track-inner {
+    padding: 0.4rem;
+}
+
+.lane-prizes .lane-track-inner {
+    padding: 0.4rem;
+}
+
+
+/* =========================
+   テキストカード
+========================= */
+
+.text-item {
+    display: flex;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    /* ボックスを大型化 */
+    min-width: 480px;
+    max-width: 600px;
+    height: 100%;
+
+    border-radius: 18px;
+
+    background: #ffffff;
+    border: 1px solid #dbe2ea;
+
+    /* 内側の余白も増やす */
+    padding: 1.2rem 1.5rem;
+
+    box-sizing: border-box;
+
+    /* 文字を大型化 */
+    font-size: clamp(1.2rem, 1.7vw, 1.8rem);
+
+    line-height: 1.5;
+
+    color: #263247;
+
+    box-shadow: 0 2px 7px rgba(15, 23, 42, 0.05);
+}
+
+
+/* =========================
+   景品カード
+========================= */
+
+.prize-item {
+    flex: 0 0 auto;
+    height: 100%;
+}
+
+.prize-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 440px;
+    height: 100%;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+    border: 1px solid #dbe2ea;
+
+    padding: 1.2rem 1.5rem;
+    box-sizing: border-box;
+
+    box-shadow: 0 2px 7px rgba(15, 23, 42, 0.05);
+}
+
+.prize-card strong {
+    font-size: clamp(1.4rem, 2vw, 2.1rem);
+    line-height: 1.4;
+    text-align: center;
+    color: #172033;
+}
+
+
+/* =========================
+   フッター
+========================= */
+
+.waiting-footer {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+
+/* =========================
+   横スクロール
+========================= */
+
+@keyframes laneScrollX {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+
+/* =========================
+   レスポンシブ
+========================= */
+
+@media (max-width: 1100px) {
+    .waiting-lanes {
+        gap: 0.8rem;
+    }
+
+    .waiting-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .waiting-lane {
+        padding: 0.7rem;
+    }
+}

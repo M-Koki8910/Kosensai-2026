@@ -240,115 +240,68 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadTicker() {
+    const normalTicker = document.querySelector('.ticker-content[data-ticker-type="normal"]') || document.getElementById("ticker-content");
+    const importantTicker = document.querySelector('.ticker-content[data-ticker-type="important"]') || document.querySelector(".warning-ticker .ticker-content");
 
-    let messages = [];
+    if (importantTicker) {
+        startTicker(importantTicker, [
+            "＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。"
+        ]);
+    }
+
+    if (!normalTicker) {
+        return;
+    }
+
+    let messages = ["📢 現在のお知らせはありません"];
 
     try {
+        const response = await fetch("/api/announcements");
+        const data = await response.json();
 
-        const response =
-            await fetch("/api/announcements");
+        if (data.ok && Array.isArray(data.announcements) && data.announcements.length > 0) {
+            const normalItems = data.announcements.filter(item => item && item.title && !["important", "urgent"].includes(item.importance));
 
-        const data =
-            await response.json();
-
-        if (
-            data.ok &&
-            Array.isArray(data.announcements) &&
-            data.announcements.length > 0
-        ) {
-
-            messages =
-                data.announcements.map(item => {
-
-                    let prefix = "";
-
-                    switch (item.importance) {
-
-                        case "urgent":
-                            prefix = "🚨";
-                            break;
-
-                        case "important":
-                            prefix = "⚠️";
-                            break;
-
-                        default:
-                            prefix = "ℹ️";
-                    }
-
-                    return `${prefix} ${item.title}`;
-                });
+            if (normalItems.length > 0) {
+                messages = normalItems.map(item => `ℹ️ ${item.title}`);
+            }
         }
-
     } catch (error) {
-
-        console.error(
-            "お知らせ取得エラー",
-            error
-        );
+        console.error("お知らせ取得エラー", error);
     }
 
-    if (messages.length === 0) {
-
-        messages = [
-            "📢 現在のお知らせはありません"
-        ];
-    }
-
-    startTicker(messages);
+    startTicker(normalTicker, messages);
 }
 
-function startTicker(messages) {
-
-    const ticker =
-        document.getElementById(
-            "ticker-content"
-        );
-
-    if (!ticker) return;
+function startTicker(ticker, messages) {
+    if (!ticker || !Array.isArray(messages) || messages.length === 0) return;
 
     let index = 0;
 
     async function showNext() {
-
-        const text =
-            messages[index];
-
+        const text = messages[index];
         ticker.textContent = text;
 
-        await new Promise(resolve =>
-            requestAnimationFrame(resolve)
-        );
+        await new Promise(resolve => requestAnimationFrame(resolve));
 
-        const containerWidth =
-            ticker.parentElement.offsetWidth;
+        const containerWidth = ticker.parentElement ? ticker.parentElement.offsetWidth : ticker.offsetWidth;
+        const textWidth = ticker.scrollWidth;
 
-        const textWidth =
-            ticker.offsetWidth;
+        if (textWidth <= 0) {
+            index = (index + 1) % messages.length;
+            setTimeout(showNext, 1200);
+            return;
+        }
 
-        const startX =
-            containerWidth;
-
-        const endX =
-            -textWidth;
-
+        const startX = containerWidth + 20;
+        const endX = -(textWidth + 20);
         const speed = 120;
-
-        const duration =
-            ((startX - endX) /
-                speed) *
-            1000;
+        const duration = Math.max(4000, ((startX - endX) / speed) * 1000);
 
         ticker.animate(
             [
-                {
-                    transform:
-                        `translate(${startX}px,-50%)`
-                },
-                {
-                    transform:
-                        `translate(${endX}px,-50%)`
-                }
+                { transform: `translate(${startX}px, 0)` },
+                { transform: `translate(${endX}px, 0)` }
             ],
             {
                 duration,
@@ -356,17 +309,8 @@ function startTicker(messages) {
             }
         );
 
-        await new Promise(resolve =>
-            setTimeout(
-                resolve,
-                duration
-            )
-        );
-
-        index =
-            (index + 1) %
-            messages.length;
-
+        await new Promise(resolve => setTimeout(resolve, duration));
+        index = (index + 1) % messages.length;
         showNext();
     }
 

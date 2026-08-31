@@ -151,11 +151,33 @@
             width: 100%;
             height: 100%;
             background: #fff;
+            position: relative;
+            z-index: 1;
         }
 
         #map {
             width: 100%;
             height: 100%;
+            z-index: 1;
+        }
+
+        .leaflet-container,
+        .leaflet-pane,
+        .leaflet-tile-pane,
+        .leaflet-overlay-pane,
+        .leaflet-shadow-pane,
+        .leaflet-marker-pane,
+        .leaflet-tooltip-pane,
+        .leaflet-popup-pane,
+        .leaflet-control-container,
+        .leaflet-top,
+        .leaflet-bottom {
+            z-index: 1 !important;
+        }
+
+        .leaflet-control,
+        .leaflet-control-attribution {
+            z-index: 2 !important;
         }
 
         /* --------------------------------
