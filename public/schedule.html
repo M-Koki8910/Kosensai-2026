@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
     <script src="./scripts/script.js" defer></script>
+    <script src="./scripts/tweet.js"></script>
     <link rel="icon" type="image/png" href="./images/tab-resize.png">
 
     <title>スケジュール</title>
@@ -255,33 +256,49 @@
     </div>
 
     <nav id="nav">
-        <ul>
-            <li><a href="./about.html">高専祭について</a></li>
-            <li><a href="./shop.html">模擬店紹介</a></li>
-            <li><a href="./guest.html">ゲスト紹介</a></li>
-            <li><a href="./event.html">イベント紹介</a></li>
-            <li><a href="./stamp-rally.html">スタンプラリー</a></li>
-            <li><a href="./company.html">ご協賛企業様紹介</a></li>
-            <li><a href="./schedule.html">スケジュール</a></li>
-            <li><a href="./map.html">会場マップ</a></li>
-            <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
-            <li><a href="./announcements.html">お知らせ</a></li>
-            <li><a href="./bulletin.html">掲示板</a></li>
-            <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
-            <li><a href="./about-kosen.html">松江高専とは</a></li>
-            <li><a href="./aboutme.html">このサイトについて</a></li>
-        </ul>
-        <div class="nav-footer">
-            <a class="nav-social" href="https://www.instagram.com/mct_relations/" target="_blank"
-                rel="noopener noreferrer">
-                <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学校広報
-            </a>
-            <a class="nav-social" href="https://www.instagram.com/mct_gakuseikai/" target="_blank"
-                rel="noopener noreferrer">
-                <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学生会
-            </a>
-        </div>
-    </nav>
+            <div class="announcement-wrapper">
+
+                <!-- お知らせ -->
+                <div class="announcement-ticker info-ticker">
+                    <div class="ticker-label">
+                        お知らせ
+                    </div>
+
+                    <div class="ticker-container">
+                        <div id="ticker-content" class="ticker-content"></div>
+                    </div>
+                </div>
+
+                <!-- 注意 -->
+                <div class="announcement-ticker warning-ticker">
+                    <div class="ticker-label">
+                        ⚠ 重要
+                    </div>
+
+                    <div class="ticker-container">
+                        <div class="ticker-content ticker-scroll">
+                            ＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <ul>
+                <li><a href="./about.html">高専祭について</a></li>
+                <li><a href="./shop.html">模擬店紹介</a></li>
+                <li><a href="./guest.html">ゲスト紹介</a></li>
+                <li><a href="./event.html">イベント紹介</a></li>
+                <li><a href="./stamp-rally.html">スタンプラリー</a></li>
+                <li><a href="./company.html">ご協賛企業様紹介</a></li>
+                <li><a href="./schedule.html">スケジュール</a></li>
+                <li><a href="./map.html">会場マップ</a></li>
+                <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
+                <li><a href="./announcements.html">お知らせ</a></li>
+                <li><a href="./bulletin.html">掲示板</a></li>
+                <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
+                <li><a href="./aboutme.html">このサイトについて</a></li>
+            </ul>
+        </nav>
 
     <main class="schedule-page">
         <h2>スケジュール</h2>
@@ -314,6 +331,7 @@
        const EVENTS = [
 
             {
+                id: "event-0",
                 day: 1,
                 place: "gym",
                 title: "ゲストライブ",
@@ -322,6 +340,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-1",
                 day: 1,
                 place: "gym",
                 title: "吹奏楽部コンサート",
@@ -330,6 +349,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-2",
                 day: 1,
                 place: "gym",
                 title: "学生ライブ",
@@ -338,6 +358,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-6",
                 day: 2,
                 place: "gym",
                 title: "カラオケ大会",
@@ -346,6 +367,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-7",
                 day: 2,
                 place: "gym",
                 title: "ダンスサークルパフォーマンス",
@@ -354,6 +376,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-11",
                 day: 2,
                 place: "gym",
                 title: "抽選会　(※学生のみ参加可)",
@@ -362,6 +385,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-12",
                 day: 1,
                 place: "garden",
                 title: "模擬店紹介",
@@ -370,6 +394,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-3",
                 day: 1,
                 place: "garden",
                 title: "大食い大会",
@@ -378,6 +403,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-4",
                 day: 1,
                 place: "garden",
                 title: "フィジーク",
@@ -386,6 +412,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-5",
                 day: 1,
                 place: "garden",
                 title: "クイズ大会",
@@ -394,6 +421,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-8",
                 day: 2,
                 place: "garden",
                 title: "書道パフォーマンス",
@@ -402,6 +430,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-9",
                 day: 2,
                 place: "garden",
                 title: "誰が一位でしょう？",
@@ -410,6 +439,7 @@
                 href: "./event.html",
             },
             {
+                id: "event-10",
                 day: 2,
                 place: "garden",
                 title: "腕相撲大会",
@@ -527,9 +557,7 @@
                 const height =
                     (event.end - event.start) * ROW_HEIGHT;
 
-                const gid = EVENTS.findIndex(e => e === event);
-                const targetId = `event-${gid}`;
-                const hrefTarget = event.href ? event.href : `#${targetId}`;
+                const hrefTarget = `./event.html?event=${encodeURIComponent(event.id || '')}`;
 
                 html += `
             <a

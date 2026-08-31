@@ -39,7 +39,7 @@ body.scan-modal-open {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 250;
+    z-index: 4000;
 
     display: flex;
     justify-content: space-between;
@@ -66,6 +66,8 @@ body.scan-modal-open {
 }
 
 .menu-toggle {
+    position: relative;
+    z-index: 4100;
     display: block;
     border: none;
     background: none;
@@ -99,8 +101,13 @@ body {
     transition: transform 0.25s ease;
     background: rgba(255, 255, 255, 0.98);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
-    z-index: 2000;
+    z-index: 3500;
     overflow-y: auto;
+    pointer-events: none;
+}
+
+#nav.active {
+    pointer-events: auto;
 }
 
 #nav.active {
@@ -132,19 +139,22 @@ body {
     padding: 18px;
     border-top: 1px solid rgba(0, 0, 0, 0.08);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
+    justify-content: space-between;
 }
 
 .nav-footer .nav-social {
+    flex: 1;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     color: #111;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
-    padding: 12px 18px;
+    padding: 12px 10px;
     border-radius: 12px;
     background: rgba(30, 58, 138, 0.08);
     transition: background 0.3s ease, color 0.3s ease;
@@ -156,10 +166,11 @@ body {
 }
 
 .nav-footer .nav-social-icon {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     display: block;
     object-fit: contain;
+    flex-shrink: 0;
 }
 
 #nav li a:hover,
@@ -239,6 +250,317 @@ body {
     }
 }
 
+/* =========================
+   模擬店 詳細モーダル
+   ========================= */
+
+.modal {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    /* 背景 */
+    background: rgba(0, 0, 0, 0.55);
+
+    /* モーダルを中央配置 */
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    overflow-y: auto;
+}
+
+#eventModal .modal-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid #ddd;
+}
+
+#eventModal .modal-time,
+#eventModal .modal-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    line-height: 1.6;
+}
+
+#eventModal .modal-label {
+    font-weight: 700;
+    color: #1e2432;
+    white-space: nowrap;
+}
+
+#eventModal .modal-meta-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+#eventModal .modal-meta-links a {
+    padding: 8px 14px;
+    background: #2d5aa0;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+#eventModal .modal-meta-links a:hover {
+    opacity: 0.85;
+}
+
+@media (max-width: 520px) {
+    #eventModal .modal-meta-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #eventModal .modal-time,
+    #eventModal .modal-location {
+        white-space: normal;
+    }
+
+    #eventModal .modal-meta-links a {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.shop-modal-location {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+
+    margin-top: 24px;
+    padding-top: 18px;
+
+    border-top: 1px solid #ddd;
+}
+
+.shop-modal-location-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    line-height: 1.6;
+}
+
+.shop-modal-location a {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #2d5aa0;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.shop-modal-location a:hover {
+    opacity: 0.85;
+}
+
+/* モーダル本体 */
+.modal-content {
+    position: relative;
+
+    width: min(680px, 100%);
+    max-height: 90vh;
+
+    background: #fff;
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+
+    animation: modalOpen 0.2s ease-out;
+}
+
+
+/* =========================
+   画像
+   ========================= */
+
+.modal-image {
+    display: block;
+
+    width: 100%;
+    height: 280px;
+
+    object-fit: cover;
+}
+
+
+/* =========================
+   閉じるボタン
+   ========================= */
+
+.close {
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    border: none;
+
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+
+    font-size: 28px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    z-index: 2;
+
+    transition: background 0.2s;
+}
+
+.close:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+
+/* =========================
+   本文
+   ========================= */
+
+.modal-body {
+    padding: 28px 30px 32px;
+}
+
+
+/* 店名 */
+.modal-body h2 {
+    margin: 0 0 18px;
+
+    font-size: 1.8rem;
+    line-height: 1.4;
+
+    color: #222;
+}
+
+
+/* 内容 */
+.modal-product {
+    margin: 0 0 20px;
+
+    padding: 12px 16px;
+
+    background: #f1f5fb;
+
+    border-left: 4px solid #2d5aa0;
+
+    border-radius: 6px;
+
+    line-height: 1.6;
+}
+
+.modal-product strong {
+    color: #2d5aa0;
+}
+
+
+/* 説明 */
+.modal-description {
+    margin: 0;
+
+    color: #444;
+
+    font-size: 1rem;
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+}
+
+
+/* =========================
+   アニメーション
+   ========================= */
+
+@keyframes modalOpen {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================
+   スマートフォン
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .modal {
+        padding: 12px;
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-height: 92vh;
+        margin-top: 20px;
+
+        border-radius: 16px;
+    }
+
+    .modal-image {
+        height: 200px;
+    }
+
+    .modal-body {
+        padding: 22px 20px 26px;
+    }
+
+    .modal-body h2 {
+        font-size: 1.4rem;
+        margin-bottom: 16px;
+    }
+
+    .modal-product {
+        font-size: 0.95rem;
+    }
+
+    .modal-description {
+        font-size: 0.95rem;
+        line-height: 1.75;
+    }
+
+    .close {
+        width: 38px;
+        height: 38px;
+
+        font-size: 25px;
+    }
+}
+
 /* カード */
 .card {
     background: #fff;
@@ -310,13 +632,31 @@ body {
     .topbar {
         padding: 12px 16px;
     }
+
+    .nav-footer {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 14px 18px;
+    }
+
+    .nav-footer .nav-social {
+        width: 100%;
+        flex: 1 1 auto;
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+
+    .nav-footer .nav-social-icon {
+        width: 28px;
+        height: 28px;
+    }
 }
 
 /* セクション共通 */
 .section {
     /*padding: 18px 0 32px;*/
 
-    padding:80px 0;
+    padding: 80px 0;
 }
 
 h2 {
@@ -591,6 +931,29 @@ h2::after {
     justify-items: stretch;
 }
 
+#event-grid {
+    display: block;
+    padding: 0;
+}
+
+.event-day-section {
+    margin-bottom: 52px;
+}
+
+.event-day-heading {
+    margin: 0 0 20px;
+    padding-left: 10px;
+    font-size: clamp(1.8rem, 2.2vw, 2.6rem);
+    font-weight: 700;
+    color: #1e3a8a;
+    border-left: 6px solid #1e3a8a;
+}
+
+.event-day-grid {
+    padding: 0;
+    margin: 0;
+}
+
 /* ===== ゲスト ===== */
 
 /* セクション全体 */
@@ -610,7 +973,7 @@ h2::after {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
+    animation: rotate 30s linear infinite;
 }
 
 @keyframes rotate {
@@ -1492,6 +1855,519 @@ h2::after {
     }
 }
 
+/* ========================================
+   企業紹介
+======================================== */
+
+.company-section {
+    width: 100%;
+}
+
+.company-intro {
+    text-align: center;
+    margin: 0 auto 28px;
+    color: #555;
+}
+
+
+/* ----------------------------------------
+   企業一覧
+---------------------------------------- */
+
+.company-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+/* ----------------------------------------
+   企業カード
+---------------------------------------- */
+
+.company-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.company-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ロゴ */
+
+.company-card-image {
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: #f7f8fa;
+}
+
+.company-card-image img {
+    max-width: 85%;
+    max-height: 110px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+
+/* カード本文 */
+
+.company-card-body {
+    padding: 20px;
+}
+
+.company-card-body h3 {
+    margin: 0 0 12px;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #333;
+}
+
+
+/* 業種タグ */
+
+.company-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.company-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef3f8;
+    color: #49677f;
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+
+/* 詳しく見る */
+
+.company-detail-button {
+    display: block;
+    width: 100%;
+    padding: 11px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #2d5aa0;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.company-detail-button:hover {
+    background: #234a85;
+}
+
+.company-detail-button:active {
+    transform: scale(0.98);
+}
+
+
+/* ========================================
+   企業紹介モーダル
+======================================== */
+
+.company-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    visibility: hidden;
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.company-modal.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* 背景 */
+
+.company-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+
+/* モーダル本体 */
+
+.company-modal-content {
+    position: relative;
+    z-index: 1;
+
+    width: min(720px, calc(100% - 32px));
+    max-height: calc(100vh - 40px);
+
+    overflow-y: auto;
+
+    background: #fff;
+    border-radius: 18px;
+
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+
+    transform: translateY(15px) scale(0.98);
+    transition: transform 0.25s ease;
+}
+
+.company-modal.active .company-modal-content {
+    transform: translateY(0) scale(1);
+}
+
+
+/* 閉じるボタン */
+
+.company-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+
+    z-index: 2;
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.9);
+    color: #444;
+
+    font-size: 1.8rem;
+    line-height: 1;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.company-modal-close:hover {
+    background: #f0f0f0;
+}
+
+
+/* ========================================
+   モーダル内部
+======================================== */
+
+.company-detail {
+    padding: 36px 40px 40px;
+}
+
+
+/* ヘッダー */
+
+.company-detail-header {
+    text-align: center;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+
+/* ロゴ */
+
+.company-detail-header img {
+    display: block;
+
+    max-width: 280px;
+    max-height: 120px;
+
+    width: auto;
+    height: auto;
+
+    margin: 0 auto 20px;
+
+    object-fit: contain;
+}
+
+
+/* 社名 */
+
+.company-detail-header h2 {
+    margin: 0 0 14px;
+
+    font-size: 1.7rem;
+    line-height: 1.4;
+
+    color: #222;
+}
+
+
+/* タグ */
+
+.company-detail-header .company-tags {
+    margin-bottom: 0;
+}
+
+
+/* ----------------------------------------
+   各セクション
+---------------------------------------- */
+
+.company-detail-section {
+    padding: 24px 0;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.company-detail-section:last-of-type {
+    border-bottom: none;
+}
+
+.company-detail-section h3 {
+    position: relative;
+
+    margin: 0 0 12px;
+    padding-left: 14px;
+
+    font-size: 1.15rem;
+    color: #333;
+}
+
+.company-detail-section h3::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    top: 0.25em;
+
+    width: 4px;
+    height: 1.1em;
+
+    border-radius: 2px;
+    background: #2d5aa0;
+}
+
+.company-detail-section p {
+    margin: 0;
+
+    color: #555;
+    line-height: 1.9;
+}
+
+
+/* ----------------------------------------
+   企業情報
+---------------------------------------- */
+
+.company-info dl {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+
+    margin: 0;
+
+    font-size: 0.95rem;
+}
+
+.company-info dt,
+.company-info dd {
+    margin: 0;
+    padding: 8px 0;
+}
+
+.company-info dt {
+    font-weight: 600;
+    color: #444;
+}
+
+.company-info dd {
+    color: #555;
+}
+
+
+/* ----------------------------------------
+   公式サイト
+---------------------------------------- */
+
+.company-detail-link {
+    padding-top: 8px;
+    text-align: center;
+}
+
+.company-detail-link a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 220px;
+
+    padding: 12px 24px;
+
+    border-radius: 8px;
+
+    background: #2d5aa0;
+    color: #fff;
+
+    text-decoration: none;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.company-detail-link a:hover {
+    background: #234a85;
+    transform: translateY(-2px);
+}
+
+
+/* ========================================
+   モーダル表示中
+======================================== */
+
+body.modal-open {
+    overflow: hidden;
+}
+
+
+/* ========================================
+   タブレット
+======================================== */
+
+@media (max-width: 900px) {
+
+    .company-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+}
+
+
+/* ========================================
+   スマートフォン
+======================================== */
+
+@media (max-width: 600px) {
+
+    .company-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .company-card {
+        border-radius: 12px;
+    }
+
+    .company-card-image {
+        height: 120px;
+        padding: 16px;
+    }
+
+    .company-card-image img {
+        max-height: 75px;
+        max-width: 90%;
+    }
+
+    .company-card-body {
+        padding: 14px 12px;
+    }
+
+    .company-card-body h3 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .company-tags {
+        gap: 4px;
+        margin-bottom: 12px;
+    }
+
+    .company-tag {
+        padding: 3px 7px;
+        font-size: 0.68rem;
+    }
+
+    .company-detail-button {
+        padding: 9px 8px;
+        font-size: 0.82rem;
+    }
+
+
+    /* モーダル */
+
+    .company-modal-content {
+        width: calc(100% - 20px);
+        max-height: calc(100vh - 20px);
+        border-radius: 14px;
+    }
+
+    .company-detail {
+        padding: 32px 20px 24px;
+    }
+
+    .company-detail-header {
+        padding-bottom: 22px;
+    }
+
+    .company-detail-header img {
+        max-width: 220px;
+        max-height: 90px;
+        margin-bottom: 16px;
+    }
+
+    .company-detail-header h2 {
+        font-size: 1.35rem;
+    }
+
+    .company-detail-section {
+        padding: 20px 0;
+    }
+
+    .company-detail-section h3 {
+        font-size: 1rem;
+    }
+
+    .company-detail-section p {
+        font-size: 0.9rem;
+        line-height: 1.8;
+    }
+
+    .company-info dl {
+        grid-template-columns: 80px 1fr;
+        font-size: 0.85rem;
+    }
+
+    .company-detail-link a {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+}
+
 /* ===== アクセスセクション ===== */
 .access {
     padding: 80px 0;
@@ -1540,6 +2416,80 @@ h2::after {
     background: #405898;
 }
 
+.access-sns {
+    margin-top: 20px;
+}
+
+.access-sns-card {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.06), rgba(30, 58, 138, 0.06));
+    border: 1px solid rgba(30, 58, 138, 0.12);
+    border-radius: 20px;
+    padding: 20px 18px 18px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.access-sns-kicker {
+    margin: 0 0 8px;
+    color: #1e3a8a;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.access-sns h3 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    line-height: 1.4;
+    color: #111827;
+}
+
+.access-sns-text {
+    margin: 0 0 16px;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.access-sns-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.access-sns .nav-social {
+    flex: 1 1 0;
+    min-width: 150px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #111;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    transition: transform 0.2s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.access-sns .nav-social:hover {
+    background: rgba(30, 58, 138, 0.08);
+    color: #1e3a8a;
+    box-shadow: 0 8px 18px rgba(30, 58, 138, 0.12);
+    transform: translateY(-1px);
+}
+
+.access-sns .nav-social-icon {
+    width: 30px;
+    height: 30px;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
 /* .map {
     flex: 1 1 0;
     min-width: 320px;
@@ -1564,7 +2514,7 @@ h2::after {
     }
 
     .access-info,
-   /*  .map {
+    /*  .map {
         flex: 1 1 100%;
         max-width: 100%;
     } */
@@ -1969,6 +2919,29 @@ h2::after {
     color: #075985;
 }
 
+.announcement-section {
+    padding: 12px 0 20px;
+}
+
+.announcement-section-header {
+    width: min(1100px, calc(100%));
+    margin: 0 auto 12px;
+}
+
+.announcement-section-header h2 {
+    margin: 0;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    text-align: center;
+}
+
+.announcement-wrapper {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 /* =========================
    お知らせティッカー
    ========================= */
@@ -1976,53 +2949,43 @@ h2::after {
 .announcement-ticker {
     display: flex;
     align-items: center;
-
-    width: 100%;
+    width: 100vw;
     height: 42px;
-
+    margin-left: calc(50% - 50vw);
     overflow: hidden;
 }
 
 .ticker-label {
     flex-shrink: 0;
     height: 100%;
-
     display: flex;
     align-items: center;
-
     padding: 0 15px;
-
     font-weight: bold;
+    z-index: 1;
 }
 
 .ticker-container {
-    flex: 1;
     position: relative;
+    flex: 1;
     height: 100%;
     overflow: hidden;
-
     display: flex;
     align-items: center;
 }
 
 .ticker-content {
-    position: absolute;
-    top: 50%;
+    position: relative;
+    display: inline-block;
     white-space: nowrap;
-    transform: translateY(-100%);
-    animation: ticker-move 10s linear infinite;
-
     font-size: 14px;
     font-weight: 500;
+    will-change: transform;
 }
 
 .ticker-scroll {
     display: inline-block;
     white-space: nowrap;
-
-    padding-left: 100%;
-
-    animation: ticker-move 10s linear infinite;
 }
 
 /* 無限横スクロール */

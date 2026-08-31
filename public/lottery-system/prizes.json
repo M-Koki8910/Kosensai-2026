@@ -3,47 +3,47 @@
     "grade_num": 5,
     "grade_name": "5等枠",
     "items": [
-      { "item_num": 501, "item_name": "お菓子詰め合わせA" },
-      { "item_num": 502, "item_name": "お菓子詰め合わせB" },
-      { "item_num": 503, "item_name": "オリジナルタオマフラー" },
-      { "item_num": 504, "item_name": "高専クリアファイル" },
-      { "item_num": 505, "item_name": "ロゴ入りトートバッグ" },
-      { "item_num": 506, "item_name": "お菓子詰め合わせC" },
-      { "item_num": 507, "item_name": "お菓子詰め合わせD" },
-      { "item_num": 508, "item_name": "特製ピンバッジ" },
-      { "item_num": 509, "item_name": "デザインノート" },
-      { "item_num": 510, "item_name": "ステッカーシート" }
+      { "item_num": 501, "item_name": "お菓子詰め合わせA", "image": "/images/header_ed.jpg", "description": "定番のスイーツが詰まったお楽しみセットです。" },
+      { "item_num": 502, "item_name": "お菓子詰め合わせB", "image": "/images/shop.jpg", "description": "おやつタイムにぴったりの甘味セットです。" },
+      { "item_num": 503, "item_name": "オリジナルタオマフラー", "image": "/images/logo.png", "description": "高専祭のロゴをあしらったオリジナルアイテムです。" },
+      { "item_num": 504, "item_name": "高専クリアファイル", "image": "/images/about.jpg", "description": "勉強や資料整理に使える清潔感のあるクリアファイルです。" },
+      { "item_num": 505, "item_name": "ロゴ入りトートバッグ", "image": "/images/header.jpg", "description": "日常使いにも便利な大容量バッグです。" },
+      { "item_num": 506, "item_name": "お菓子詰め合わせC", "image": "/images/event.jpg", "description": "食べごたえのあるミックススイーツです。" },
+      { "item_num": 507, "item_name": "お菓子詰め合わせD", "image": "/images/guest.jpg", "description": "大人も子どもも楽しめる焼き菓子セットです。" },
+      { "item_num": 508, "item_name": "特製ピンバッジ", "image": "/images/noimage.png", "description": "限定デザインの可愛いピンバッジです。" },
+      { "item_num": 509, "item_name": "デザインノート", "image": "/images/header-generate.png", "description": "おしゃれな表紙のデザインノートです。" },
+      { "item_num": 510, "item_name": "ステッカーシート", "image": "/images/schedule.jpg", "description": "好きな場所に貼れる多彩なステッカーです。" }
     ]
   },
   {
     "grade_num": 4,
     "grade_name": "4等枠",
     "items": [
-      { "item_num": 401, "item_name": "モバイルバッテリー" },
-      { "item_num": 402, "item_name": "ワイヤレスマウス" },
-      { "item_num": 403, "item_name": "USBメモリ 64GB" }
+      { "item_num": 401, "item_name": "モバイルバッテリー", "image": "/images/header_ed.jpg", "description": "外出先でも安心の大容量充電器です。" },
+      { "item_num": 402, "item_name": "ワイヤレスマウス", "image": "/images/about.jpg", "description": "作業効率をアップする定番の無線マウスです。" },
+      { "item_num": 403, "item_name": "USBメモリ 64GB", "image": "/images/event.jpg", "description": "保存に便利な高速USBメモリです。" }
     ]
   },
   {
     "grade_num": 3,
     "grade_name": "3等枠",
     "items": [
-      { "item_num": 301, "item_name": "スマートスピーカー" },
-      { "item_num": 302, "item_name": "骨伝導イヤホン" }
+      { "item_num": 301, "item_name": "スマートスピーカー", "image": "/images/shop.jpg", "description": "音楽や動画をより楽しめる小型スピーカーです。" },
+      { "item_num": 302, "item_name": "骨伝導イヤホン", "image": "/images/guest.jpg", "description": "耳を塞がずに音楽を楽しめるイヤホンです。" }
     ]
   },
   {
     "grade_num": 2,
     "grade_name": "2等枠",
     "items": [
-      { "item_num": 201, "item_name": "スマートウォッチ" }
+      { "item_num": 201, "item_name": "スマートウォッチ", "image": "/images/header.jpg", "description": "健康管理と通知確認ができる便利な腕時計です。" }
     ]
   },
   {
     "grade_num": 1,
     "grade_name": "1等枠",
     "items": [
-      { "item_num": 101, "item_name": "豪華カタログギフト" }
+      { "item_num": 101, "item_name": "豪華カタログギフト", "image": "/images/logo.png", "description": "抽選会の目玉となる特大景品です。" }
     ]
   }
 ]

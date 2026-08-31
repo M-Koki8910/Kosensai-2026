@@ -5,7 +5,13 @@
     "note": "企業Aのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "image": "../images/header_ed.jpg"
+    "industry": ["IT", "システム開発"],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/noimage.png"
   },
   {
     "id": "company-b",
@@ -13,7 +19,13 @@
     "note": "企業Bのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "image": "../images/about.jpg"
+    "industry": ["IT", "システム開発"],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/noimage.png"
   },
   {
     "id": "company-c",
@@ -21,7 +33,13 @@
     "note": "企業Cのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "image": "../images/event.jpg"
+    "industry": ["IT", "システム開発"],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/noimage.png"
   },
   {
     "id": "company-d",
@@ -29,6 +47,12 @@
     "note": "企業Dのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "image": "../images/shop.jpg"
+    "industry": ["IT", "システム開発"],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/noimage.png"
   }
 ]

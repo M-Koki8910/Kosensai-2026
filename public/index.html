@@ -185,8 +185,17 @@
 
             width: max-content;
 
-            animation: logoScroll 30s linear infinite;
+            animation: logoScroll 15s linear infinite;
+        }
 
+        #logoTrack2 {
+            display: flex;
+        }
+
+        @media (min-width: 600px) {
+            #logoTrack2 {
+                display: none;
+            }
         }
 
 
@@ -411,33 +420,7 @@
 
 
         <nav id="nav">
-            <div class="announcement-wrapper">
-
-                <!-- お知らせ -->
-                <div class="announcement-ticker info-ticker">
-                    <div class="ticker-label">
-                        お知らせ
-                    </div>
-
-                    <div class="ticker-container">
-                        <div id="ticker-content" class="ticker-content"></div>
-                    </div>
-                </div>
-
-                <!-- 注意 -->
-                <div class="announcement-ticker warning-ticker">
-                    <div class="ticker-label">
-                        ⚠ 重要
-                    </div>
-
-                    <div class="ticker-container">
-                        <div class="ticker-content ticker-scroll">
-                            ＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+           
             <ul>
                 <li><a href="./about.html">高専祭について</a></li>
                 <li><a href="./shop.html">模擬店紹介</a></li>
@@ -451,19 +434,8 @@
                 <li><a href="./announcements.html">お知らせ</a></li>
                 <li><a href="./bulletin.html">掲示板</a></li>
                 <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
-                <li><a href="./about-kosen.html">松江高専とは</a></li>
                 <li><a href="./aboutme.html">このサイトについて</a></li>
             </ul>
-            <div class="nav-footer">
-                <a class="nav-social" href="https://www.instagram.com/mct_relations/" target="_blank"
-                    rel="noopener noreferrer">
-                    <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学校広報
-                </a>
-                <a class="nav-social" href="https://www.instagram.com/mct_gakuseikai/" target="_blank"
-                    rel="noopener noreferrer">
-                    <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学生会
-                </a>
-            </div>
         </nav>
 
         <main>
@@ -570,6 +542,28 @@
                 </div>
             </section>
 
+            <section class="announcement-section" aria-label="お知らせと重要案内">
+                
+                    <h2>お知らせ・重要案内</h2>
+                
+
+                <div class="announcement-wrapper">
+                    <div class="announcement-ticker info-ticker">
+                        <div class="ticker-label">お知らせ</div>
+                        <div class="ticker-container">
+                            <div class="ticker-content" data-ticker-type="normal" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <div class="announcement-ticker warning-ticker">
+                        <div class="ticker-label">⚠ 重要</div>
+                        <div class="ticker-container">
+                            <div class="ticker-content" data-ticker-type="important" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- アクセス -->
 
             <section class="access" id="access">
@@ -594,6 +588,24 @@
                         <iframe src="https://www.google.com/maps?q=島根県松江市西生馬町14-4&z=15&output=embed" width="100%"
                             height="300" style="border:0;" loading="lazy">
                         </iframe>
+
+                        <div class="access-sns">
+                            <div class="access-sns-card">
+                                <p class="access-sns-kicker">Follow us</p>
+                                <h3>公式SNSをフォローお願いします</h3>
+                                <p class="access-sns-text">最新の情報やイベントの告知をチェックできます。</p>
+                                <div class="access-sns-links">
+                                    <a class="nav-social" href="https://www.instagram.com/mct_relations/"
+                                        target="_blank" rel="noopener noreferrer">
+                                        <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学校広報
+                                    </a>
+                                    <a class="nav-social" href="https://www.instagram.com/mct_gakuseikai/"
+                                        target="_blank" rel="noopener noreferrer">
+                                        <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学生会
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -602,7 +614,7 @@
         </main>
     </div>
 
-            <footer>
+    <footer>
 
         <!-- お問い合わせ・規約等 -->
         <div class="footer-legal">
@@ -694,25 +706,78 @@
         });
 
         // 企業ロゴ用
-        const logoPath = "./images/logo-comp.png";
+        async function createLogoTracks() {
+            try {
+                const response = await fetch("./scripts/companies.json");
 
-        function createTrack(trackId) {
+                if (!response.ok) {
+                    throw new Error("企業データの取得に失敗しました");
+                }
+
+                const companies = await response.json();
+
+                createTrack("logoTrack1", companies);
+                createTrack("logoTrack2", companies);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+
+        function createTrack(trackId, companies) {
 
             const track = document.getElementById(trackId);
 
-            for (let i = 0; i < 20; i++) {
-                const img = document.createElement("img");
-                img.src = logoPath;
-                img.alt = "企業ロゴ";
-                track.appendChild(img);
+            if (!track || !Array.isArray(companies) || companies.length === 0) {
+                return;
+            }
+
+            // 表示領域の幅
+            const containerWidth = track.parentElement.offsetWidth;
+
+            // 少なくとも表示領域の2倍程度を埋める
+            const requiredWidth = containerWidth * 2;
+
+            // 異常なデータやレイアウト時の無限増殖を防ぐ
+            const maxSets = 8;
+            let setCount = 0;
+
+            track.innerHTML = "";
+
+            while (track.scrollWidth < requiredWidth && setCount < maxSets) {
+                const set = document.createDocumentFragment();
+
+                companies.forEach(company => {
+
+                    const link = document.createElement("a");
+
+                    link.href =
+                        `./company.html?id=${encodeURIComponent(company.id)}`;
+
+                    link.className = "company-logo-link";
+
+                    const img = document.createElement("img");
+
+                    img.src = company.image;
+                    img.alt = `${company.name} ロゴ`;
+
+                    link.appendChild(img);
+                    set.appendChild(link);
+                });
+
+                track.appendChild(set);
+                setCount++;
+            }
+
+            if (track.scrollWidth === 0) {
+                return;
             }
 
             // シームレス化
             track.innerHTML += track.innerHTML;
         }
-
-        createTrack("logoTrack1");
-        createTrack("logoTrack2");
+        createLogoTracks();
     </script>
 </body>
 

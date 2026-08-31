@@ -445,6 +445,8 @@ db.exec(`
   );
 `);
 
+ensureColumn('announcements', { name: 'always_publish', sql: 'always_publish INTEGER NOT NULL DEFAULT 0' });
+
 
 
 // デフォルトNGルール同期
@@ -1355,11 +1357,30 @@ function getPostReactionSummary(postId, sessionId = null) {
 }
 
 // 公開中アナウンス一覧取得サブルーチン
+function parseAnnouncementDate(value) {
+  const text = String(value || '').trim();
+  if (!text) return null;
+
+  const localMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+  if (localMatch) {
+    const [, year, month, day, hour, minute] = localMatch.map(Number);
+    const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    if (month < 1 || month > 12 || day < 1 || day > lastDay || hour > 23 || minute > 59) {
+      return null;
+    }
+    return new Date(`${text}:00+09:00`);
+  }
+
+  const date = new Date(text);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 function getAnnouncementsSub() {
-  const now = new Date().toISOString();
   return db.prepare(`
-    SELECT id, title, content, importance, published_at, expires_at, created_at
+    SELECT id, title, content, importance, published_at, expires_at, always_publish, created_at
     FROM announcements
+    WHERE always_publish = 1
+       OR (datetime(published_at) <= datetime('now') AND datetime(expires_at) > datetime('now'))
     ORDER BY
       CASE importance
         WHEN 'urgent' THEN 3
@@ -1369,9 +1390,6 @@ function getAnnouncementsSub() {
       created_at DESC
   `).all();
 }
-/* WHERE published_at <= ?
-    AND expires_at > ?
-    ORDER BY importance DESC, published_at DESC */
 
 // モデレーションログ記録
 function logModerationAction(postId, admin, action, oldStatus, newStatus, reason = null) {
@@ -2519,8 +2537,9 @@ let page = pathname
         const importance = String(payload.importance || 'normal').toLowerCase();
         const publishedAt = String(payload.published_at || '');
         const expiresAt = String(payload.expires_at || '');
+        const alwaysPublish = payload.always_publish === true || payload.always_publish === 1 || payload.always_publish === 'true';
 
-        if (!title || !content || !publishedAt || !expiresAt) {
+        if (!title || !content || (!alwaysPublish && (!publishedAt || !expiresAt))) {
           return sendJson(res, 400, { ok: false, error: 'Missing required fields' });
         }
 
@@ -2528,10 +2547,19 @@ let page = pathname
           return sendJson(res, 400, { ok: false, error: 'Invalid importance value' });
         }
 
+        const publishedDate = alwaysPublish ? null : parseAnnouncementDate(publishedAt);
+        const expiresDate = alwaysPublish ? null : parseAnnouncementDate(expiresAt);
+        if (!alwaysPublish && (Number.isNaN(publishedDate.getTime()) || Number.isNaN(expiresDate.getTime()) || expiresDate <= publishedDate)) {
+          return sendJson(res, 400, { ok: false, error: 'Invalid publication period' });
+        }
+
+        const storedPublishedAt = alwaysPublish ? '1970-01-01T00:00:00.000Z' : publishedDate.toISOString();
+        const storedExpiresAt = alwaysPublish ? '9999-12-31T23:59:59.999Z' : expiresDate.toISOString();
+
         const result = db.prepare(`
-          INSERT INTO announcements (title, content, importance, published_at, expires_at, created_by, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, datetime('now', '+9 hours'), datetime('now', '+9 hours'))
-        `).run(title, content, importance, publishedAt, expiresAt, user.username);
+          INSERT INTO announcements (title, content, importance, published_at, expires_at, always_publish, created_by, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now', '+9 hours'), datetime('now', '+9 hours'))
+        `).run(title, content, importance, storedPublishedAt, storedExpiresAt, alwaysPublish ? 1 : 0, user.username);
 
         logEvent('announcement_created', {
           username: user.username,
@@ -2579,12 +2607,29 @@ let page = pathname
         const content = payload.content !== undefined ? String(payload.content) : announcement.content;
         const importance = payload.importance !== undefined ? String(payload.importance) : announcement.importance;
         const expiresAt = payload.expires_at !== undefined ? String(payload.expires_at) : announcement.expires_at;
+        const publishedAt = payload.published_at !== undefined ? String(payload.published_at) : announcement.published_at;
+        const alwaysPublish = payload.always_publish !== undefined
+          ? (payload.always_publish === true || payload.always_publish === 1 || payload.always_publish === 'true')
+          : Boolean(announcement.always_publish);
+
+        if (!['normal', 'important', 'urgent'].includes(importance)) {
+          return sendJson(res, 400, { ok: false, error: 'Invalid importance value' });
+        }
+
+        const publishedDate = alwaysPublish ? null : parseAnnouncementDate(publishedAt);
+        const expiresDate = alwaysPublish ? null : parseAnnouncementDate(expiresAt);
+        if (!alwaysPublish && (Number.isNaN(publishedDate.getTime()) || Number.isNaN(expiresDate.getTime()) || expiresDate <= publishedDate)) {
+          return sendJson(res, 400, { ok: false, error: 'Invalid publication period' });
+        }
+
+        const storedPublishedAt = alwaysPublish ? '1970-01-01T00:00:00.000Z' : publishedDate.toISOString();
+        const storedExpiresAt = alwaysPublish ? '9999-12-31T23:59:59.999Z' : expiresDate.toISOString();
 
         db.prepare(`
           UPDATE announcements
-          SET title = ?, content = ?, importance = ?, expires_at = ?, updated_at = datetime('now', '+9 hours')
+          SET title = ?, content = ?, importance = ?, published_at = ?, expires_at = ?, always_publish = ?, updated_at = datetime('now', '+9 hours')
           WHERE id = ?
-        `).run(title, content, importance, expiresAt, id);
+        `).run(title, content, importance, storedPublishedAt, storedExpiresAt, alwaysPublish ? 1 : 0, id);
 
         logEvent('announcement_updated', {
           username: user.username,
