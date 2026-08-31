@@ -1837,6 +1837,519 @@ h2::after {
     }
 }
 
+/* ========================================
+   企業紹介
+======================================== */
+
+.company-section {
+    width: 100%;
+}
+
+.company-intro {
+    text-align: center;
+    margin: 0 auto 28px;
+    color: #555;
+}
+
+
+/* ----------------------------------------
+   企業一覧
+---------------------------------------- */
+
+.company-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+/* ----------------------------------------
+   企業カード
+---------------------------------------- */
+
+.company-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.company-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ロゴ */
+
+.company-card-image {
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: #f7f8fa;
+}
+
+.company-card-image img {
+    max-width: 85%;
+    max-height: 110px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+
+/* カード本文 */
+
+.company-card-body {
+    padding: 20px;
+}
+
+.company-card-body h3 {
+    margin: 0 0 12px;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #333;
+}
+
+
+/* 業種タグ */
+
+.company-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.company-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eef3f8;
+    color: #49677f;
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+
+/* 詳しく見る */
+
+.company-detail-button {
+    display: block;
+    width: 100%;
+    padding: 11px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #2d5aa0;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.company-detail-button:hover {
+    background: #234a85;
+}
+
+.company-detail-button:active {
+    transform: scale(0.98);
+}
+
+
+/* ========================================
+   企業紹介モーダル
+======================================== */
+
+.company-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    visibility: hidden;
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.company-modal.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* 背景 */
+
+.company-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+
+/* モーダル本体 */
+
+.company-modal-content {
+    position: relative;
+    z-index: 1;
+
+    width: min(720px, calc(100% - 32px));
+    max-height: calc(100vh - 40px);
+
+    overflow-y: auto;
+
+    background: #fff;
+    border-radius: 18px;
+
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+
+    transform: translateY(15px) scale(0.98);
+    transition: transform 0.25s ease;
+}
+
+.company-modal.active .company-modal-content {
+    transform: translateY(0) scale(1);
+}
+
+
+/* 閉じるボタン */
+
+.company-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+
+    z-index: 2;
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.9);
+    color: #444;
+
+    font-size: 1.8rem;
+    line-height: 1;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.company-modal-close:hover {
+    background: #f0f0f0;
+}
+
+
+/* ========================================
+   モーダル内部
+======================================== */
+
+.company-detail {
+    padding: 36px 40px 40px;
+}
+
+
+/* ヘッダー */
+
+.company-detail-header {
+    text-align: center;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+
+/* ロゴ */
+
+.company-detail-header img {
+    display: block;
+
+    max-width: 280px;
+    max-height: 120px;
+
+    width: auto;
+    height: auto;
+
+    margin: 0 auto 20px;
+
+    object-fit: contain;
+}
+
+
+/* 社名 */
+
+.company-detail-header h2 {
+    margin: 0 0 14px;
+
+    font-size: 1.7rem;
+    line-height: 1.4;
+
+    color: #222;
+}
+
+
+/* タグ */
+
+.company-detail-header .company-tags {
+    margin-bottom: 0;
+}
+
+
+/* ----------------------------------------
+   各セクション
+---------------------------------------- */
+
+.company-detail-section {
+    padding: 24px 0;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.company-detail-section:last-of-type {
+    border-bottom: none;
+}
+
+.company-detail-section h3 {
+    position: relative;
+
+    margin: 0 0 12px;
+    padding-left: 14px;
+
+    font-size: 1.15rem;
+    color: #333;
+}
+
+.company-detail-section h3::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    top: 0.25em;
+
+    width: 4px;
+    height: 1.1em;
+
+    border-radius: 2px;
+    background: #2d5aa0;
+}
+
+.company-detail-section p {
+    margin: 0;
+
+    color: #555;
+    line-height: 1.9;
+}
+
+
+/* ----------------------------------------
+   企業情報
+---------------------------------------- */
+
+.company-info dl {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+
+    margin: 0;
+
+    font-size: 0.95rem;
+}
+
+.company-info dt,
+.company-info dd {
+    margin: 0;
+    padding: 8px 0;
+}
+
+.company-info dt {
+    font-weight: 600;
+    color: #444;
+}
+
+.company-info dd {
+    color: #555;
+}
+
+
+/* ----------------------------------------
+   公式サイト
+---------------------------------------- */
+
+.company-detail-link {
+    padding-top: 8px;
+    text-align: center;
+}
+
+.company-detail-link a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 220px;
+
+    padding: 12px 24px;
+
+    border-radius: 8px;
+
+    background: #2d5aa0;
+    color: #fff;
+
+    text-decoration: none;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.company-detail-link a:hover {
+    background: #234a85;
+    transform: translateY(-2px);
+}
+
+
+/* ========================================
+   モーダル表示中
+======================================== */
+
+body.modal-open {
+    overflow: hidden;
+}
+
+
+/* ========================================
+   タブレット
+======================================== */
+
+@media (max-width: 900px) {
+
+    .company-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+}
+
+
+/* ========================================
+   スマートフォン
+======================================== */
+
+@media (max-width: 600px) {
+
+    .company-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .company-card {
+        border-radius: 12px;
+    }
+
+    .company-card-image {
+        height: 120px;
+        padding: 16px;
+    }
+
+    .company-card-image img {
+        max-height: 75px;
+        max-width: 90%;
+    }
+
+    .company-card-body {
+        padding: 14px 12px;
+    }
+
+    .company-card-body h3 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+    }
+
+    .company-tags {
+        gap: 4px;
+        margin-bottom: 12px;
+    }
+
+    .company-tag {
+        padding: 3px 7px;
+        font-size: 0.68rem;
+    }
+
+    .company-detail-button {
+        padding: 9px 8px;
+        font-size: 0.82rem;
+    }
+
+
+    /* モーダル */
+
+    .company-modal-content {
+        width: calc(100% - 20px);
+        max-height: calc(100vh - 20px);
+        border-radius: 14px;
+    }
+
+    .company-detail {
+        padding: 32px 20px 24px;
+    }
+
+    .company-detail-header {
+        padding-bottom: 22px;
+    }
+
+    .company-detail-header img {
+        max-width: 220px;
+        max-height: 90px;
+        margin-bottom: 16px;
+    }
+
+    .company-detail-header h2 {
+        font-size: 1.35rem;
+    }
+
+    .company-detail-section {
+        padding: 20px 0;
+    }
+
+    .company-detail-section h3 {
+        font-size: 1rem;
+    }
+
+    .company-detail-section p {
+        font-size: 0.9rem;
+        line-height: 1.8;
+    }
+
+    .company-info dl {
+        grid-template-columns: 80px 1fr;
+        font-size: 0.85rem;
+    }
+
+    .company-detail-link a {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+}
+
 /* ===== アクセスセクション ===== */
 .access {
     padding: 80px 0;

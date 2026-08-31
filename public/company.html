@@ -21,59 +21,271 @@
     </div>
 
     <nav id="nav">
-            <div class="announcement-wrapper">
+        <div class="announcement-wrapper">
 
-                <!-- お知らせ -->
-                <div class="announcement-ticker info-ticker">
-                    <div class="ticker-label">
-                        お知らせ
-                    </div>
-
-                    <div class="ticker-container">
-                        <div id="ticker-content" class="ticker-content"></div>
-                    </div>
+            <!-- お知らせ -->
+            <div class="announcement-ticker info-ticker">
+                <div class="ticker-label">
+                    お知らせ
                 </div>
 
-                <!-- 注意 -->
-                <div class="announcement-ticker warning-ticker">
-                    <div class="ticker-label">
-                        ⚠ 重要
-                    </div>
-
-                    <div class="ticker-container">
-                        <div class="ticker-content ticker-scroll">
-                            ＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。
-                        </div>
-                    </div>
+                <div class="ticker-container">
+                    <div id="ticker-content" class="ticker-content"></div>
                 </div>
-
             </div>
-            <ul>
-                <li><a href="./about.html">高専祭について</a></li>
-                <li><a href="./shop.html">模擬店紹介</a></li>
-                <li><a href="./guest.html">ゲスト紹介</a></li>
-                <li><a href="./event.html">イベント紹介</a></li>
-                <li><a href="./stamp-rally.html">スタンプラリー</a></li>
-                <li><a href="./company.html">ご協賛企業様紹介</a></li>
-                <li><a href="./schedule.html">スケジュール</a></li>
-                <li><a href="./map.html">会場マップ</a></li>
-                <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
-                <li><a href="./announcements.html">お知らせ</a></li>
-                <li><a href="./bulletin.html">掲示板</a></li>
-                <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
-                <li><a href="./aboutme.html">このサイトについて</a></li>
-            </ul>
-        </nav>
+
+            <!-- 注意 -->
+            <div class="announcement-ticker warning-ticker">
+                <div class="ticker-label">
+                    ⚠ 重要
+                </div>
+
+                <div class="ticker-container">
+                    <div class="ticker-content ticker-scroll">
+                        ＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <ul>
+            <li><a href="./about.html">高専祭について</a></li>
+            <li><a href="./shop.html">模擬店紹介</a></li>
+            <li><a href="./guest.html">ゲスト紹介</a></li>
+            <li><a href="./event.html">イベント紹介</a></li>
+            <li><a href="./stamp-rally.html">スタンプラリー</a></li>
+            <li><a href="./company.html">ご協賛企業様紹介</a></li>
+            <li><a href="./schedule.html">スケジュール</a></li>
+            <li><a href="./map.html">会場マップ</a></li>
+            <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
+            <li><a href="./announcements.html">お知らせ</a></li>
+            <li><a href="./bulletin.html">掲示板</a></li>
+            <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
+            <li><a href="./aboutme.html">このサイトについて</a></li>
+        </ul>
+    </nav>
 
     <main>
-        <section class="section">
-            <h2>ご協賛企業紹介</h2>
-            <div class="container">
-                <p>こちらでは高専祭を支えてくださる企業のみなさまをご紹介します。詳細情報は後日掲載予定です。</p>
-            </div>
+        <section class="container-section company-section">
+            <h2>企業紹介</h2>
+
+            <p class="company-intro">
+                高専祭にご協力いただいている企業をご紹介します。
+            </p>
+
+            <div id="company-list" class="company-grid"></div>
         </section>
+
+
+        <!-- 企業紹介モーダル -->
+        <div id="company-modal" class="company-modal">
+            <div class="company-modal-overlay"></div>
+
+            <div class="company-modal-content">
+                <button type="button" class="company-modal-close" aria-label="閉じる">
+                    ×
+                </button>
+
+                <div id="company-modal-body"></div>
+            </div>
+        </div>
     </main>
-        <footer>
+    <script>
+
+        const companyList = document.getElementById('company-list');
+        const companyModal = document.getElementById('company-modal');
+        const companyModalBody =
+            document.getElementById('company-modal-body');
+        const companyModalClose =
+            document.querySelector('.company-modal-close');
+        const companyModalOverlay =
+            document.querySelector('.company-modal-overlay');
+
+
+        async function loadCompanies() {
+            try {
+                const response = await fetch('./scripts/companies.json');
+
+                if (!response.ok) {
+                    throw new Error('企業データの取得に失敗しました');
+                }
+
+                const companies = await response.json();
+
+                companies.forEach(company => {
+                    createCompanyCard(company);
+                });
+
+                // URLから企業IDを取得
+                const params =
+                    new URLSearchParams(window.location.search);
+
+                const companyId =
+                    params.get("id");
+
+
+                // IDが指定されている場合
+                if (companyId) {
+
+                    const company =
+                        companies.find(
+                            company => company.id === companyId
+                        );
+
+                    if (company) {
+                        openCompanyModal(company);
+                    }
+                }
+
+
+            } catch (error) {
+                console.error(error);
+
+                companyList.innerHTML =
+                    '<p>企業情報を読み込めませんでした。</p>';
+            }
+        }
+
+
+
+
+        function createCompanyCard(company) {
+            const card = document.createElement('article');
+
+            card.className = 'company-card';
+
+            card.innerHTML = `
+            <div class="company-card-image">
+                <img
+                    src="${company.image}"
+                    alt="${company.name} ロゴ">
+            </div>
+
+            <div class="company-card-body">
+
+                <h3>${company.name}</h3>
+
+                <div class="company-tags">
+                    ${company.industry.map(tag => `
+                        <span class="company-tag">
+                            ${tag}
+                        </span>
+                    `).join('')}
+                </div>
+
+                <button
+                    type="button"
+                    class="company-detail-button">
+                    詳しく見る
+                </button>
+
+            </div>
+        `;
+
+            card.querySelector('.company-detail-button')
+                .addEventListener('click', () => {
+                    openCompanyModal(company);
+                });
+
+            companyList.appendChild(card);
+        }
+
+
+        function openCompanyModal(company) {
+
+            companyModalBody.innerHTML = `
+            <div class="company-detail">
+
+                <div class="company-detail-header">
+                    <img
+                        src="${company.image}"
+                        alt="${company.name} ロゴ">
+
+                    <h2>${company.name}</h2>
+
+                    <div class="company-tags">
+                        ${company.industry.map(tag => `
+                            <span class="company-tag">
+                                ${tag}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+
+
+                <section class="company-detail-section">
+                    <h3>企業紹介</h3>
+                    <p>${company.description}</p>
+                </section>
+
+
+                <section class="company-detail-section">
+                    <h3>高専祭での出展内容</h3>
+                    <p>${company.festival}</p>
+                </section>
+
+
+                <section class="company-detail-section">
+                    <h3>高専生へのメッセージ</h3>
+                    <p>${company.message}</p>
+                </section>
+
+
+                <section class="company-detail-section company-info">
+                    <h3>企業情報</h3>
+
+                    <dl>
+                        <dt>所在地</dt>
+                        <dd>${company.address}</dd>
+                    </dl>
+                </section>
+
+
+                <div class="company-detail-link">
+                    <a
+                        href="${company.website}"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        公式サイトを見る
+                    </a>
+                </div>
+
+            </div>
+        `;
+
+            companyModal.classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+
+        function closeCompanyModal() {
+            companyModal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+
+        companyModalClose.addEventListener(
+            'click',
+            closeCompanyModal
+        );
+
+        companyModalOverlay.addEventListener(
+            'click',
+            closeCompanyModal
+        );
+
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') {
+                closeCompanyModal();
+            }
+        });
+
+
+        loadCompanies();
+    </script>
+
+    <footer>
 
         <!-- お問い合わせ・規約等 -->
         <div class="footer-legal">

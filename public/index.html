@@ -185,8 +185,17 @@
 
             width: max-content;
 
-            animation: logoScroll 30s linear infinite;
+            animation: logoScroll 15s linear infinite;
+        }
 
+        #logoTrack2 {
+            display: flex;
+        }
+
+        @media (min-width: 600px) {
+            #logoTrack2 {
+                display: none;
+            }
         }
 
 
@@ -590,12 +599,12 @@
                                 <h3>公式SNSをフォローお願いします</h3>
                                 <p class="access-sns-text">最新の情報やイベントの告知をチェックできます。</p>
                                 <div class="access-sns-links">
-                                    <a class="nav-social" href="https://www.instagram.com/mct_relations/" target="_blank"
-                                        rel="noopener noreferrer">
+                                    <a class="nav-social" href="https://www.instagram.com/mct_relations/"
+                                        target="_blank" rel="noopener noreferrer">
                                         <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学校広報
                                     </a>
-                                    <a class="nav-social" href="https://www.instagram.com/mct_gakuseikai/" target="_blank"
-                                        rel="noopener noreferrer">
+                                    <a class="nav-social" href="https://www.instagram.com/mct_gakuseikai/"
+                                        target="_blank" rel="noopener noreferrer">
                                         <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学生会
                                     </a>
                                 </div>
@@ -609,7 +618,7 @@
         </main>
     </div>
 
-            <footer>
+    <footer>
 
         <!-- お問い合わせ・規約等 -->
         <div class="footer-legal">
@@ -701,25 +710,78 @@
         });
 
         // 企業ロゴ用
-        const logoPath = "./images/logo-comp.png";
+        async function createLogoTracks() {
+            try {
+                const response = await fetch("./scripts/companies.json");
 
-        function createTrack(trackId) {
+                if (!response.ok) {
+                    throw new Error("企業データの取得に失敗しました");
+                }
+
+                const companies = await response.json();
+
+                createTrack("logoTrack1", companies);
+                createTrack("logoTrack2", companies);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+
+        function createTrack(trackId, companies) {
 
             const track = document.getElementById(trackId);
 
-            for (let i = 0; i < 20; i++) {
-                const img = document.createElement("img");
-                img.src = logoPath;
-                img.alt = "企業ロゴ";
-                track.appendChild(img);
+            if (!track || !Array.isArray(companies) || companies.length === 0) {
+                return;
+            }
+
+            // 表示領域の幅
+            const containerWidth = track.parentElement.offsetWidth;
+
+            // 少なくとも表示領域の2倍程度を埋める
+            const requiredWidth = containerWidth * 2;
+
+            // 異常なデータやレイアウト時の無限増殖を防ぐ
+            const maxSets = 8;
+            let setCount = 0;
+
+            track.innerHTML = "";
+
+            while (track.scrollWidth < requiredWidth && setCount < maxSets) {
+                const set = document.createDocumentFragment();
+
+                companies.forEach(company => {
+
+                    const link = document.createElement("a");
+
+                    link.href =
+                        `./company.html?id=${encodeURIComponent(company.id)}`;
+
+                    link.className = "company-logo-link";
+
+                    const img = document.createElement("img");
+
+                    img.src = company.image;
+                    img.alt = `${company.name} ロゴ`;
+
+                    link.appendChild(img);
+                    set.appendChild(link);
+                });
+
+                track.appendChild(set);
+                setCount++;
+            }
+
+            if (track.scrollWidth === 0) {
+                return;
             }
 
             // シームレス化
             track.innerHTML += track.innerHTML;
         }
-
-        createTrack("logoTrack1");
-        createTrack("logoTrack2");
+        createLogoTracks();
     </script>
 </body>
 

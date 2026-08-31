@@ -5,7 +5,13 @@
     "note": "企業Aのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "image": "../images/header_ed.jpg"
+    "industry": ["IT", "システム開発"],
+    "description": "企業Aは、地域の企業や自治体向けにシステム開発やITサービスを提供しています。",
+    "festival": "高専祭では、実際の開発事例を紹介する展示と、プログラミング体験を行います。",
+    "message": "ITやものづくりに興味のある皆さんに、仕事の面白さを知ってもらえればと思います。",
+    "address": "島根県松江市○○町1-2-3",
+    "website": "https://example.com",
+    "image": "../images/noimage.png"
   },
   {
     "id": "company-b",
@@ -13,7 +19,13 @@
     "note": "企業Bのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "image": "../images/about.jpg"
+    "industry": ["IT", "システム開発"],
+    "description": "企業Aは、地域の企業や自治体向けにシステム開発やITサービスを提供しています。",
+    "festival": "高専祭では、実際の開発事例を紹介する展示と、プログラミング体験を行います。",
+    "message": "ITやものづくりに興味のある皆さんに、仕事の面白さを知ってもらえればと思います。",
+    "address": "島根県松江市○○町1-2-3",
+    "website": "https://example.com",
+    "image": "../images/noimage.png"
   },
   {
     "id": "company-c",
@@ -21,7 +33,13 @@
     "note": "企業Cのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "image": "../images/event.jpg"
+    "industry": ["IT", "システム開発"],
+    "description": "企業Aは、地域の企業や自治体向けにシステム開発やITサービスを提供しています。",
+    "festival": "高専祭では、実際の開発事例を紹介する展示と、プログラミング体験を行います。",
+    "message": "ITやものづくりに興味のある皆さんに、仕事の面白さを知ってもらえればと思います。",
+    "address": "島根県松江市○○町1-2-3",
+    "website": "https://example.com",
+    "image": "../images/noimage.png"
   },
   {
     "id": "company-d",
@@ -29,6 +47,12 @@
     "note": "企業Dのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "image": "../images/shop.jpg"
+    "industry": ["IT", "システム開発"],
+    "description": "企業Aは、地域の企業や自治体向けにシステム開発やITサービスを提供しています。",
+    "festival": "高専祭では、実際の開発事例を紹介する展示と、プログラミング体験を行います。",
+    "message": "ITやものづくりに興味のある皆さんに、仕事の面白さを知ってもらえればと思います。",
+    "address": "島根県松江市○○町1-2-3",
+    "website": "https://example.com",
+    "image": "../images/noimage.png"
   }
 ]
