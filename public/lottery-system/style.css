@@ -479,3 +479,84 @@ code { background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: #
         padding: 0.7rem;
     }
 }
+
+#debug-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: none;
+
+    z-index: 99999;
+
+    padding: 16px;
+
+    background: rgba(0, 0, 0, 0.92);
+}
+
+#debug-panel.visible {
+    display: block;
+}
+
+.debug-panel-inner {
+    max-width: 900px;
+    margin: 0 auto;
+
+    padding: 20px;
+
+    border: 2px solid #ff5555;
+    border-radius: 12px;
+
+    background: #222;
+    color: white;
+}
+
+.debug-title {
+    margin-bottom: 16px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    color: #ff6666;
+}
+
+.debug-row {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 10px;
+}
+
+.debug-row label {
+    width: 100px;
+}
+
+.debug-row input {
+    width: 180px;
+
+    padding: 8px;
+
+    font-size: 18px;
+}
+
+.debug-buttons {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 15px;
+}
+
+.debug-buttons button {
+    padding: 8px 16px;
+
+    cursor: pointer;
+}
+
+.debug-status {
+    margin-top: 12px;
+
+    font-size: 14px;
+}
