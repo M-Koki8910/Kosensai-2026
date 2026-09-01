@@ -9,6 +9,135 @@
     <link rel="icon" type="image/png" href="./images/tab-resize.png">
 
     <title>高専祭について</title>
+    <style>
+        .about {
+            width: 100%;
+            color: #1f2937;
+            background: linear-gradient(180deg, #f8fafc 0%, #eef4f8 100%);
+            line-height: 1.8;
+        }
+
+        .about *,
+        .about *::before,
+        .about *::after {
+            box-sizing: border-box;
+        }
+
+        .about h1,
+        .about h2,
+        .about h3,
+        .about p,
+        .about ul {
+            margin-top: 0;
+        }
+
+        .about p,
+        .about ul {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .about-hero {
+            padding: 90px 20px 70px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: #fff;
+        }
+
+        .about-hero-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-eyebrow {
+            margin-bottom: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 0.18em;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .about-hero h1 {
+            margin-bottom: 16px;
+            font-size: clamp(2.1rem, 4vw, 3.2rem);
+            line-height: 1.3;
+            font-weight: 800;
+        }
+
+        .about-lead {
+            max-width: 760px;
+            margin: 0 auto;
+            font-size: 1.08rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .about-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 72px 20px;
+        }
+
+        .about-page + .about-page {
+            padding-top: 0;
+        }
+
+        .about-heading {
+            margin-bottom: 24px;
+        }
+
+        .about-heading h2 {
+            margin: 0;
+            font-size: clamp(1.7rem, 2.4vw, 2.4rem);
+            line-height: 1.4;
+            color: #0f172a;
+        }
+
+        .about-card {
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            padding: 26px 24px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+        }
+
+        .about-card p {
+            margin-bottom: 0;
+            color: #475569;
+        }
+
+        .about-card.about-highlight {
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .about-card strong {
+            color: #1e3a8a;
+        }
+
+        .about-card .shop-info-wrapper {
+            display: grid;
+            gap: 18px;
+        }
+
+        .about-card .shop-info-wrapper p {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 700px) {
+            .about-hero {
+                padding-top: 72px;
+            }
+
+            .about-page {
+                padding: 58px 16px;
+            }
+
+            .about-card {
+                padding: 20px 18px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -47,12 +176,22 @@
         </div>
     </nav>
 
-    <main>
-         <section class="section">
-            <h2>
-                松江高専とは
-            </h2>
-            <div class="container">
+    <main class="about">
+        <section class="about-hero">
+            <div class="about-hero-inner">
+                <p class="about-eyebrow">ABOUT KOSENSAI</p>
+                <h1>高専祭について</h1>
+                <p class="about-lead">
+                    松江高専の魅力と本校の文化祭の意義を、より見やすく、わかりやすくお伝えするためのページです。
+                </p>
+            </div>
+        </section>
+
+        <section class="about-page">
+            <div class="about-heading">
+                <h2>松江高専とは</h2>
+            </div>
+            <div class="about-card about-highlight">
                 <p>
                     松江工業高等専門学校（松江高専）は島根県松江市に位置する国立高等専門学校です。
                     <br>
@@ -66,11 +205,11 @@
             </div>
         </section>
 
-        <section class="section">
-            <h2>
-                高専祭とは
-            </h2>
-            <div class="container">
+        <section class="about-page">
+            <div class="about-heading">
+                <h2>高専祭とは</h2>
+            </div>
+            <div class="about-card">
                 <p>
                     本校の文化祭は、学生主体で企画・運営されるイベントです。
                     模擬店やステージ企画、展示など、多彩な催しが行われます。
@@ -81,66 +220,66 @@
             </div>
         </section>
 
-        <section class="section">
-    <h2>
-        おすすめ模擬店情報
-    </h2>
-    <div class="container">
-        <div class="shop-info-wrapper">
-            <p>
-                ガッツリ飯から絶品スイーツ、体験型アトラクションまで盛りだくさん！
-                <br>
-                目的や気分に合わせて、ぜひお気に入りの模擬店を見つけてみてください。
-                <br><br>
-            </p>
-            <p>
-                <strong>1. お腹が大満足！スタミナグルメ</strong>
-                <br><br>
-                ・王道祭りグルメ
-                <br>
-                「焼きそば（ソース・塩）」「たこ焼き」「フランクフルト」「焼き鳥」「ホットドッグ」「うどん」
-                <br><br>
-                ・ガッツリお肉＆ご飯
-                <br>
-                「肉巻きおにぎり」「はしまき」「ブラジル肉パン」「タコス」「カレー」
-                <br><br>
-                ・スナック＆サイド
-                <br>
-                「ピザ」「チーズボール」「ナゲット」「ロングポテト」
-            </p>
-            <p>
-                <br>
-                <strong>2. ひんやりアツアツスイーツ</strong>
-                <br><br>
-                ・ひんやりスイーツ
-                <br>
-                「メロンパンアイス」「削りイチゴ」「ディッピンドッツ」「ソーダフロート」「スムージー」「シリアルパンケーキ」
-                <br><br>
-                ・和風スイーツ
-                <br>
-                「クレープ」「ホットサンド」「ワッフル」「たい焼き」「ベビーカステラ」「チョコバナナ」「わたがし」「お餅パフェ」「白玉団子（きなこ・チョコ・みたらし）」「プリン」
-                <br><br>
-                ・ドリンク各種
-            </p>
-            <p>
-                <br>
-                <strong>3. 遊んで・作って・思い出づくり！体験型コーナー</strong>
-                <br><br>
-                ・体験・ゲーム
-                <br>
-                頭脳をフル回転させて脱出を目指す「脱出ゲーム」、じっくり遊べる「ボードゲーム・カードゲーム」
-                <br><br>
-                ・思い出＆ワークショップ
-                <br>
-                素敵な小物が作れる「つまみ細工体験」、記念写真が撮れる「フォトスポット・コスプレ」
-                <br><br>
-                ・コンセプトルーム
-                <br>
-                美味しいメニューを楽しめる「メイド喫茶」
-            </p>
-        </div>
-    </div>
-    </section>
+        <section class="about-page">
+            <div class="about-heading">
+                <h2>おすすめ模擬店情報</h2>
+            </div>
+            <div class="about-card about-highlight">
+                <div class="shop-info-wrapper">
+                    <p>
+                        ガッツリ飯から絶品スイーツ、体験型アトラクションまで盛りだくさん！
+                        <br>
+                        目的や気分に合わせて、ぜひお気に入りの模擬店を見つけてみてください。
+                        <br><br>
+                    </p>
+                    <p>
+                        <strong>1. お腹が大満足！スタミナグルメ</strong>
+                        <br><br>
+                        ・王道祭りグルメ
+                        <br>
+                        「焼きそば（ソース・塩）」「たこ焼き」「フランクフルト」「焼き鳥」「ホットドッグ」「うどん」
+                        <br><br>
+                        ・ガッツリお肉＆ご飯
+                        <br>
+                        「肉巻きおにぎり」「はしまき」「ブラジル肉パン」「タコス」「カレー」
+                        <br><br>
+                        ・スナック＆サイド
+                        <br>
+                        「ピザ」「チーズボール」「ナゲット」「ロングポテト」
+                    </p>
+                    <p>
+                        <br>
+                        <strong>2. ひんやりアツアツスイーツ</strong>
+                        <br><br>
+                        ・ひんやりスイーツ
+                        <br>
+                        「メロンパンアイス」「削りイチゴ」「ディッピンドッツ」「ソーダフロート」「スムージー」「シリアルパンケーキ」
+                        <br><br>
+                        ・和風スイーツ
+                        <br>
+                        「クレープ」「ホットサンド」「ワッフル」「たい焼き」「ベビーカステラ」「チョコバナナ」「わたがし」「お餅パフェ」「白玉団子（きなこ・チョコ・みたらし）」「プリン」
+                        <br><br>
+                        ・ドリンク各種
+                    </p>
+                    <p>
+                        <br>
+                        <strong>3. 遊んで・作って・思い出づくり！体験型コーナー</strong>
+                        <br><br>
+                        ・体験・ゲーム
+                        <br>
+                        頭脳をフル回転させて脱出を目指す「脱出ゲーム」、じっくり遊べる「ボードゲーム・カードゲーム」
+                        <br><br>
+                        ・思い出＆ワークショップ
+                        <br>
+                        素敵な小物が作れる「つまみ細工体験」、記念写真が撮れる「フォトスポット・コスプレ」
+                        <br><br>
+                        ・コンセプトルーム
+                        <br>
+                        美味しいメニューを楽しめる「メイド喫茶」
+                    </p>
+                </div>
+            </div>
+        </section>
     </main>
         <footer>
 
