@@ -269,6 +269,7 @@ body {
     align-items: center;
 
     padding: 20px;
+    padding-top: 60px;
 
     overflow-y: auto;
 }
@@ -321,8 +322,10 @@ body {
 
 @media (max-width: 520px) {
     #eventModal .modal-meta-row {
-        flex-direction: column;
-        align-items: flex-start;
+          flex-direction: column;
+        align-items: flex-start; 
+
+        
     }
 
     #eventModal .modal-time,
@@ -520,7 +523,7 @@ body {
     .modal {
         padding: 12px;
         align-items: flex-start;
-        padding-top: 20px;
+        padding-top: 60px;
     }
 
     .modal-content {

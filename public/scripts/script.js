@@ -95,6 +95,48 @@ function initStampRally() {
 
     async function loadCompanyMaster() {
         try {
+            const response = await fetch('./scripts/companies.json', {
+                cache: 'no-store'
+            });
+
+            if (!response.ok) {
+                return [];
+            }
+
+            const data = await response.json();
+
+            if (!Array.isArray(data)) {
+                return [];
+            }
+
+            return data
+                // exhibition が true の企業だけを対象にする
+                .filter(item => item.exhibition === true)
+
+                // 必要なデータだけを取り出す
+                .map((item, index) => ({
+                    id: String(item.id || `company-${index + 1}`),
+                    name: String(item.name || `企業${index + 1}`),
+                    note: String(
+                        item.note ||
+                        `${String(item.name || `企業${index + 1}`)}のブース前のQRコードを読み取る`
+                    ),
+                    linkText: String(item.linkText || '企業紹介へ'),
+                    href: String(item.href || '/company.html'),
+                    image: String(item.image || '/header_ed.jpg')
+                }));
+
+        } catch (error) {
+            console.warn(
+                '出展企業マスタの読み込みに失敗しました',
+                error
+            );
+            return [];
+        }
+    }
+
+    /* async function loadCompanyMaster() {
+        try {
             const response = await fetch('./scripts/companies.json', { cache: 'no-store' });
             if (!response.ok) {
                 return [];
@@ -117,7 +159,7 @@ function initStampRally() {
             console.warn('出展企業マスタの読み込みに失敗しました', error);
             return [];
         }
-    }
+    } */
 
     function escapeHtml(value) {
         return String(value)
