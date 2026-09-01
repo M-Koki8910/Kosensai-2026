@@ -21,6 +21,65 @@ const BulletinBoard = (() => {
   const API = "/api/posts";
   const interval = 10000;
 
+  function ensureProcessingStyles() {
+    if (document.getElementById("bulletin-processing-styles")) return;
+
+    const style = document.createElement("style");
+    style.id = "bulletin-processing-styles";
+    style.textContent = `
+      #bulletin-processing-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 23, 42, 0.18);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+      }
+
+      #bulletin-processing-spinner {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.35);
+        border-top-color: #f59e0b;
+        border-right-color: #fbbf24;
+        animation: bulletin-processing-spin 0.9s linear infinite;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.3), 0 12px 30px rgba(0,0,0,0.22);
+      }
+
+      @keyframes bulletin-processing-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function showProcessingOverlay() {
+    ensureProcessingStyles();
+
+    const existing = document.getElementById("bulletin-processing-overlay");
+    if (existing) return;
+
+    const overlay = document.createElement("div");
+    overlay.id = "bulletin-processing-overlay";
+    overlay.setAttribute("role", "status");
+    overlay.setAttribute("aria-live", "polite");
+    overlay.innerHTML = `
+      <div id="bulletin-processing-spinner" aria-label="処理中"></div>
+    `;
+
+    document.body.appendChild(overlay);
+  }
+
+  function hideProcessingOverlay() {
+    const overlay = document.getElementById("bulletin-processing-overlay");
+    if (overlay) overlay.remove();
+  }
+
   function init() {
     const form = document.getElementById("postForm");
     const input = document.getElementById("postContent");
@@ -43,6 +102,8 @@ const BulletinBoard = (() => {
     const content = document.getElementById("postContent").value.trim();
     if (!content) return showMessage("入力してください", "error");
 
+    showProcessingOverlay();
+
     try {
       const res = await fetch(API, {
         method: "POST",
@@ -53,16 +114,16 @@ const BulletinBoard = (() => {
       const data = await res.json();
 
       if (data.ok) {
-        showMessage("投稿しました", "success");
+        showMessage("投稿されました", "success");
         document.getElementById("postContent").value = "";
         document.getElementById("charCount").textContent = "0";
-        loadPosts();
       } else {
         showMessage(data.error || "失敗", "error");
       }
-
     } catch (err) {
       showMessage("通信エラー", "error");
+    } finally {
+      hideProcessingOverlay();
     }
   }
 
@@ -137,7 +198,11 @@ const BulletinBoard = (() => {
         return;
       }
 
-      showMessage(data.alreadyReacted ? "既にリアクション済みです" : "リアクションしました", "success");
+      if (data.toggled_off) {
+        showMessage("リアクションを取り消しました", "success");
+      } else {
+        showMessage("リアクションしました", "success");
+      }
       loadPosts();
     } catch (err) {
       showMessage("通信エラー", "error");
