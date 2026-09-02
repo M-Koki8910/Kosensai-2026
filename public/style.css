@@ -269,6 +269,7 @@ body {
     align-items: center;
 
     padding: 20px;
+    padding-top: 60px;
 
     overflow-y: auto;
 }
@@ -321,8 +322,10 @@ body {
 
 @media (max-width: 520px) {
     #eventModal .modal-meta-row {
-        flex-direction: column;
-        align-items: flex-start;
+          flex-direction: column;
+        align-items: flex-start; 
+
+        
     }
 
     #eventModal .modal-time,
@@ -520,7 +523,7 @@ body {
     .modal {
         padding: 12px;
         align-items: flex-start;
-        padding-top: 20px;
+        padding-top: 60px;
     }
 
     .modal-content {
@@ -973,7 +976,7 @@ h2::after {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-    animation: rotate 30s linear infinite;
+    animation: rotate 15s linear infinite;
 }
 
 @keyframes rotate {
@@ -1906,7 +1909,7 @@ h2::after {
 /* ロゴ */
 
 .company-card-image {
-    height: 170px;
+    height: 190px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1915,8 +1918,8 @@ h2::after {
 }
 
 .company-card-image img {
-    max-width: 85%;
-    max-height: 110px;
+    max-width: 90%;
+    max-height: 180px;
     width: auto;
     height: auto;
     object-fit: contain;
@@ -2101,8 +2104,8 @@ h2::after {
 .company-detail-header img {
     display: block;
 
-    max-width: 280px;
-    max-height: 120px;
+    max-width: 320px;
+    max-height: 140px;
 
     width: auto;
     height: auto;
@@ -2282,13 +2285,13 @@ body.modal-open {
     }
 
     .company-card-image {
-        height: 120px;
+        height: 180px;
         padding: 16px;
     }
 
     .company-card-image img {
-        max-height: 75px;
-        max-width: 90%;
+        max-height: 180px;
+        max-width: 98%;
     }
 
     .company-card-body {
@@ -2333,8 +2336,8 @@ body.modal-open {
     }
 
     .company-detail-header img {
-        max-width: 220px;
-        max-height: 90px;
+        max-width: 250px;
+        max-height: 100px;
         margin-bottom: 16px;
     }
 

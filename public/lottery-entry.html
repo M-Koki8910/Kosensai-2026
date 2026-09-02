@@ -240,6 +240,54 @@
 
       margin: 20px 0;
 
+      min-height: 1.2em;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+    }
+
+    .lottery-number.is-processing {
+
+      color: transparent;
+
+    }
+
+    .lottery-loading-spinner {
+
+      display: inline-block;
+
+      width: 68px;
+
+      height: 68px;
+
+      border: 6px solid rgba(37, 99, 235, 0.18);
+
+      border-top-color: var(--primary);
+
+      border-right-color: #60a5fa;
+
+      border-radius: 50%;
+
+      animation: lotteryLoadingSpin 0.9s linear infinite;
+
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+
+    }
+
+    @keyframes lotteryLoadingSpin {
+
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+
     }
 
     .result-text {
@@ -406,10 +454,34 @@
       readerCard.style.display = "block";
       resultCard.style.display = "none";
       resultCard.classList.remove('is-visible');
-      lotteryNumberEl.classList.remove('is-burst');
+      lotteryNumberEl.classList.remove('is-burst', 'is-processing');
+      lotteryNumberEl.textContent = '0000';
+      lotteryNumberEl.innerHTML = '';
 
       requestAnimationFrame(() => {
         readerCard.classList.add('is-visible');
+      });
+    }
+
+    function showProcessingState() {
+      readerCard.hidden = true;
+      resultCard.hidden = false;
+      readerCard.style.display = "none";
+      resultCard.style.display = "block";
+      readerCard.classList.remove('is-visible');
+      resultCard.classList.remove('is-visible');
+
+      lotteryNumberEl.classList.remove('is-burst');
+      lotteryNumberEl.classList.add('is-processing');
+      lotteryNumberEl.innerHTML = '<span class="lottery-loading-spinner" aria-label="処理中"></span>';
+
+      const resultText = document.querySelector('.result-text');
+      if (resultText) {
+        resultText.textContent = '受付を確認しています。そのままお待ちください。';
+      }
+
+      requestAnimationFrame(() => {
+        resultCard.classList.add('is-visible');
       });
     }
 
@@ -533,6 +605,7 @@
     async function registerAndIssue(visitorId) {
       if (!visitorId || isProcessing) return;
       isProcessing = true;
+      showProcessingState();
       setState('受付中です。スタンプ履歴と連携しています…');
 
       try {
@@ -567,10 +640,11 @@
         //lotteryMetaEl.textContent = entryData.existing ? '既に発行済みの抽選番号を再表示しました。' : '新しく抽選番号を発行しました。';
         //stampMetaEl.textContent = `スタンプ取得数 ${stampCount} 件 / 総ブース数 ${entryData.total_companies || 0}`;
 
-
         const statusLabel = entryData.existing ? '再表示' : '発行完了';
         setState(`受付完了: ${lotteryNumber} を発行しました。`, 'is-success');
         saveIssuedLottery(lotteryNumber);
+
+        await new Promise(resolve => setTimeout(resolve, 3000));
         showLotteryResult(lotteryNumber);
 
         /*  appendHistory(statusLabel, `UUID <strong>${escapeHtml(visitorId)}</strong> に対して抽選番号 <strong>${escapeHtml(lotteryNumber)}</strong> を保存しました。`);*/
@@ -771,8 +845,15 @@
       readerCard.classList.remove('is-visible');
       resultCard.classList.remove('is-visible');
 
+      lotteryNumberEl.classList.remove('is-processing');
+      lotteryNumberEl.innerHTML = '';
       lotteryNumberEl.textContent = number;
       lotteryNumberEl.classList.remove('is-burst');
+
+      const resultText = document.querySelector('.result-text');
+      if (resultText) {
+        resultText.textContent = '抽選会まで番号を保存してください。';
+      }
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {

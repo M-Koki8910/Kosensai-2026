@@ -79,9 +79,9 @@ function loadConfig() {
       'shop',
       'event',
       'stamp-rally',
-        'lottery-entry',
-        'lottery-guide',
-        'lottery-prizes',
+      'lottery-entry',
+      'lottery-guide',
+      'lottery-prizes',
       'schedule',
       'company',
       'map',
@@ -89,18 +89,18 @@ function loadConfig() {
       'bulletin',
       'access'
     ];
- 
+
     const defaultConfig = {
       pages: Object.fromEntries(PAGE_LIST.map(p => [p, true])),
       siteWidePublished: true
     };
- 
+
     try {
       fs.writeFileSync('./config.json', JSON.stringify(defaultConfig, null, 2));
     } catch (writeErr) {
       console.error('Failed to write config.json:', writeErr);
     }
- 
+
     return defaultConfig;
   }
 }
@@ -141,7 +141,7 @@ const DEFAULT_COMPANY_MASTER = [
 ];
 
 function loadCompanyMaster() {
-  const masterPath = path.join(__dirname, 'public','scripts','companies.json');
+  const masterPath = path.join(__dirname, 'public', 'scripts', 'companies.json');
   try {
     if (!fs.existsSync(masterPath)) {
       return DEFAULT_COMPANY_MASTER;
@@ -204,7 +204,7 @@ if (fs.existsSync(ENV_PATH)) {
     let value = trimmed.slice(eqIndex + 1).trim();
 
     if ((value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'"))) {
+      (value.startsWith("'") && value.endsWith("'"))) {
       value = value.slice(1, -1);
     }
 
@@ -217,8 +217,8 @@ if (fs.existsSync(ENV_PATH)) {
 const DB_PATH = path.join(__dirname, 'stamp.db');
 
 const SYSTEM_ADMIN_USERNAME =
- process.env.SYSTEM_ADMIN_USERNAME || 'Administrator';
-const SYSTEM_ADMIN_PASSWORD = 
+  process.env.SYSTEM_ADMIN_USERNAME || 'Administrator';
+const SYSTEM_ADMIN_PASSWORD =
   process.env.SYSTEM_ADMIN_PASSWORD || 'admin@J2337';
 
 const db = new DatabaseSync(DB_PATH);
@@ -592,15 +592,15 @@ function parseNGRulesJsonSafely(rawValue) {
 // 2. .env 内の NG_RULES ブロックをパース
 // 3. 環境変数 NG_RULES_FILE または ./scripts/ng-rules.json を試す
 const envVarRules = parseNGRulesJsonSafely(process.env.NG_RULES);
-  if (envVarRules) {
-    applyNGRulesArray(envVarRules);
-  }  else {
-    const envArr = parseNGRulesFromEnvFile();
-    if (envArr) {
-      applyNGRulesArray(envArr);
-    } else {
-      loadExternalNGRules(process.env.NG_RULES_FILE || './scripts/ng-rules.json');
-    }
+if (envVarRules) {
+  applyNGRulesArray(envVarRules);
+} else {
+  const envArr = parseNGRulesFromEnvFile();
+  if (envArr) {
+    applyNGRulesArray(envArr);
+  } else {
+    loadExternalNGRules(process.env.NG_RULES_FILE || './scripts/ng-rules.json');
+  }
 }
 
 
@@ -609,7 +609,7 @@ const envVarRules = parseNGRulesJsonSafely(process.env.NG_RULES);
 const AUTO_JUDGE_INTERVAL_MS = 30 * 1000;
 const BATCH_SIZE = 50;
 
-function autoJudgePosts() {
+async function autoJudgePosts() {
   try {
     const pendingPosts = db.prepare(`
       SELECT id, content, risk_score
@@ -622,14 +622,14 @@ function autoJudgePosts() {
     if (pendingPosts.length === 0) return;
 
     for (const post of pendingPosts) {
-      const ngCheck = checkNGRules(post.content);
-      const newStatus = calculatePostStatus(ngCheck.riskScore);
+      const evaluation = await evaluatePostRisk(post.content);
+      const newStatus = calculatePostStatus(evaluation.riskScore);
 
       db.prepare(`
         UPDATE posts
         SET status = ?, risk_score = ?, updated_at = datetime('now', '+9 hours')
         WHERE id = ?
-      `).run(newStatus, ngCheck.riskScore, post.id);
+      `).run(newStatus, evaluation.riskScore, post.id);
 
       if (newStatus === 'published') {
         aggregateSimilarPosts(post.id, 0.75);
@@ -640,7 +640,8 @@ function autoJudgePosts() {
           postId: post.id,
           oldStatus: 'pending',
           newStatus: newStatus,
-          riskScore: ngCheck.riskScore
+          riskScore: evaluation.riskScore,
+          source: evaluation.source
         })
       });
     }
@@ -757,64 +758,64 @@ function getFilePath(urlPath) {
 
 function serveStatic(res, filePath) {
   //if (!filePath) {
-    //res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'X-Content-Type-Options': 'nosniff' });
-    //res.end('Not found');
-    //return;
+  //res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'X-Content-Type-Options': 'nosniff' });
+  //res.end('Not found');
+  //return;
   //}
-   if (!filePath) {
-  const notFoundPath = path.join(STATIC_ROOT, '404notfound.html');
+  if (!filePath) {
+    const notFoundPath = path.join(STATIC_ROOT, '404notfound.html');
 
-  fs.readFile(notFoundPath, (error, data) => {
-    if (error) {
+    fs.readFile(notFoundPath, (error, data) => {
+      if (error) {
+        res.writeHead(404, {
+          'Content-Type': 'text/plain; charset=utf-8'
+        });
+        res.end('Not found');
+        return;
+      }
+
       res.writeHead(404, {
-        'Content-Type': 'text/plain; charset=utf-8'
+        'Content-Type': 'text/html; charset=utf-8'
       });
-      res.end('Not found');
-      return;
-    }
-
-    res.writeHead(404, {
-      'Content-Type': 'text/html; charset=utf-8'
+      res.end(data);
     });
-    res.end(data);
-  });
 
-  return;
-}
+    return;
+  }
   // const filePath = path.join(__dirname, 'public', req.url);
 
   fs.readFile(filePath, (error, data) => {
     //if (error) {
-     //res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'X-Content-Type-Options': 'nosniff' });
-     //res.end('Not found');
-      //return;
+    //res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'X-Content-Type-Options': 'nosniff' });
+    //res.end('Not found');
+    //return;
     //}
 
     if (error) {
-  const notFoundPath = path.join(STATIC_ROOT, '404notfound.html');
+      const notFoundPath = path.join(STATIC_ROOT, '404notfound.html');
 
-  fs.readFile(notFoundPath, (err404, data404) => {
-    if (err404) {
-      // 404.html自体が読めない場合
-      res.writeHead(404, {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'X-Content-Type-Options': 'nosniff'
+      fs.readFile(notFoundPath, (err404, data404) => {
+        if (err404) {
+          // 404.html自体が読めない場合
+          res.writeHead(404, {
+            'Content-Type': 'text/plain; charset=utf-8',
+            'X-Content-Type-Options': 'nosniff'
+          });
+          res.end('Not found');
+          return;
+        }
+
+        res.writeHead(404, {
+          'Content-Type': 'text/html; charset=utf-8',
+          'X-Content-Type-Options': 'nosniff'
+        });
+
+        res.end(data404);
       });
-      res.end('Not found');
+
       return;
     }
 
-    res.writeHead(404, {
-      'Content-Type': 'text/html; charset=utf-8',
-      'X-Content-Type-Options': 'nosniff'
-    });
-
-    res.end(data404);
-  });
-
-  return;
-}
-  
     const ext = path.extname(filePath).toLowerCase();
     const contentType = {
       '.html': 'text/html; charset=utf-8',
@@ -1088,18 +1089,195 @@ function getUserPermissions(userId) {
     FROM user_permissions
     WHERE user_id = ?
   `)
-  .all(userId)
-  .map(row => row.permission);
+    .all(userId)
+    .map(row => row.permission);
 }
 
 // 9. hasPermission追加 (ハイブリッド判定)
 function hasPermission(user, permission) {
   const permissions = new Set(ROLE_PERMISSIONS[user.role] || []);
-  
+
   // セッションに保持されている user_id を使って個別追加権限をマージ
   getUserPermissions(user.user_id).forEach(p => permissions.add(p));
 
   return permissions.has(permission);
+}
+
+function clampRiskScore(value, fallback = 0) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.min(100, Math.max(0, Math.round(numeric)));
+}
+
+function parseGeminiScore(candidate) {
+  if (candidate === null || candidate === undefined) return null;
+
+  if (typeof candidate === 'number') return clampRiskScore(candidate, null);
+  if (typeof candidate === 'string') {
+    const match = candidate.match(/\d+(?:\.\d+)?/);
+    if (match) return clampRiskScore(match[0], null);
+    return null;
+  }
+  if (typeof candidate !== 'object') return null;
+
+  const keys = ['score', 'risk_score', 'riskScore', 'totalScore', 'rating'];
+  for (const key of keys) {
+    if (typeof candidate[key] === 'number') return clampRiskScore(candidate[key], null);
+  }
+
+  if (typeof candidate.data === 'object' && candidate.data) {
+    const nested = parseGeminiScore(candidate.data);
+    if (nested !== null) return nested;
+  }
+
+  if (typeof candidate.output === 'object' && candidate.output) {
+    const nested = parseGeminiScore(candidate.output);
+    if (nested !== null) return nested;
+  }
+
+  return null;
+}
+
+async function judgeContentWithGemini(content) {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
+  if (!apiKey) {
+    return { score: 0, source: 'missing_api_key' };
+  }
+
+  const systemInstruction = `
+    # 役割と目的
+あなたは投稿型Webサービス（掲示板・SNS）のコンテンツモデレーション専門AIです。
+入力されたユーザー投稿テキストを精査し、有害度・危険度を【0から100の整数値 (score)】で厳密に評価してください。
+評価結果は理由などのテキストを含めず、指定されたJSONフォーマットの数値のみで返却してください。
+
+# スコア定義と判定閾値
+- 0 〜 30 【安全 / 許可】
+  - 日常会話、ポジティブな意見、一般的な不満や客観的な批判
+  - 医療・健康・学術的文脈での身体表現
+  - 他者を傷つけない無害なネットスラング、アニメ・ゲームのセリフ引用、パロディ
+- 31 〜 60 【要確認 / グレーゾーン】
+  - 不躾・品のない言葉遣い、強い不平不満、軽度の下ネタ・性的スラング
+  - 特定個人に向けられていない不快感を与える表現
+  - 文脈上、軽度の悪意や嘲笑が含まれるネットミーム
+- 61 〜 100 【危険 / 拒否・自動非表示】
+  - 特定個人・団体・属性に対する明確な誹謗中傷、差別的表現、ハラスメント
+  - 露骨な性的表現（ポルノ）、性的嫌がらせ、性的同意のない暴露
+  - 攻撃・侮蔑・ヘイト目的で使用される悪質なネットミームやコピペ
+  - 脅迫、自傷/他害の予告・誘導、違法行為の教唆、過激なヘイトスピーチ
+
+# カテゴリ別詳細ルール
+
+1. 伏字・隠語・絵文字による検知回避への対処:
+   - 「セ◯クス」「◯ね」「◯人」などの伏字・当て字・難読化、または絵文字の組み合わせ（例: 🍆, 🍑, 🔪 等）を用いて攻撃性や卑猥さを隠蔽している場合、文字通りの意味ではなく「本来の意図・文脈」を汲み取ってスコアを加算すること。
+
+2. ネットスラング・ミームの切り分け:
+   - 【悪質（61〜100）】特定の人物、事件の被害者、特定地域、属性（性別・国籍・障害等）を揶揄・嘲笑・攻撃する目的で使われるミームやスラング。
+   - 【無害（0〜30）】単なる定型文、ネット上の流行語、誰かを傷つけないネタ表現。
+
+3. 卑猥・性的表現の切り分け:
+   - 【悪質（61〜100）】性行為や性的部位の露骨な描写、他者に対する性的な誘い文句や嫌がらせ。
+   - 【経過観察（31〜60）】文脈上悪意のない軽微な下ネタ、冗談。
+   - 【安全（0〜30）】生理、性教育、病院での診察、学術・医療目的の身体表現。
+
+# 除外規定・誤検知防止ルール（ネガティブ制約）
+- 強調表現の保護: 「死ぬほど美味い」「ヤバすぎる」「殺意が湧くほど暑い」などの感情表現（慣用句）は、他者への直接的な危害予告でない限り、過剰にスコアを加算しないこと（0〜30の範囲）。
+- 事実に基づく批判の保護: サービスや製品に対する厳しい意見であっても、個人攻撃や不当な罵詈雑言を含まない場合は「安全（0〜30）」と判定すること。
+
+# 判定ステップ（出力せず内部処理すること）
+1. 入力文から有害キーワード、伏字、隠語、ミーム表現を特定する。
+2. その表現が「誰に向けられているか（対象）」「どういう文脈で使われているか（意図）」を分析する。
+3. 除外規定に該当するか確認し、最終的な有害度を0〜100の範囲で確定する。
+  `.trim();
+
+  const requestBody = {
+    system_instruction: {
+      parts: [{ text: systemInstruction }]
+    },
+    contents: [{
+      parts: [{
+        text: `以下の投稿内容をスコア化してください。JSONだけ返してください。\n\n${content}`
+      }]
+    }],
+    generationConfig: {
+      temperature: 0,
+      responseMimeType: 'application/json'
+    }
+  };
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      }
+    );
+
+    const rawText = await response.text();
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status} ${rawText}`);
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(rawText);
+    } catch (error) {
+      const match = rawText.match(/\{[\s\S]*\}/);
+      if (!match) {
+        throw new Error('Gemini response is not JSON');
+      }
+      parsed = JSON.parse(match[0]);
+    }
+
+    const modelText = parsed?.candidates?.[0]?.content?.parts
+      ?.map(part => part.text || '')
+      .join('') || '';
+
+    const sanitizedText = String(modelText || '').trim();
+    if (!sanitizedText) {
+      return { score: 0, source: 'gemini_empty' };
+    }
+
+    let parsedJson;
+    try {
+      parsedJson = JSON.parse(sanitizedText);
+    } catch (error) {
+      const match = sanitizedText.match(/\{[\s\S]*\}/);
+      if (!match) {
+        return { score: 0, source: 'gemini_parse_error' };
+      }
+      parsedJson = JSON.parse(match[0]);
+    }
+
+    const score = parseGeminiScore(parsedJson);
+    if (score === null) {
+      return { score: 0, source: 'gemini_invalid' };
+    }
+
+    return { score, source: 'gemini' };
+  } catch (error) {
+    console.error('[Gemini判定エラー]', error);
+    return { score: 0, source: 'gemini_error' };
+  }
+}
+
+async function evaluatePostRisk(content) {
+  const ngCheck = checkNGRules(content);
+  if (ngCheck.matched) {
+    return {
+      riskScore: 100,
+      detectedRuleIds: ngCheck.detectedRuleIds,
+      source: 'ng_rules'
+    };
+  }
+
+  const geminiResult = await judgeContentWithGemini(content);
+  return {
+    riskScore: clampRiskScore(geminiResult.score, 0),
+    detectedRuleIds: [],
+    source: geminiResult.source || 'gemini'
+  };
 }
 
 function checkNGRules(content) {
@@ -1134,13 +1312,19 @@ function checkNGRules(content) {
       console.error(`Error checking NG rule ${rule.id}`, e);
     }
   }
-  return { riskScore: totalRiskScore, detectedRuleIds: detectedRules };
+
+  const matched = detectedRules.length > 0;
+  return {
+    riskScore: matched ? 100 : totalRiskScore,
+    detectedRuleIds: detectedRules,
+    matched
+  };
 }
 
 function calculatePostStatus(riskScore) {
-  if (riskScore <= 0) return 'published';
-  if (riskScore < 50) return 'published';
-  if (riskScore < 100) return 'review';
+  const normalizedScore = clampRiskScore(riskScore, 0);
+  if (normalizedScore <= 30) return 'published';
+  if (normalizedScore <= 60) return 'review';
   return 'rejected';
 }
 
@@ -1437,30 +1621,30 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const pathname = url.pathname;
 
- const config = loadConfig();
- 
-// ===== 公開制御 =====
-//const page = pathname.replace(/\.html$/, '').replace(/^\//, '');
- 
-let page = pathname
+  const config = loadConfig();
+
+  // ===== 公開制御 =====
+  //const page = pathname.replace(/\.html$/, '').replace(/^\//, '');
+
+  let page = pathname
     .replace(/^\/+/, '')                     // 先頭のスラッシュを除去
     .replace(/\.html$/, '')                  // 末尾の .html を除去
     .toLowerCase();                          // 小文字に統一
-  
+
   if (!page) page = 'index';                 // 空なら 'index' に設定
- 
+
   const isApi = pathname.startsWith('/api/');
   const isStatic =
     pathname.startsWith('/css/') ||
     pathname.startsWith('/js/') ||
     pathname.startsWith('/img/') ||
     pathname.startsWith('/assets/');
- 
+
   // ===== 公開制御チェック =====
   if (!isApi && !isStatic) {
     // closed.html と unpublished.html へのアクセスはリダイレクト対象外
     const isErrorPage = page === 'closed' || page === 'unpublished' || page === 'login';
-    
+
     if (!isErrorPage) {
       // 【修正】サイト全体非公開チェックを先に実行
       if (config.siteWidePublished === false) {
@@ -1470,7 +1654,7 @@ let page = pathname
         res.end();
         return;
       }
- 
+
       // 【修正】個別ページ非公開チェック（page 名が正規化されているので一致するはず）
       if (config.pages?.[page] === false) {
         res.writeHead(302, {
@@ -1482,7 +1666,7 @@ let page = pathname
     }
   }
 
-  
+
   if (rejectCrossOriginWrite(req, res)) return;
 
   // ログイン時以外の不要なセッションの蓄積を防ぐため、静的ファイル読み込み時のみ匿名を発行
@@ -1545,31 +1729,31 @@ let page = pathname
 
       if (purpose === 'admin' && user.role === 'staff') {
 
-    logEvent('login_blocked_staff', {
-        username: user.username,
-        userAgent: req.headers['user-agent'] || '',
-        page: pathname,
-    });
-
-    return sendJson(res, 403, {
-        ok: false,
-        error: 'Staff users cannot access admin panel'
-    });
-
-}
-
-     /*  if (user.role === 'staff') {
         logEvent('login_blocked_staff', {
           username: user.username,
           userAgent: req.headers['user-agent'] || '',
           page: pathname,
-      });
+        });
 
-  return sendJson(res, 403, {
-    ok: false,
-    error: 'Staff users cannot log in'
-  });
-} */
+        return sendJson(res, 403, {
+          ok: false,
+          error: 'Staff users cannot access admin panel'
+        });
+
+      }
+
+      /*  if (user.role === 'staff') {
+         logEvent('login_blocked_staff', {
+           username: user.username,
+           userAgent: req.headers['user-agent'] || '',
+           page: pathname,
+       });
+ 
+   return sendJson(res, 403, {
+     ok: false,
+     error: 'Staff users cannot log in'
+   });
+ } */
 
       clearRateLimit(rateLimitKey);
 
@@ -1624,7 +1808,7 @@ let page = pathname
           const userPerms = getUserPermissions(user.id);
           return [...new Set([...rolePerms, ...userPerms])];
         })()
-        }));
+      }));
     });
     return;
   }
@@ -1675,19 +1859,19 @@ let page = pathname
   if (
     pathname === "/api/auth/check-announcement-access" &&
     req.method === "GET"
-) {
+  ) {
     requirePermission(req, res, "announcement.create", (user) => {
 
-        return sendJson(res, 200, {
-            ok: true,
-            username: user.username,
-            role: user.role
-        });
+      return sendJson(res, 200, {
+        ok: true,
+        username: user.username,
+        role: user.role
+      });
 
     });
 
     return;
-}
+  }
 
   // API: ユーザー一覧取得 (GET)
   if (pathname === '/api/auth/users' && req.method === 'GET') {
@@ -1995,10 +2179,10 @@ let page = pathname
 
       const normalizedAttributes = rawAttributes
         ? Object.fromEntries(
-            Object.entries(rawAttributes)
-              .map(([key, value]) => [String(key).trim(), String(value || '').trim()])
-              .filter(([key, value]) => key && value)
-          )
+          Object.entries(rawAttributes)
+            .map(([key, value]) => [String(key).trim(), String(value || '').trim()])
+            .filter(([key, value]) => key && value)
+        )
         : null;
 
       const attributesJson = normalizedAttributes && Object.keys(normalizedAttributes).length
@@ -2268,7 +2452,7 @@ let page = pathname
   // POST /api/posts
   // 投稿作成（匿名可）
   if (pathname === '/api/posts' && req.method === 'POST') {
-    parseBody(req, (err, payload) => {
+    parseBody(req, async (err, payload) => {
       if (err) return sendJson(res, 400, { ok: false, error: 'Invalid JSON' });
 
       const content = String(payload.content || '').trim();
@@ -2279,26 +2463,28 @@ let page = pathname
         return sendJson(res, 400, { ok: false, error: 'Content is too long (max 500 chars)' });
       }
 
-      const ngCheck = checkNGRules(content);
-      const status = calculatePostStatus(ngCheck.riskScore);
+      const evaluation = await evaluatePostRisk(content);
+      const status = calculatePostStatus(evaluation.riskScore);
 
       const result = db.prepare(`
         INSERT INTO posts (content, status, risk_score, created_at, updated_at)
         VALUES (?, ?, ?, datetime('now', '+9 hours'), datetime('now', '+9 hours'))
-      `).run(content, status, ngCheck.riskScore);
+      `).run(content, status, evaluation.riskScore);
 
       logEvent('post_created', {
         sessionId: getCookies(req)[SESSION_COOKIE_NAME],
         userAgent: req.headers['user-agent'] || '',
         page: pathname,
-        detail: JSON.stringify({ postId: result.lastInsertRowid, status })
+        detail: JSON.stringify({ postId: result.lastInsertRowid, status, riskScore: evaluation.riskScore, source: evaluation.source, detectedRuleIds: evaluation.detectedRuleIds })
       });
 
       return sendJson(res, 201, {
         ok: true,
-        message: '投稿を受け付けました',
+        message: status === 'rejected' ? '投稿は拒否されました' : status === 'review' ? '投稿は要確認として保留されました' : '投稿を受け付けました',
         postId: result.lastInsertRowid,
-        status
+        status,
+        risk_score: evaluation.riskScore,
+        source: evaluation.source
       });
     });
     return;
@@ -2332,28 +2518,27 @@ let page = pathname
         return sendJson(res, 404, { ok: false, error: 'Post not found' });
       }
 
-      const existingReaction = db.prepare(`
+      const existingReactions = db.prepare(`
         SELECT reaction_type
         FROM post_reactions
         WHERE post_id = ? AND session_id = ?
-      `).get(postId, sessionId);
+      `).all(postId, sessionId);
 
-      if (existingReaction) {
-        if (existingReaction.reaction_type === reactionType) {
-          const summary = getPostReactionSummary(postId, sessionId);
-          return sendJson(res, 200, {
-            ok: true,
-            added: false,
-            alreadyReacted: true,
-            reaction_type: reactionType,
-            ...summary
-          });
-        }
+      const sameReactionExists = existingReactions.some(item => item.reaction_type === reactionType);
+      if (sameReactionExists) {
+        db.prepare(`
+          DELETE FROM post_reactions
+          WHERE post_id = ? AND session_id = ? AND reaction_type = ?
+        `).run(postId, sessionId, reactionType);
 
-        return sendJson(res, 409, {
-          ok: false,
-          error: 'Already reacted',
-          reaction_type: existingReaction.reaction_type
+        const summary = getPostReactionSummary(postId, sessionId);
+        return sendJson(res, 200, {
+          ok: true,
+          added: false,
+          toggled_off: true,
+          alreadyReacted: true,
+          reaction_type: reactionType,
+          ...summary
         });
       }
 
@@ -2368,6 +2553,7 @@ let page = pathname
       return sendJson(res, 200, {
         ok: true,
         added: result.changes > 0,
+        toggled_off: false,
         alreadyReacted: result.changes === 0,
         reaction_type: reactionType,
         ...summary
@@ -2905,13 +3091,13 @@ let page = pathname
     return;
   }
 
- // GET /api/admin/publish - ページ公開状態取得（管理者のみ）
+  // GET /api/admin/publish - ページ公開状態取得（管理者のみ）
   if (req.url === '/api/admin/publish' && req.method === 'GET') {
     const user = getSessionUser(req);
     if (!user || !hasPermission(user, 'control')) {
       return sendJson(res, 403, { ok: false, error: 'Forbidden' });
     }
- 
+
     const config = loadConfig();
     return sendJson(res, 200, {
       ok: true,
@@ -2919,14 +3105,14 @@ let page = pathname
       siteWidePublished: config.siteWidePublished !== false
     });
   }
- 
+
   // POST /api/admin/publish - ページ公開状態更新（管理者のみ）
-   if (req.url === '/api/admin/publish' && req.method === 'POST') {
+  if (req.url === '/api/admin/publish' && req.method === 'POST') {
     const user = getSessionUser(req);
     if (!user || !hasPermission(user, 'control')) {
       return sendJson(res, 403, { ok: false, error: 'Forbidden' });
     }
- 
+
     let body = '';
     req.on('data', chunk => {
       body += chunk;
@@ -2934,44 +3120,44 @@ let page = pathname
         req.destroy();
       }
     });
- 
+
     req.on('end', () => {
       try {
         const data = JSON.parse(body);
         const config = loadConfig();
- 
+
         // 【修正】page 名を小文字に正規化してから保存
         if (data.page !== undefined) {
           const normalizedPage = String(data.page).toLowerCase().trim();
-          
+
           if (!normalizedPage) {
             return sendJson(res, 400, { ok: false, error: 'Invalid page name' });
           }
-          
+
           config.pages = config.pages || {};
           config.pages[normalizedPage] = Boolean(data.published);
-          
+
           console.log(`[Publish] Page '${data.page}' normalized to '${normalizedPage}', published: ${config.pages[normalizedPage]}`);
-          
+
           logEvent('page_published_toggled', {
             username: user.username,
             sessionId: getCookies(req)[SESSION_COOKIE_NAME],
             userAgent: req.headers['user-agent'] || '',
             page: '/api/admin/publish',
-            detail: JSON.stringify({ 
+            detail: JSON.stringify({
               originalPage: data.page,
-              normalizedPage: normalizedPage, 
-              published: config.pages[normalizedPage] 
+              normalizedPage: normalizedPage,
+              published: config.pages[normalizedPage]
             })
           });
         }
- 
+
         // サイト全体非公開フラグの更新
         if (data.siteWidePublished !== undefined) {
           config.siteWidePublished = Boolean(data.siteWidePublished);
-          
+
           console.log(`[Publish] Site-wide published: ${config.siteWidePublished}`);
-          
+
           logEvent('site_published_toggled', {
             username: user.username,
             sessionId: getCookies(req)[SESSION_COOKIE_NAME],
@@ -2980,19 +3166,19 @@ let page = pathname
             detail: JSON.stringify({ siteWidePublished: config.siteWidePublished })
           });
         }
- 
+
         // 【修正】ファイル書き込みエラーハンドリング
         try {
           fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
         } catch (writeErr) {
           console.error('[Error] Failed to write config.json:', writeErr);
-          return sendJson(res, 500, { 
-            ok: false, 
-            error: 'Failed to save configuration' 
+          return sendJson(res, 500, {
+            ok: false,
+            error: 'Failed to save configuration'
           });
         }
- 
-        return sendJson(res, 200, { 
+
+        return sendJson(res, 200, {
           ok: true,
           message: 'Configuration updated successfully',
           config: {
@@ -3005,16 +3191,16 @@ let page = pathname
         return sendJson(res, 400, { ok: false, error: 'Invalid request' });
       }
     });
- 
+
     req.on('error', (e) => {
       console.error('[Error] Request error:', e);
       return sendJson(res, 500, { ok: false, error: 'Internal server error' });
     });
- 
+
     return;
   }
- 
- 
+
+
 
   // ──────────────────────────────────────────────────────────────────────────
   // 訪問者識別・スタンプラリー・抽選連携 API
@@ -3112,8 +3298,8 @@ let page = pathname
         ).get(visitorId, companyId);
 
         if (existingStamp) {
-          return sendJson(res, 400, { 
-            ok: false, 
+          return sendJson(res, 400, {
+            ok: false,
             error: 'Stamp already acquired for this company',
             stamp: existingStamp
           });
@@ -3141,8 +3327,8 @@ let page = pathname
           sessionId: getCookies(req)[SESSION_COOKIE_NAME],
           userAgent: req.headers['user-agent'] || '',
           page: pathname,
-          detail: JSON.stringify({ 
-            visitor_id: visitorId, 
+          detail: JSON.stringify({
+            visitor_id: visitorId,
             company_id: companyId,
             survey_age: surveyAge,
             survey_discovery: surveyDiscovery,
@@ -3150,8 +3336,8 @@ let page = pathname
           })
         });
 
-        return sendJson(res, 201, { 
-          ok: true, 
+        return sendJson(res, 201, {
+          ok: true,
           message: 'Stamp acquired',
           stamp_id: result.lastInsertRowid,
           visitor_id: visitorId,
@@ -3349,8 +3535,8 @@ let page = pathname
           sessionId: getCookies(req)[SESSION_COOKIE_NAME],
           userAgent: req.headers['user-agent'] || '',
           page: pathname,
-          detail: JSON.stringify({ 
-            visitor_id: visitorId, 
+          detail: JSON.stringify({
+            visitor_id: visitorId,
             lottery_number: lotteryNumber,
             weight: weight,
             acquired_count: acquiredCount,

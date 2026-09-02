@@ -1,58 +1,560 @@
 [
   {
-    "id": "company-a",
-    "name": "企業A",
+    "exhibition": false,
+    "id": "company-1",
+    "name": "株式会社アイ・コミュニケーション",
     "note": "企業Aのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "industry": ["IT", "システム開発"],
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
     "description": "description",
     "festival": "festival",
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/noimage.png"
+    "image": "../images/companies/1.png"
   },
   {
-    "id": "company-b",
-    "name": "企業B",
-    "note": "企業Bのブース前のQRコードを読み取る",
+    "exhibition": false,
+    "id": "company-2",
+    "name": "奥村組土木興業（株）",
+    "note": "企業Aのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "industry": ["IT", "システム開発"],
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
     "description": "description",
     "festival": "festival",
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/noimage.png"
+    "image": "../images/companies/2.jpg"
   },
   {
-    "id": "company-c",
-    "name": "企業C",
-    "note": "企業Cのブース前のQRコードを読み取る",
+    "exhibition": false,
+    "id": "company-3",
+    "name": "島根電工株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "industry": ["IT", "システム開発"],
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
     "description": "description",
     "festival": "festival",
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/noimage.png"
+    "image": "../images/companies/3.jpg"
   },
   {
-    "id": "company-d",
-    "name": "企業D",
-    "note": "企業Dのブース前のQRコードを読み取る",
+    "exhibition": false,
+    "id": "company-4",
+    "name": "西尾レントオール株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
     "linkText": "企業紹介へ",
     "href": "../company.html",
-    "industry": ["IT", "システム開発"],
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
     "description": "description",
     "festival": "festival",
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/noimage.png"
+    "image": "../images/companies/4.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-5",
+    "name": "株式会社　日進ProSOL(ヒカワ工場)",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/5.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-6",
+    "name": "松江山本金属株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "松江市北稜町で、3m級の大物・高精度な金属加工を行っています。製造系部門の社員の約半数が松江高専OBです。企業展示ブースでは切削によるものづくり体験を開催します。ぜひお越しください！",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/6.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-7",
+    "name": "株式会社守谷刃物研究所",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/7.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-8",
+    "name": "株式会社　出雲村田製作所",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/8.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-9",
+    "name": "大畑建設株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/9.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-10",
+    "name": "カナツ技建工業株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/10.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-11",
+    "name": "株式会社　三晃空調",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/11.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-12",
+    "name": "株式会社シーエム・エンジニアリング",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/12.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-13",
+    "name": "島根自動機株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/13.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-14",
+    "name": "株式会社昭和測量設計事務所",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/14.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-15",
+    "name": "新和設備工業株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/15.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-16",
+    "name": "株式会社ジェイ・エム・エス出雲工場",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/16.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-17",
+    "name": "ゼノー・テック出雲株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/17.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-18",
+    "name": "株式会社　太陽電機製作所",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/18.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-19",
+    "name": "株式会社テクノプロジェクト",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/19.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-20",
+    "name": "株式会社中筋組",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/20.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-21",
+    "name": "ピーエス・コンストラクション株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/21.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-22",
+    "name": "ヒラタ精機株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/noimage.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-23",
+    "name": "復建調査設計株式会社　松江支社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/23.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-24",
+    "name": "株式会社ペンタスネット",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/24.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-25",
+    "name": "松江土建株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/noimage.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-26",
+    "name": "美保テクノス株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/26.png"
+  },
+  {
+    "exhibition": false,
+    "id": "company-27",
+    "name": "ヤンマーキャステクノ株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/27.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-28",
+    "name": "株式会社オンチョウ",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/28.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-29",
+    "name": "株式会社山陰合同銀行",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/29.jpg"
+  },
+  {
+    "exhibition": false,
+    "id": "company-30",
+    "name": "セコム山陰株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/30.jpg"
+  },
+  {
+    "exhibition": true,
+    "id": "company-31",
+    "name": "秦精工株式会社",
+    "note": "企業Aのブース前のQRコードを読み取る",
+    "linkText": "企業紹介へ",
+    "href": "../company.html",
+    "industry": [
+      "IT",
+      "システム開発"
+    ],
+    "description": "description",
+    "festival": "festival",
+    "message": "message",
+    "address": "address",
+    "website": "https://example.com",
+    "image": "../images/companies/31.png"
   }
 ]

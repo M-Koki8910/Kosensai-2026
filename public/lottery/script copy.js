@@ -505,6 +505,61 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// ================= デバッグ入力表示 =================
+
+let debugPCount = 0;
+let debugPStartTime = 0;
+let debugResetTimer = null;
+
+const DEBUG_P_REQUIRED = 10;
+const DEBUG_P_TIME_LIMIT = 5000;
+
+window.addEventListener('keydown', (e) => {
+    // Pキー以外は無視
+    if (e.code !== 'KeyP') return;
+
+    const now = Date.now();
+
+    // 5秒以上経過していたら新しいカウントとして開始
+    if (
+        debugPCount === 0 ||
+        now - debugPStartTime > DEBUG_P_TIME_LIMIT
+    ) {
+        debugPCount = 1;
+        debugPStartTime = now;
+    } else {
+        debugPCount++;
+    }
+
+    // 5秒後にカウントをリセット
+    clearTimeout(debugResetTimer);
+
+    debugResetTimer = setTimeout(() => {
+        debugPCount = 0;
+        debugPStartTime = 0;
+    }, DEBUG_P_TIME_LIMIT);
+
+    // 10回到達
+    if (debugPCount >= DEBUG_P_REQUIRED) {
+        const debugArea =
+            document.getElementById('debug-input-area');
+
+        if (debugArea) {
+            debugArea.style.display = 'block';
+
+            document.getElementById(
+                'debug-participant-id'
+            )?.focus();
+        }
+
+        // 一度表示したらカウントをリセット
+        debugPCount = 0;
+        debugPStartTime = 0;
+
+        clearTimeout(debugResetTimer);
+    }
+});
+
 // 起動
 loadData();
 setInterval(updateWaitingClock, 30000);
