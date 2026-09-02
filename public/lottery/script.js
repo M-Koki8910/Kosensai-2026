@@ -76,7 +76,7 @@ const DEBUG_P_KEY_WINDOW = 5000;
 // ============================================================
 // 音声
 // ============================================================
-
+const soundWaitingBgm = document.getElementById('sound-waiting');
 const soundRoll = document.getElementById('sound-roll');
 const soundStop = document.getElementById('sound-stop');
 const soundFinish = document.getElementById('sound-finish');
@@ -224,6 +224,11 @@ function showWaitingScreen() {
 
     renderWaitingScreen();
     updateWaitingClock();
+
+    if (soundWaitingBgm) {
+        soundWaitingBgm.currentTime = 0;
+        soundWaitingBgm.play().catch(() => {});
+    }
 }
 
 
@@ -241,6 +246,11 @@ function showStartScreen() {
     screenDraw.style.display = 'none';
     screenConfig.style.display = 'none';
     screenStart.style.display = 'flex';
+
+    if (soundWaitingBgm) {
+        soundWaitingBgm.pause();
+        soundWaitingBgm.currentTime = 0;
+    }
 }
 
 
