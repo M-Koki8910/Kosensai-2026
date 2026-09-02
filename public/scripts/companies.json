@@ -15,7 +15,7 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/noimage.png"
+    "image": "../images/companies/1.png"
   },
   {
     "exhibition": false,
@@ -429,7 +429,7 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/noimage.png"
+    "image": "../images/companies/24.jpg"
   },
   {
     "exhibition": false,
@@ -555,6 +555,6 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/noimage.png"
+    "image": "../images/companies/31.png"
   }
 ]
