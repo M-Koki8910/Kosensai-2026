@@ -90,7 +90,7 @@
     "image": "../images/companies/5.png"
   },
   {
-    "exhibition": false,
+    "exhibition": true,
     "id": "company-6",
     "name": "松江山本金属株式会社",
     "note": "企業Aのブース前のQRコードを読み取る",

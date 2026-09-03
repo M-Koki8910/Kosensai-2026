@@ -1872,6 +1872,33 @@ h2::after {
     color: #555;
 }
 
+.company-subsection {
+    max-width: 1100px;
+    margin: 0 auto 56px;
+}
+
+.company-subsection:last-child {
+    margin-bottom: 0;
+}
+
+.company-subsection > h3 {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 24px;
+    color: #234a85;
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.company-subsection > h3::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #cbd7e5;
+}
+
 
 /* ----------------------------------------
    企業一覧
@@ -2261,6 +2288,10 @@ body.modal-open {
 
 @media (max-width: 900px) {
 
+    .company-subsection {
+        margin-bottom: 44px;
+    }
+
     .company-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 18px;
@@ -2274,6 +2305,17 @@ body.modal-open {
 ======================================== */
 
 @media (max-width: 600px) {
+
+    .company-subsection {
+        margin-bottom: 36px;
+    }
+
+    .company-subsection > h3 {
+        gap: 10px;
+        margin-bottom: 18px;
+        font-size: 1.2rem;
+        letter-spacing: 0.02em;
+    }
 
     .company-grid {
         grid-template-columns: 1fr 1fr;

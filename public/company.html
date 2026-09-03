@@ -73,7 +73,15 @@
                 高専祭にご協力いただいている企業をご紹介します。
             </p>
 
-            <div id="company-list" class="company-grid"></div>
+            <section class="company-subsection">
+                <h3>ご出展企業様</h3>
+                <div id="exhibition-company-list" class="company-grid"></div>
+            </section>
+
+            <section class="company-subsection">
+                <h3>ご協賛企業様</h3>
+                <div id="sponsor-company-list" class="company-grid"></div>
+            </section>
         </section>
 
 
@@ -92,7 +100,10 @@
     </main>
     <script>
 
-        const companyList = document.getElementById('company-list');
+        const exhibitionCompanyList =
+            document.getElementById('exhibition-company-list');
+        const sponsorCompanyList =
+            document.getElementById('sponsor-company-list');
         const companyModal = document.getElementById('company-modal');
         const companyModalBody =
             document.getElementById('company-modal-body');
@@ -113,7 +124,11 @@
                 const companies = await response.json();
 
                 companies.forEach(company => {
-                    createCompanyCard(company);
+                    const list = company.exhibition === true
+                        ? exhibitionCompanyList
+                        : sponsorCompanyList;
+
+                    createCompanyCard(company, list);
                 });
 
                 // URLから企業IDを取得
@@ -141,7 +156,9 @@
             } catch (error) {
                 console.error(error);
 
-                companyList.innerHTML =
+                exhibitionCompanyList.innerHTML =
+                    '<p>企業情報を読み込めませんでした。</p>';
+                sponsorCompanyList.innerHTML =
                     '<p>企業情報を読み込めませんでした。</p>';
             }
         }
@@ -149,7 +166,7 @@
 
 
 
-        function createCompanyCard(company) {
+        function createCompanyCard(company, list) {
             const card = document.createElement('article');
 
             card.className = 'company-card';
@@ -187,7 +204,7 @@
                     openCompanyModal(company);
                 });
 
-            companyList.appendChild(card);
+            list.appendChild(card);
         }
 
 
