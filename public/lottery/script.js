@@ -11,19 +11,19 @@ const STATES = {
 };
 
 const WAITING_GUIDE_STEPS = [
-    '1. GUIDE_TEXT',
-    '2. GUIDE_TEXT',
-    '3. GUIDE_TEXT',
-    '4. GUIDE_TEXT',
-    '5. GUIDE_TEXT'
+    '1. 抽選では、参加者の抽選番号と景品番号が一緒に抽選されます。',
+    '2. 4等から1等まで順番に抽選を行います。',
+    '3. 抽選は1回のターンで5つ同時に行います。',
+    '4. 当選された方は係員が景品をお渡ししますので、抽選番号を控えてお待ちください。',
+    '5. 当たってもはずれても、たくさん盛り上げてください。'
 ];
 
 const WAITING_NOTES = [
-    '・NOTE_TEXT',
-    '・NOTE_TEXT',
-    '・NOTE_TEXT',
-    '・NOTE_TEXT',
-    '・NOTE_TEXT'
+    '・当選番号と自分の抽選番号は必ず照らし合わせてください。',
+    '・ブラウザの履歴の削除を行うと抽選番号が消失する場合があります。',
+    '・消失を防ぐため、スクリーンショット等控えを保存してください。',
+    '・抽選会受付終了後の抽選番号の再発行はできません。',
+    '・なりすまし等の不正行為が発覚した場合、当選を取り消す場合があります。'
 ];
 
 let currentState = STATES.START;
@@ -309,6 +309,36 @@ async function loadData() {
 }
 
 
+function loadLotteryResults() {
+
+    const saved =
+        localStorage.getItem('lottery_results');
+
+    if (!saved) {
+        lotteryResults = {};
+        return;
+    }
+
+    try {
+        lotteryResults = JSON.parse(saved);
+
+        if (
+            !lotteryResults ||
+            typeof lotteryResults !== 'object' ||
+            Array.isArray(lotteryResults)
+        ) {
+            lotteryResults = {};
+        }
+    } catch (error) {
+        console.error(
+            '抽選結果の読み込みに失敗しました。',
+            error
+        );
+
+        lotteryResults = {};
+    }
+}
+
 // ============================================================
 // 抽選セッション開始
 // ============================================================
@@ -564,15 +594,6 @@ function setupBlankCards(count) {
 
 // ============================================================
 // デバッグ機能
-// ============================================================
-//
-// 景品番号の先頭1桁から対象等を決定する
-//
-// 例:
-// 503 → 5等
-// 401 → 4等
-// 201 → 2等
-//
 // ============================================================
 
 function setDebugTarget(participantId, itemNum) {
@@ -977,10 +998,33 @@ function findDebugItem(grade) {
 
 
 // ============================================================
+// 当選結果を保存
+// ============================================================
+
+let lotteryResults = {};
+
+function saveLotteryResult(participantId, itemNum) {
+
+    lotteryResults[String(participantId)] = itemNum;
+
+    try {
+        localStorage.setItem(
+            'lottery_results',
+            JSON.stringify(lotteryResults)
+        );
+    } catch (error) {
+        console.error('抽選結果の保存に失敗しました。', error);
+    }
+}
+
+
+
+// ============================================================
 // コア抽選ロジック
 // ============================================================
 
 let currentTurnResults = [];
+
 
 function executeDrawSequence() {
 
@@ -1002,11 +1046,6 @@ function executeDrawSequence() {
 
     // --------------------------------------------------------
     // デバッグモード
-    // --------------------------------------------------------
-    //
-    // 指定された景品番号の等に到達した場合、
-    // 指定参加者 + 指定景品を必ず最初の枠に割り当てる
-    //
     // --------------------------------------------------------
 
     if (isDebugGrade(currentGrade)) {
@@ -1139,7 +1178,6 @@ function executeDrawSequence() {
                     winnerIndex,
                     1
                 )[0];
-
 
             currentTurnResults.push({
 
@@ -1377,6 +1415,11 @@ function animateFlaps() {
                                 ]
                             ) {
 
+                                saveLotteryResult(
+                                    currentTurnResults[idx].participantId,
+                                    currentTurnResults[idx].itemNum
+                                );
+
                                 c.querySelector(
                                     '.item-text-name'
                                 ).textContent =
@@ -1446,6 +1489,8 @@ function handlePrimaryAction() {
 // ============================================================
 
 function buildConfigDataTables() {
+
+    loadLotteryResults();
 
     document.getElementById(
         'count-prizes-label'
@@ -1521,6 +1566,55 @@ function buildConfigDataTables() {
 
         tbodyParticipants.appendChild(tr);
     });
+
+    renderLotteryResults();
+}
+
+
+function renderLotteryResults() {
+
+    const tbody = document.querySelector('#table-lottery-results tbody');
+    const countLabel = document.getElementById('count-results-label');
+
+    if (!tbody || !countLabel) {
+        return;
+    }
+
+    const results = Object.entries(lotteryResults);
+    countLabel.textContent = results.length;
+    tbody.innerHTML = '';
+
+    if (results.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="empty-state">当選結果はまだありません</td></tr>';
+        return;
+    }
+
+    results.forEach(([participantId, itemNum]) => {
+
+        const item = masterPrizes
+            .flatMap(grade => grade.items)
+            .find(candidate => String(candidate.item_num) === String(itemNum));
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><code>${participantId}</code></td>
+            <td><code>${itemNum}</code></td>
+            <td>${item ? item.item_name : '景品データなし'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+
+function clearLotteryResults() {
+
+    if (!confirm('保存されている当選結果をすべて削除します。よろしいですか？')) {
+        return;
+    }
+
+    lotteryResults = {};
+    localStorage.removeItem('lottery_results');
+    renderLotteryResults();
 }
 
 
@@ -1612,6 +1706,9 @@ document
 
             screenConfig.style.display =
                 'flex';
+
+            loadLotteryResults();
+            renderLotteryResults();
         }
     );
 
@@ -1672,6 +1769,14 @@ document
                 );
             }
         }
+    );
+
+
+document
+    .getElementById('clear-results-btn')
+    .addEventListener(
+        'click',
+        clearLotteryResults
     );
 
 

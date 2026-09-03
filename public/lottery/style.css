@@ -197,6 +197,10 @@ th, td { padding: 0.6rem; text-align: left; border-bottom: 1px solid #e2e8f0; co
 th { background: #f1f5f9; color: #475569; position: sticky; top: 0; font-weight: bold; }
 code { background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px; color: #0f172a; font-family: monospace; font-size: 0.9rem;}
 #screen-config footer { display: flex; justify-content: center; margin-top: 1rem; }
+.results-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.results-header h3 { margin: 0; }
+.btn-danger { background-color: #dc2626; color: #fff; font-size: 0.9rem; padding: 0.55rem 1rem; border-radius: 6px; }
+.results-table-scroll { height: 240px; }
 
 #screen-waiting {
     background: #f8fafc;
