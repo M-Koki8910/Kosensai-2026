@@ -1179,6 +1179,12 @@ async function judgeContentWithGemini(content) {
    - 【経過観察（31〜60）】文脈上悪意のない軽微な下ネタ、冗談。
    - 【安全（0〜30）】生理、性教育、病院での診察、学術・医療目的の身体表現。
 
+4.人名表現の排除：人名と取れる文字列が含まれる場合は40以上のスコアを加算する。また、あだ名やニックネーム、ハンドルネームなどの個人を特定できる表現も同様にスコアを加算する。
+
+5.特殊な構文の排除：句点、読点によって改行し、先頭ないし任意の位置から縦方向に読ませると別の内容が浮かび上がるような構文（縦読み、縦書き、縦組み）や、文字の間に空白や記号を挿入して別の意味を持たせる構文を含む場合は、スコアを加算する。(40〜
+)
+【例】おもしろかったです！ なんでもありという学生の雰囲気が伝わってきました✨ にちようびも巡ってみたいと思いました ｜日中でも飽きないですね！
+「日曜日」が「にちようび」とひらがなで書かれていることや、「1日」が数字でなく「｜（縦棒）」になっている。先頭を揃えるように開業すると「おなにー」と取れるため、こうした構文でないことを確認する。
 # 除外規定・誤検知防止ルール（ネガティブ制約）
 - 強調表現の保護: 「死ぬほど美味い」「ヤバすぎる」「殺意が湧くほど暑い」などの感情表現（慣用句）は、他者への直接的な危害予告でない限り、過剰にスコアを加算しないこと（0〜30の範囲）。
 - 事実に基づく批判の保護: サービスや製品に対する厳しい意見であっても、個人攻撃や不当な罵詈雑言を含まない場合は「安全（0〜30）」と判定すること。
@@ -1206,7 +1212,7 @@ async function judgeContentWithGemini(content) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${encodeURIComponent(apiKey)}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
