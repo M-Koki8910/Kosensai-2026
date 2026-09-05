@@ -53,7 +53,10 @@
     <div class="container-section shop-page">
         <h2>模擬店</h2>
         <div class="shop-grid-wrap">
-            <div class="shop-tab-grid" id="shopTabs" aria-live="polite"></div>
+            <h3 class="shop-category-title">食べ物模擬店</h3>
+            <div class="shop-tab-grid" id="foodShopTabs" aria-live="polite"></div>
+            <h3 class="shop-category-title">体験型模擬店</h3>
+            <div class="shop-tab-grid" id="experienceShopTabs" aria-live="polite"></div>
         </div>
     </div>
 
@@ -74,19 +77,26 @@
     </div>
 
     <script>
-        const shopTabs = document.getElementById('shopTabs');
+        const foodShopTabs = document.getElementById('foodShopTabs');
+        const experienceShopTabs = document.getElementById('experienceShopTabs');
         const modal = document.getElementById('shopModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalProduct = document.getElementById('modalProduct');
         const modalDescription = document.getElementById('modalDescription');
         const modalImage = document.getElementById('modalImage');
         const closeBtn = document.querySelector('.shop-modal-close');
+        let modalImageCandidates = [];
+        let modalImageIndex = 0;
 
         function openModal(shop) {
             modalTitle.textContent = shop.name || '団体名';
             modalProduct.textContent = shop.product || '未定';
             modalDescription.textContent = shop.description || '説明が登録されていません。';
-            modalImage.src = './images/shop.jpg';
+            modalImageCandidates = shop.image
+                ? [shop.image]
+                : ['jpg', 'png', 'jpeg'].map((extension) => `./images/shop_${shop.name}.${extension}`);
+            modalImageIndex = 0;
+            modalImage.src = modalImageCandidates[modalImageIndex];
             modalImage.alt = shop.name || '模擬店';
             modal.classList.add('open');
             modal.setAttribute('aria-hidden', 'false');
@@ -124,15 +134,28 @@
                 }
 
                 shops.forEach((shop) => {
+                    const shopTabs = shop.category === 'experience'
+                        ? experienceShopTabs
+                        : foodShopTabs;
                     shopTabs.appendChild(createShopTab(shop));
                 });
             })
             .catch((error) => {
                 console.error(error);
-                shopTabs.innerHTML = '<div class="shop-error">模擬店の情報を読み込めませんでした。</div>';
+                foodShopTabs.innerHTML = '<div class="shop-error">模擬店の情報を読み込めませんでした。</div>';
+                experienceShopTabs.innerHTML = '<div class="shop-error">模擬店の情報を読み込めませんでした。</div>';
             });
 
         closeBtn.addEventListener('click', closeModal);
+
+        modalImage.addEventListener('error', () => {
+            modalImageIndex += 1;
+            if (modalImageIndex < modalImageCandidates.length) {
+                modalImage.src = modalImageCandidates[modalImageIndex];
+            } else {
+                modalImage.src = './images/shop.jpg';
+            }
+        });
 
         modal.addEventListener('click', (event) => {
             if (event.target === modal) {
