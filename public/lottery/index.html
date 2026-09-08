@@ -142,6 +142,25 @@
                 </div>
             </div>
 
+            <div class="config-section data-viewer">
+                <div class="results-header">
+                    <h3>🏆 当選結果一覧 (<span id="count-results-label">0</span>件)</h3>
+                    <button id="clear-results-btn" class="btn-danger">当選結果を全削除</button>
+                </div>
+                <div class="table-scroll results-table-scroll">
+                    <table id="table-lottery-results">
+                        <thead>
+                            <tr>
+                                <th>抽選番号</th>
+                                <th>景品番号</th>
+                                <th>景品名</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
             <footer>
                 <button id="close-config-btn" class="btn-secondary">スタート画面へ戻る</button>
             </footer>
@@ -149,10 +168,10 @@
 
     </div>
 
-    <audio id="sound-waiting" src="BGM-lottery.mp3" loop preload="auto"></audio>
-    <audio id="sound-roll" src="roll.mp3" loop preload="auto"></audio>
-    <audio id="sound-stop" src="stop.mp3" preload="auto"></audio>
-    <audio id="sound-finish" src="end.mp3" preload="auto"></audio>
+    <audio id="sound-waiting" src="./asset/BGM-lottery.mp3" loop preload="auto"></audio>
+    <audio id="sound-roll" src="./asset/roll.mp3" loop preload="auto"></audio>
+    <audio id="sound-stop" src="./asset/stop.mp3" preload="auto"></audio>
+    <audio id="sound-finish" src="./asset/end.mp3" preload="auto"></audio>
 
     <script src="script.js"></script>
 </body>
