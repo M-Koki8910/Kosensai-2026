@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.7.0/minified/html5-qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="./scripts/script.js" defer></script>
+  <script src="./scripts/tweet.js"></script>
   <link rel="icon" type="image/png" href="./images/tab-resize.png">
 
   <style>
@@ -239,6 +240,54 @@
 
       margin: 20px 0;
 
+      min-height: 1.2em;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+    }
+
+    .lottery-number.is-processing {
+
+      color: transparent;
+
+    }
+
+    .lottery-loading-spinner {
+
+      display: inline-block;
+
+      width: 68px;
+
+      height: 68px;
+
+      border: 6px solid rgba(37, 99, 235, 0.18);
+
+      border-top-color: var(--primary);
+
+      border-right-color: #60a5fa;
+
+      border-radius: 50%;
+
+      animation: lotteryLoadingSpin 0.9s linear infinite;
+
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+
+    }
+
+    @keyframes lotteryLoadingSpin {
+
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+
     }
 
     .result-text {
@@ -294,21 +343,14 @@
       <li><a href="./company.html">ご協賛企業様紹介</a></li>
       <li><a href="./schedule.html">スケジュール</a></li>
       <li><a href="./map.html">会場マップ</a></li>
+      <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
       <li><a href="./announcements.html">お知らせ</a></li>
       <li><a href="./bulletin.html">掲示板</a></li>
       <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
       <li><a href="./about-kosen.html">松江高専とは</a></li>
       <li><a href="./aboutme.html">このサイトについて</a></li>
     </ul>
-    <div class="nav-footer">
-      <a class="nav-social" href="https://www.instagram.com/mct_relations/" target="_blank" rel="noopener noreferrer">
-        <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学校広報
-      </a>
-      <a class="nav-social" href="https://www.instagram.com/mct_gakuseikai/" target="_blank" rel="noopener noreferrer">
-        <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学生会
-      </a>
-    </div>
-  </nav>
+</nav>
 
   <main class="page">
 
@@ -386,6 +428,25 @@
     let isProcessing = false;
 
     const LOTTERY_STORAGE_KEY = 'lottery-last-issued';
+    const EVENT_MASTER_URL = './event-participants.json';
+    let eventIdsPromise = null;
+
+    function loadEventIds() {
+      if (!eventIdsPromise) {
+        eventIdsPromise = fetch(EVENT_MASTER_URL, { cache: 'no-store' })
+          .then(response => response.ok ? response.json() : { events: [] })
+          .then(data => new Set(
+            Array.isArray(data.events)
+              ? data.events.map(event => String(event.event_id || '').trim()).filter(Boolean)
+              : []
+          ))
+          .catch(error => {
+            console.warn('イベント定義の読み込みに失敗しました', error);
+            return new Set();
+          });
+      }
+      return eventIdsPromise;
+    }
 
     function showReader() {
       readerCard.hidden = false;
@@ -393,10 +454,34 @@
       readerCard.style.display = "block";
       resultCard.style.display = "none";
       resultCard.classList.remove('is-visible');
-      lotteryNumberEl.classList.remove('is-burst');
+      lotteryNumberEl.classList.remove('is-burst', 'is-processing');
+      lotteryNumberEl.textContent = '0000';
+      lotteryNumberEl.innerHTML = '';
 
       requestAnimationFrame(() => {
         readerCard.classList.add('is-visible');
+      });
+    }
+
+    function showProcessingState() {
+      readerCard.hidden = true;
+      resultCard.hidden = false;
+      readerCard.style.display = "none";
+      resultCard.style.display = "block";
+      readerCard.classList.remove('is-visible');
+      resultCard.classList.remove('is-visible');
+
+      lotteryNumberEl.classList.remove('is-burst');
+      lotteryNumberEl.classList.add('is-processing');
+      lotteryNumberEl.innerHTML = '<span class="lottery-loading-spinner" aria-label="処理中"></span>';
+
+      const resultText = document.querySelector('.result-text');
+      if (resultText) {
+        resultText.textContent = '受付を確認しています。そのままお待ちください。';
+      }
+
+      requestAnimationFrame(() => {
+        resultCard.classList.add('is-visible');
       });
     }
 
@@ -483,9 +568,44 @@
       return rawValue === "Kosensai-LotteryCode";
     }
 
+    async function parseEventQR(rawValue) {
+      const value = String(rawValue || '').trim();
+      const prefix = 'Kosensai-EventCode:';
+      if (!value.startsWith(prefix)) return null;
+
+      const eventId = value.slice(prefix.length).trim();
+      const eventIds = await loadEventIds();
+      return eventIds.has(eventId) ? eventId : null;
+    }
+
+    async function getVisitorId() {
+      const savedVisitorId = localStorage.getItem('visitor_id');
+      if (savedVisitorId) return savedVisitorId;
+
+      const visitorResponse = await fetch('/api/visitor/me', { cache: 'no-store' });
+      const visitorData = await visitorResponse.json().catch(() => ({}));
+      if (!visitorResponse.ok || !visitorData.ok || !visitorData.visitor_id) return null;
+
+      const visitorId = String(visitorData.visitor_id);
+      localStorage.setItem('visitor_id', visitorId);
+      return visitorId;
+    }
+
+    async function registerEventParticipant(visitorId, eventId) {
+      const response = await fetch('/api/event-participant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitor_id: visitorId, event_id: eventId })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'イベント参加の記録に失敗しました');
+      return result;
+    }
+
     async function registerAndIssue(visitorId) {
       if (!visitorId || isProcessing) return;
       isProcessing = true;
+      showProcessingState();
       setState('受付中です。スタンプ履歴と連携しています…');
 
       try {
@@ -520,10 +640,11 @@
         //lotteryMetaEl.textContent = entryData.existing ? '既に発行済みの抽選番号を再表示しました。' : '新しく抽選番号を発行しました。';
         //stampMetaEl.textContent = `スタンプ取得数 ${stampCount} 件 / 総ブース数 ${entryData.total_companies || 0}`;
 
-
         const statusLabel = entryData.existing ? '再表示' : '発行完了';
         setState(`受付完了: ${lotteryNumber} を発行しました。`, 'is-success');
         saveIssuedLottery(lotteryNumber);
+
+        await new Promise(resolve => setTimeout(resolve, 3000));
         showLotteryResult(lotteryNumber);
 
         /*  appendHistory(statusLabel, `UUID <strong>${escapeHtml(visitorId)}</strong> に対して抽選番号 <strong>${escapeHtml(lotteryNumber)}</strong> を保存しました。`);*/
@@ -582,6 +703,34 @@
 
             console.log("QR読み取り:", decodedText);
 
+            if (isProcessing) return;
+
+            const eventId = await parseEventQR(decodedText);
+            if (String(decodedText || '').trim().startsWith('Kosensai-EventCode:')) {
+              isProcessing = true;
+              await stopScanner();
+
+              try {
+                if (!eventId) throw new Error('未登録のイベントQRコードです。');
+                const visitorId = await getVisitorId();
+                if (!visitorId) throw new Error('訪問者IDを取得できませんでした。ページを再読み込みしてください。');
+                const result = await registerEventParticipant(visitorId, eventId);
+                const weight = Number(result.participant?.weight || 3);
+                setState(
+                  result.existing
+                    ? `イベント参加済みです（Weight +${weight}）。`
+                    : `イベント参加を記録しました（Weight +${weight}）。`,
+                  'is-success'
+                );
+              } catch (error) {
+                console.error(error);
+                setState(error.message || 'イベント参加の記録に失敗しました。', 'is-error');
+              } finally {
+                isProcessing = false;
+              }
+              return;
+            }
+
             if (!isLotteryQR(decodedText)) {
               console.log("抽選QRではありません");
               return;
@@ -591,16 +740,16 @@
 
             await stopScanner();
 
-            let visitorId = localStorage.getItem("visitor_uuid");
+            let visitorId = null;
+            try {
+              visitorId = await getVisitorId();
+            } catch (error) {
+              console.warn('訪問者IDの取得に失敗しました', error);
+            }
 
             if (!visitorId) {
-
-              visitorId = crypto.randomUUID();
-
-              localStorage.setItem(
-                "visitor_uuid",
-                visitorId
-              );
+              setState('訪問者IDを取得できませんでした。ページを再読み込みしてください。', 'is-error');
+              return;
             }
 
             await registerAndIssue(visitorId);
@@ -696,8 +845,15 @@
       readerCard.classList.remove('is-visible');
       resultCard.classList.remove('is-visible');
 
+      lotteryNumberEl.classList.remove('is-processing');
+      lotteryNumberEl.innerHTML = '';
       lotteryNumberEl.textContent = number;
       lotteryNumberEl.classList.remove('is-burst');
+
+      const resultText = document.querySelector('.result-text');
+      if (resultText) {
+        resultText.textContent = '抽選会まで番号を保存してください。';
+      }
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {

@@ -1,0 +1,86 @@
+[
+  {
+    "pattern": "しね",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "死ね",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "消えろ",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "ウザイ",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "1919",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "4545",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "0721",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "810",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "114514",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "会い",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "会う",
+    "is_regex": false,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "禁止ワード"
+  },
+  {
+    "pattern": "https?://[^\\s]+",
+    "is_regex": true,
+    "risk_score": 100,
+    "enabled": true,
+    "description": "URL"
+  }
+]

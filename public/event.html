@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
+    <script src="./scripts/tweet.js"></script>
     <link rel="icon" type="image/png" href="./images/tab-resize.png">
 
     <script src="./scripts/script.js" defer></script>
@@ -20,6 +21,33 @@
     </div>
 
     <nav id="nav">
+        <div class="announcement-wrapper">
+
+            <!-- お知らせ -->
+            <div class="announcement-ticker info-ticker">
+                <div class="ticker-label">
+                    お知らせ
+                </div>
+
+                <div class="ticker-container">
+                    <div id="ticker-content" class="ticker-content"></div>
+                </div>
+            </div>
+
+            <!-- 注意 -->
+            <div class="announcement-ticker warning-ticker">
+                <div class="ticker-label">
+                    ⚠ 重要
+                </div>
+
+                <div class="ticker-container">
+                    <div class="ticker-content ticker-scroll">
+                        ＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <ul>
             <li><a href="./about.html">高専祭について</a></li>
             <li><a href="./shop.html">模擬店紹介</a></li>
@@ -29,122 +57,381 @@
             <li><a href="./company.html">ご協賛企業様紹介</a></li>
             <li><a href="./schedule.html">スケジュール</a></li>
             <li><a href="./map.html">会場マップ</a></li>
+            <li><a href="./tovisitors.html">ご来場のみなさまへ</a></li>
             <li><a href="./announcements.html">お知らせ</a></li>
             <li><a href="./bulletin.html">掲示板</a></li>
             <li><a href="./lottery-entry.html">抽選会参加受付</a></li>
-            <li><a href="./about-kosen.html">松江高専とは</a></li>
             <li><a href="./aboutme.html">このサイトについて</a></li>
         </ul>
-        <div class="nav-footer">
-            <a class="nav-social" href="https://www.instagram.com/mct_relations/" target="_blank"
-                rel="noopener noreferrer">
-                <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学校広報
-            </a>
-            <a class="nav-social" href="https://www.instagram.com/mct_gakuseikai/" target="_blank"
-                rel="noopener noreferrer">
-                <img src="./images/insta.png" alt="Instagram" class="nav-social-icon">学生会
-            </a>
-        </div>
     </nav>
 
 
     <section class="container-section shop-page">
 
         <h2>ステージイベント</h2>
-        
-        <!--"grid"に全ての"card"を入れてください-->        
-         <div class="grid">
-           <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>吹奏楽部コンサート</h3>
-            </div>
-            <div class="detail">吹奏楽部によるスペシャルコンサート！</div>
-           </div>
 
-           <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>学生ライブ</h3>
-            </div>
-            <div class="detail">バンド演奏を開催！</div>
+        <div class="grid" id="event-grid">
+            <!-- JavaScriptで動的に生成 -->
         </div>
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>大食い大会</h3>
-            </div>
-            <div class="detail">模擬店の食べ物をいち早く食べきれるのはいったい誰だ！？</div>
-        </div>
+        <!-- イベント詳細モーダル -->
+        <div class="modal" id="eventModal">
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>フィジーク</h3>
-            </div>
-            <div class="detail">若きボディビルダーの美ボディーをぜひご覧ください！</div>
-        </div>
+            <div class="modal-content">
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>クイズ大会</h3>
-            </div>
-            <div class="detail">松江高専に関するクイズを多数出題！</div>
-        </div>
+                <span class="close" id="eventModalClose">&times;</span>
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>カラオケ大会</h3>
-            </div>
-            <div class="detail">今年もカラオケ大会を開催します！</div>
-        </div>
+                <img id="eventModalImage" class="modal-image" src="" alt="">
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>ダンスサークルパフォーマンス</h3>
-            </div>
-            <div class="detail">キレのあるパフォーマンスをぜひご覧ください！</div>
-        </div>
+                <div class="modal-body">
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>書道パフォーマンス</h3>
-            </div>
-            <div class="detail">書道部によるパフォーマンスをぜひご覧ください！</div>
-        </div>
+                    <h2 id="eventModalTitle"></h2>
 
-                <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>誰が一位でしょう？</h3>
-            </div>
-            <div class="detail">一緒に予想してクイズに正解しよう！</div>
-        </div>
+                    <p class="modal-product">
+                        <strong>内容：</strong>
+                        <span id="eventModalProduct"></span>
+                    </p>
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>腕相撲大会</h3>
-            </div>
-            <div class="detail">パワー系高専生による腕相撲大会です！</div>
-        </div>
 
-        <div class="card">
-            <img src="./images/event.jpg" alt="イベント写真">
-            <div class="card-body">
-                <h3>抽選会</h3>
+
+                    <p class="modal-description" id="eventModalDescription"></p>
+
+                    <div class="modal-meta-row">
+                        <div class="modal-time">
+                            <span class="modal-label">開催時間：</span>
+                            <span id="eventModalTime"></span>
+                        </div>
+                        <div class="modal-meta-links">
+                            <a id="eventModalScheduleLink" href="./schedule.html">
+                                スケジュールを見る
+                            </a>
+                        </div>
+
+                        <div class="modal-location">
+                            <span class="modal-label">開催場所：</span>
+                            <span id="eventModalLocation"></span>
+                        </div>
+                        <div class="modal-meta-links">
+                            <a id="eventModalMapLink" href="#">
+                                マップで確認する
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- <div class="modal-meta-links">
+                        <a id="eventModalScheduleLink" href="./schedule.html">
+                            スケジュールを見る
+                        </a>
+                        <a id="eventModalMapLink" href="#">
+                            マップで確認する
+                        </a>
+                    </div>
+ -->
+                </div>
+
             </div>
-            <div class="detail">豪華景品が盛りだくさん！（※学生のみ参加可能です）</div>
-        </div>
-            
+
         </div>
 
     </section>
+
+
+    <script>
+
+        const events = [
+
+            {
+                "id": "event-0",
+                "name": "ゲストライブ",
+                "product": "ゲストによる豪華ライブイベントです！",
+                "description": "今年のゲストをお迎えして、最高の時間をお楽しみください。",
+                "time": "11:00〜12:00",
+                "day": 1,
+                "map": "",
+                "location": "体育館"
+            },
+
+            {
+                "id": "event-1",
+                "name": "吹奏楽部コンサート",
+                "product": "吹奏楽部によるスペシャルコンサート！",
+                "description": "吹奏楽部による演奏をお楽しみください！",
+                "time": "13:00〜14:00",
+                "day": 1,
+                "map": "",
+                "location": "体育館"
+            },
+
+            {
+                "id": "event-2",
+                "name": "学生ライブ",
+                "product": "バンド演奏を開催！",
+                "description": "学生による迫力のライブパフォーマンスをお楽しみください！",
+                "time": "15:00〜19:00",
+                "day": 1,
+                "map": "",
+                "location": "体育館"
+            },
+
+            {
+                "id": "event-3",
+                "name": "大食い大会",
+                "product": "模擬店の食べ物をいち早く食べきれるのはいったい誰だ！？",
+                "description": "模擬店の食べ物を使った大食い大会です。誰が一番早く食べきるのか、ぜひご覧ください！",
+                "time": "10:00〜11:00",
+                "day": 1,
+                "map": "",
+                "location": "学びの庭"
+            },
+
+            {
+                "id": "event-4",
+                "name": "フィジーク",
+                "product": "若きボディビルダーの美ボディーをぜひご覧ください！",
+                "description": "鍛え上げられた身体を披露するパフォーマンスです。",
+                "time": "12:00〜13:00",
+                "day": 1,
+                "map": "",
+                "location": "学びの庭"
+            },
+
+            {
+                "id": "event-5",
+                "name": "クイズ大会",
+                "product": "松江高専に関するクイズを多数出題！",
+                "description": "松江高専に関するさまざまなクイズに挑戦しよう！",
+                "time": "14:00〜15:00",
+                "day": 1,
+                "map": "",
+                "location": "学びの庭"
+            },
+
+            {
+                "id": "event-6",
+                "name": "カラオケ大会",
+                "product": "今年もカラオケ大会を開催します！",
+                "description": "学生たちが自慢の歌声を披露します！",
+                "time": "10:00〜11:00",
+                "day": 2,
+                "map": "",
+                "location": "体育館"
+            },
+
+            {
+                "id": "event-7",
+                "name": "ダンスサークルパフォーマンス",
+                "product": "キレのあるパフォーマンスをぜひご覧ください！",
+                "description": "ダンスサークルによる迫力のパフォーマンスをお楽しみください！",
+                "time": "12:00〜13:00",
+                "day": 2,
+                "map": "",
+                "location": "体育館"
+            },
+
+            {
+                "id": "event-8",
+                "name": "書道パフォーマンス",
+                "product": "書道部によるパフォーマンスをぜひご覧ください！",
+                "description": "書道部による迫力ある書道パフォーマンスをお楽しみください！",
+                "time": "9:00〜10:00",
+                "day": 2,
+                "map": "",
+                "location": "学びの庭"
+            },
+
+            {
+                "id": "event-9",
+                "name": "誰が一位でしょう？",
+                "product": "一緒に予想してクイズに正解しよう！",
+                "description": "誰が一位になるのかを予想しながら楽しめるイベントです！",
+                "time": "11:00〜12:00",
+                "day": 2,
+                "map": "",
+                "location": "学びの庭"
+            },
+
+            {
+                "id": "event-10",
+                "name": "腕相撲大会",
+                "product": "パワー系高専生による腕相撲大会です！",
+                "description": "高専生たちによる熱い腕相撲対決をお楽しみください！",
+                "time": "13:00〜14:00",
+                "day": 2,
+                "map": "",
+                "location": "学びの庭"
+            },
+
+            {
+                "id": "event-11",
+                "name": "抽選会",
+                "product": "豪華景品が盛りだくさん！（※学生のみ参加可能です）",
+                "description": "豪華景品が当たる抽選会を開催します！",
+                "time": "15:00〜19:00",
+                "day": 2,
+                "map": "",
+                "location": "体育館"
+            },
+
+            {
+                "id": "event-12",
+                "name": "模擬店紹介",
+                "product": "今年の模擬店の見どころを紹介します！",
+                "description": "様々な模擬店の魅力を知って、当日のお店選びに役立ててください。",
+                "time": "9:00〜10:00",
+                "day": 1,
+                "map": "",
+                "location": "学びの庭"
+            }
+
+        ];
+
+        const eventGrid = document.getElementById('event-grid');
+
+        function parseEventStartMinutes(timeText) {
+            const match = String(timeText || '').match(/(\d{1,2}):(\d{2})/);
+            if (!match) return Number.MAX_SAFE_INTEGER;
+            return Number(match[1]) * 60 + Number(match[2]);
+        }
+
+        function createEventCard(event) {
+
+            const card = document.createElement('div');
+            card.className = 'card event-card';
+
+            const productDisplay = event.product.length > 30
+                ? event.product.substring(0, 30) + '...'
+                : event.product;
+
+            card.innerHTML = `
+        <img src="./images/event.jpg" alt="${event.name}">
+        <div class="card-body">
+            <h3>${event.name}</h3>
+        </div>
+        <div class="detail" title="${event.product}">
+            ${productDisplay}
+        </div>
+    `;
+
+            card.addEventListener('click', () => openEventModal(event));
+
+            return card;
+        }
+
+        function renderEventGroups() {
+            eventGrid.innerHTML = '';
+
+            const sortedEvents = [...events].sort((a, b) => {
+                if (Number(a.day) !== Number(b.day)) {
+                    return Number(a.day) - Number(b.day);
+                }
+                return parseEventStartMinutes(a.time) - parseEventStartMinutes(b.time);
+            });
+
+            [1, 2].forEach(day => {
+                const dayEvents = sortedEvents.filter(event => Number(event.day) === day);
+
+                const section = document.createElement('section');
+                section.className = 'event-day-section';
+
+                const heading = document.createElement('h3');
+                heading.className = 'event-day-heading';
+                heading.textContent = `${day}日目`;
+                section.appendChild(heading);
+
+                const group = document.createElement('div');
+                group.className = 'grid event-day-grid';
+
+                dayEvents.forEach(event => {
+                    group.appendChild(createEventCard(event));
+                });
+
+                section.appendChild(group);
+                eventGrid.appendChild(section);
+            });
+        }
+
+        renderEventGroups();
+
+        const eventModal = document.getElementById('eventModal');
+
+        function syncEventUrl(eventId) {
+            const url = new URL(window.location.href);
+
+            if (eventId) {
+                url.searchParams.set('event', eventId);
+            } else {
+                url.searchParams.delete('event');
+            }
+
+            window.history.replaceState({}, '', url);
+        }
+
+        function openEventModal(event) {
+
+            document.getElementById('eventModalImage').src =
+                './images/event.jpg';
+
+            document.getElementById('eventModalImage').alt =
+                event.name;
+
+            document.getElementById('eventModalTitle').textContent =
+                event.name;
+
+            document.getElementById('eventModalProduct').textContent =
+                event.product;
+
+            document.getElementById('eventModalTime').textContent =
+                event.time || '時間未定';
+
+            document.getElementById('eventModalDescription').textContent =
+                event.description;
+
+            document.getElementById('eventModalLocation').textContent =
+                event.location || '未定';
+
+            document.getElementById('eventModalMapLink').href =
+                `./map.html?map=${encodeURIComponent(event.map || '')}`;
+
+            document.getElementById('eventModalScheduleLink').href =
+                `./schedule.html?event=${encodeURIComponent(event.id)}`;
+
+            syncEventUrl(event.id);
+            eventModal.style.display = 'flex';
+        }
+
+        function closeEventModal() {
+            eventModal.style.display = 'none';
+            syncEventUrl(null);
+        }
+
+        // ×ボタンで閉じる
+        eventModalClose.addEventListener('click', () => {
+            closeEventModal();
+        });
+
+
+        // 背景クリックで閉じる
+        eventModal.addEventListener('click', (event) => {
+
+            if (event.target === eventModal) {
+                closeEventModal();
+            }
+
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && eventModal.style.display === 'flex') {
+                closeEventModal();
+            }
+        });
+
+        const initialEventId = new URLSearchParams(window.location.search).get('event');
+        const initialEvent = events.find((event) => event.id === initialEventId);
+
+        if (initialEvent) {
+            openEventModal(initialEvent);
+        }
+    </script>
     <footer>
 
         <!-- お問い合わせ・規約等 -->

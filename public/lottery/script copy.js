@@ -7,6 +7,22 @@ const STATES = {
     FINISHED: 'FINISHED'  // 全全景品終了
 };
 
+const WAITING_GUIDE_STEPS = [
+    '1. GUIDE_TEXT',
+    '2. GUIDE_TEXT',
+    '3. GUIDE_TEXT',
+    '4. GUIDE_TEXT',
+    '5. GUIDE_TEXT'
+];
+
+const WAITING_NOTES = [
+    '・NOTE_TEXT',
+    '・NOTE_TEXT',
+    '・NOTE_TEXT',
+    '・NOTE_TEXT',
+    '・NOTE_TEXT'
+];
+
 let currentState = STATES.START;
 
 // 各種データプール
@@ -22,12 +38,110 @@ let maxDrawCountPerTurn = 5; // 一度に同時抽選する基本枠数（LocalS
 // 音声
 const soundRoll = document.getElementById('sound-roll');
 const soundStop = document.getElementById('sound-stop');
-const soundFinish = document.getElementById('sound-finish'); 
+const soundFinish = document.getElementById('sound-finish');
 
 // 各種画面要素
 const screenStart = document.getElementById('screen-start');
+const screenWait = document.getElementById('screen-waiting');
 const screenDraw = document.getElementById('screen-draw');
 const screenConfig = document.getElementById('screen-config');
+
+function normalizePrizeImagePath(value) {
+    if (!value) return '/images/logo.png';
+    const normalized = String(value).trim();
+    if (normalized.startsWith('/')) return normalized;
+    if (normalized.startsWith('./')) return `/${normalized.replace(/^\.\//, '')}`;
+    if (normalized.startsWith('../')) return `/${normalized.replace(/^\.\.\//, '')}`;
+    return `/${normalized.replace(/^\/+/, '')}`;
+}
+
+function createRepeatedTrack(items, mapper) {
+    const repeated = [...items, ...items];
+    return repeated.map(mapper).join('');
+}
+
+function renderWaitingScreen() {
+    const stepList = document.getElementById('wait-step-list');
+    const noteList = document.getElementById('wait-note-list');
+    const prizeList = document.getElementById('wait-prize-list');
+
+    if (!stepList || !noteList || !prizeList) return;
+
+    stepList.innerHTML = createRepeatedTrack(WAITING_GUIDE_STEPS, (step) => `
+        <div class="lane-item text-item">${step}</div>
+    `);
+
+    noteList.innerHTML = createRepeatedTrack(WAITING_NOTES, (note) => `
+        <div class="lane-item text-item">${note}</div>
+    `);
+
+    const prizeCards = masterPrizes.flatMap((grade) =>
+        grade.items.map((item) => {
+            return ` 
+            <div class="prize-card"> 
+            <strong>${item.item_name}</strong> 
+            </div> 
+            `;
+        })
+    );
+
+    prizeList.innerHTML = createRepeatedTrack(prizeCards, (card) => ` 
+        <div class="lane-item prize-item">
+        ${card}
+        </div> 
+        `);
+
+    /* const prizeCards = masterPrizes.flatMap((grade) =>
+        grade.items.map((item) => {
+            const image = normalizePrizeImagePath(item.image || '/images/logo.png');
+            const description = item.description || `${grade.grade_name}の景品です。`;
+            return `
+                <div class="prize-card">
+                    <div class="prize-image">
+                        <img src="${image}" alt="${item.item_name}" loading="lazy">
+                    </div>
+                    <div class="prize-meta">
+                        <span class="prize-grade">${grade.grade_name}</span>
+                        <strong>${item.item_num} ${item.item_name}</strong>
+                        
+                    </div>
+                </div>
+            `;
+        })
+    );
+
+    prizeList.innerHTML = createRepeatedTrack(prizeCards, (card) => `
+        <div class="lane-item prize-item">${card}</div>
+    `); */
+}
+
+function updateWaitingClock() {
+    const clock = document.getElementById('waiting-clock');
+    if (!clock) return;
+    const now = new Date();
+    clock.textContent = now.toLocaleTimeString('ja-JP', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function showWaitingScreen() {
+    if (!screenWait || !screenStart || !screenDraw || !screenConfig) return;
+    screenStart.style.display = 'none';
+    screenConfig.style.display = 'none';
+    screenDraw.style.display = 'none';
+    screenWait.style.display = 'flex';
+    renderWaitingScreen();
+    updateWaitingClock();
+}
+
+function showStartScreen() {
+    if (!screenWait || !screenStart || !screenDraw || !screenConfig) return;
+    screenWait.style.display = 'none';
+    screenDraw.style.display = 'none';
+    screenConfig.style.display = 'none';
+    screenStart.style.display = 'flex';
+}
 
 // 初期読み込み
 async function loadData() {
@@ -38,7 +152,7 @@ async function loadData() {
         ]);
         masterPrizes = await prizesRes.json();
         masterParticipants = await participantsRes.json();
-        
+
         // 設定値の復元
         const savedCount = localStorage.getItem('lottery_max_draw_count');
         if (savedCount) {
@@ -47,6 +161,8 @@ async function loadData() {
         }
 
         document.getElementById('start-load-status').textContent = "📦 データの読み込み完了";
+        renderWaitingScreen();
+        updateWaitingClock();
         buildConfigDataTables();
     } catch (e) {
         console.error(e);
@@ -63,20 +179,21 @@ function startLotterySession() {
     // ディープコピーして本番用プールを作成
     activePrizes = JSON.parse(JSON.stringify(masterPrizes));
     activeParticipants = JSON.parse(JSON.stringify(masterParticipants));
-    
+
     currentGradeIndex = 0;
-    
+
     // 画面切り替え
+    screenWait.style.display = 'none';
     screenStart.style.display = 'none';
     screenDraw.style.display = 'flex';
-    
+
     moveToState(STATES.READY);
 }
 
 // 状態遷移マネージャー
 function moveToState(nextState) {
     currentState = nextState;
-    
+
     if (currentGradeIndex >= activePrizes.length) {
         currentState = STATES.FINISHED;
     }
@@ -90,16 +207,16 @@ function moveToState(nextState) {
         case STATES.READY:
             const currentGrade = activePrizes[currentGradeIndex];
             drawBadge.textContent = `${currentGrade.grade_name}`;
-            
+
             // 残っている景品数と設定数から、今回引く枠数を算出
             const availableItemsCount = currentGrade.items.length;
             const currentTurnCount = Math.min(maxDrawCountPerTurn, availableItemsCount);
-            
+
             prizeTitle.textContent = `${currentGrade.grade_name} 抽選 (残り ${availableItemsCount} つ中 ${currentTurnCount} つ)`;
             statusMessage.textContent = "Spaceキーまたはボタンで抽選開始";
             actionBtn.textContent = "抽選開始";
             actionBtn.disabled = false;
-            
+
             // 空のマスク枠を生成
             setupBlankCards(currentTurnCount);
             break;
@@ -109,7 +226,7 @@ function moveToState(nextState) {
             actionBtn.disabled = true;
             if (soundRoll) {
                 soundRoll.currentTime = 0;
-                soundRoll.play().catch(()=>{});
+                soundRoll.play().catch(() => { });
             }
             executeDrawSequence();
             break;
@@ -137,14 +254,14 @@ function moveToState(nextState) {
 function setupBlankCards(count) {
     const container = document.getElementById('result-container');
     container.innerHTML = '';
-    for(let i=0; i<count; i++) {
+    for (let i = 0; i < count; i++) {
         const card = document.createElement('div');
         card.className = 'winner-card';
         card.innerHTML = `
             <div>
                 <div class="box-label ticket">抽選番号</div>
                 <div class="ticket-box">
-                    <div class="flap-digit">?</div><div class="flap-digit">?</div><div class="flap-digit">?</div>
+                    <div class="flap-digit">?</div><div class="flap-digit">?</div><div class="flap-digit">?</div><div class="flap-digit">?</div>
                 </div>
             </div>
             <div>
@@ -165,7 +282,7 @@ function executeDrawSequence() {
     const currentGrade = activePrizes[currentGradeIndex];
     const availableItemsCount = currentGrade.items.length;
     const currentTurnCount = Math.min(maxDrawCountPerTurn, availableItemsCount);
-    
+
     currentTurnResults = [];
 
     for (let i = 0; i < currentTurnCount; i++) {
@@ -220,9 +337,9 @@ function animateFlaps() {
     });
 
     const stepDelay = 1500; // 桁が確定する時間差
-    
-    // 計6ステップ (抽選3桁 + 景品3桁)
-   for (let step = 0; step < 6; step++) {
+
+    // 計7ステップ (抽選4桁 + 景品3桁)
+    for (let step = 0; step < 7; step++) {
         setTimeout(() => {
             // 桁が止まったかどうかを判定するフラグ
             let anyDigitStopped = false;
@@ -237,14 +354,14 @@ function animateFlaps() {
                 let targetDigit = null;
                 let finalChar = "0";
 
-                if (step < 3) {
+                if (step < 4) {
                     targetDigit = ticketDigits[step];
-                    const fullStr = String(currentTurnResults[cardIdx].participantId).padStart(3, '0');
+                    const fullStr = String(currentTurnResults[cardIdx].participantId).padStart(4, '0');
                     finalChar = fullStr[step];
                 } else {
-                    targetDigit = itemDigits[step - 3];
+                    targetDigit = itemDigits[step - 4];
                     const fullStr = String(currentTurnResults[cardIdx].itemNum).padStart(3, '0');
-                    finalChar = fullStr[step - 3];
+                    finalChar = fullStr[step - 4];
                 }
 
                 if (targetDigit && targetDigit.classList.contains('rolling')) {
@@ -259,22 +376,22 @@ function animateFlaps() {
             if (anyDigitStopped && soundStop) {
                 const cloneStopSound = soundStop.cloneNode();
                 cloneStopSound.volume = soundStop.volume;
-                cloneStopSound.play().catch(() => {});
+                cloneStopSound.play().catch(() => { });
             }
 
-            // 2. 最後の桁（ステップ5：商品番号の3桁目）が完全に止まったあ後の処理
-            if (step === 5) {
+            // 2. 最後の桁（ステップ6：商品番号の3桁目）が完全に止まったあ後の処理
+            if (step === 6) {
                 // ⏳ 1秒のタメ（静寂）を作るため、ここでドラムロールを止める
                 if (soundRoll) { soundRoll.pause(); }
 
-                const delayForSE = 1000; 
+                const delayForSE = 1000;
 
                 setTimeout(() => {
                     // 🎵 【最終確定音】1秒待ったあとに、新しく追加した soundFinish（finish.mp3）を盛大に鳴らす！
                     if (soundFinish) {
                         const finalSound = soundFinish.cloneNode();
                         finalSound.volume = soundFinish.volume;
-                        finalSound.play().catch(() => {});
+                        finalSound.play().catch(() => { });
                     }
 
                     // 同時に、すべてのカードの景品名テキストをバシッと表示
@@ -338,10 +455,13 @@ function buildConfigDataTables() {
 
 // スタート画面のボタン群
 document.getElementById('start-draw-btn').addEventListener('click', startLotterySession);
+document.getElementById('open-waiting-btn').addEventListener('click', showWaitingScreen);
 document.getElementById('open-config-btn').addEventListener('click', () => {
     screenStart.style.display = 'none';
     screenConfig.style.display = 'flex';
 });
+document.getElementById('back-to-start-from-waiting').addEventListener('click', showStartScreen);
+document.getElementById('open-draw-from-waiting').addEventListener('click', startLotterySession);
 
 // 設定画面のボタン群
 document.getElementById('save-config-btn').addEventListener('click', () => {
@@ -359,8 +479,9 @@ document.getElementById('close-config-btn').addEventListener('click', () => {
 
 // 抽選画面から強制的にスタート画面に戻る（リセット）
 document.getElementById('back-to-start-draw').addEventListener('click', () => {
-    if(confirm("現在の抽選履歴を破棄してスタート画面に戻ります。よろしいですか？")) {
+    if (confirm("現在の抽選履歴を破棄してスタート画面に戻ります。よろしいですか？")) {
         if (soundRoll) soundRoll.pause();
+        screenWait.style.display = 'none';
         screenDraw.style.display = 'none';
         screenStart.style.display = 'flex';
         currentState = STATES.START;
@@ -373,7 +494,7 @@ document.getElementById('action-btn').addEventListener('click', handlePrimaryAct
 // キーボードイベント
 window.addEventListener('keydown', (e) => {
     if (currentState === STATES.START || currentState === STATES.LOADING) return;
-    
+
     if (e.code === 'Space') {
         e.preventDefault();
         if (currentState === STATES.READY) handlePrimaryAction();
@@ -384,5 +505,61 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// ================= デバッグ入力表示 =================
+
+let debugPCount = 0;
+let debugPStartTime = 0;
+let debugResetTimer = null;
+
+const DEBUG_P_REQUIRED = 10;
+const DEBUG_P_TIME_LIMIT = 5000;
+
+window.addEventListener('keydown', (e) => {
+    // Pキー以外は無視
+    if (e.code !== 'KeyP') return;
+
+    const now = Date.now();
+
+    // 5秒以上経過していたら新しいカウントとして開始
+    if (
+        debugPCount === 0 ||
+        now - debugPStartTime > DEBUG_P_TIME_LIMIT
+    ) {
+        debugPCount = 1;
+        debugPStartTime = now;
+    } else {
+        debugPCount++;
+    }
+
+    // 5秒後にカウントをリセット
+    clearTimeout(debugResetTimer);
+
+    debugResetTimer = setTimeout(() => {
+        debugPCount = 0;
+        debugPStartTime = 0;
+    }, DEBUG_P_TIME_LIMIT);
+
+    // 10回到達
+    if (debugPCount >= DEBUG_P_REQUIRED) {
+        const debugArea =
+            document.getElementById('debug-input-area');
+
+        if (debugArea) {
+            debugArea.style.display = 'block';
+
+            document.getElementById(
+                'debug-participant-id'
+            )?.focus();
+        }
+
+        // 一度表示したらカウントをリセット
+        debugPCount = 0;
+        debugPStartTime = 0;
+
+        clearTimeout(debugResetTimer);
+    }
+});
+
 // 起動
 loadData();
+setInterval(updateWaitingClock, 30000);

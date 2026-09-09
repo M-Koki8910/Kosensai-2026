@@ -21,6 +21,65 @@ const BulletinBoard = (() => {
   const API = "/api/posts";
   const interval = 10000;
 
+  function ensureProcessingStyles() {
+    if (document.getElementById("bulletin-processing-styles")) return;
+
+    const style = document.createElement("style");
+    style.id = "bulletin-processing-styles";
+    style.textContent = `
+      #bulletin-processing-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 23, 42, 0.18);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+      }
+
+      #bulletin-processing-spinner {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.35);
+        border-top-color: #f59e0b;
+        border-right-color: #fbbf24;
+        animation: bulletin-processing-spin 0.9s linear infinite;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.3), 0 12px 30px rgba(0,0,0,0.22);
+      }
+
+      @keyframes bulletin-processing-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function showProcessingOverlay() {
+    ensureProcessingStyles();
+
+    const existing = document.getElementById("bulletin-processing-overlay");
+    if (existing) return;
+
+    const overlay = document.createElement("div");
+    overlay.id = "bulletin-processing-overlay";
+    overlay.setAttribute("role", "status");
+    overlay.setAttribute("aria-live", "polite");
+    overlay.innerHTML = `
+      <div id="bulletin-processing-spinner" aria-label="処理中"></div>
+    `;
+
+    document.body.appendChild(overlay);
+  }
+
+  function hideProcessingOverlay() {
+    const overlay = document.getElementById("bulletin-processing-overlay");
+    if (overlay) overlay.remove();
+  }
+
   function init() {
     const form = document.getElementById("postForm");
     const input = document.getElementById("postContent");
@@ -43,6 +102,8 @@ const BulletinBoard = (() => {
     const content = document.getElementById("postContent").value.trim();
     if (!content) return showMessage("入力してください", "error");
 
+    showProcessingOverlay();
+
     try {
       const res = await fetch(API, {
         method: "POST",
@@ -53,16 +114,16 @@ const BulletinBoard = (() => {
       const data = await res.json();
 
       if (data.ok) {
-        showMessage("投稿しました", "success");
+        showMessage("投稿されました", "success");
         document.getElementById("postContent").value = "";
         document.getElementById("charCount").textContent = "0";
-        loadPosts();
       } else {
         showMessage(data.error || "失敗", "error");
       }
-
     } catch (err) {
       showMessage("通信エラー", "error");
+    } finally {
+      hideProcessingOverlay();
     }
   }
 
@@ -137,7 +198,11 @@ const BulletinBoard = (() => {
         return;
       }
 
-      showMessage(data.alreadyReacted ? "既にリアクション済みです" : "リアクションしました", "success");
+      if (data.toggled_off) {
+        showMessage("リアクションを取り消しました", "success");
+      } else {
+        showMessage("リアクションしました", "success");
+      }
       loadPosts();
     } catch (err) {
       showMessage("通信エラー", "error");
@@ -227,7 +292,7 @@ const Announcements = (() => {
       <div class="announcement-item ${a.importance}">
         <h4>${escapeHtml(a.title)}</h4>
         <p>${escapeHtml(a.content)}</p>
-        <small>${formatDate(a.published_at)}</small>
+            <small>${a.always_publish ? "常時公開" : `${formatDate(a.published_at)} ～ ${formatDate(a.expires_at)}`}</small>
       </div>
     `;
   }
@@ -240,115 +305,68 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadTicker() {
+    const normalTicker = document.querySelector('.ticker-content[data-ticker-type="normal"]') || document.getElementById("ticker-content");
+    const importantTicker = document.querySelector('.ticker-content[data-ticker-type="important"]') || document.querySelector(".warning-ticker .ticker-content");
 
-    let messages = [];
+    if (importantTicker) {
+        startTicker(importantTicker, [
+            "＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。"
+        ]);
+    }
+
+    if (!normalTicker) {
+        return;
+    }
+
+    let messages = ["📢 現在のお知らせはありません"];
 
     try {
+        const response = await fetch("/api/announcements");
+        const data = await response.json();
 
-        const response =
-            await fetch("/api/announcements");
+        if (data.ok && Array.isArray(data.announcements) && data.announcements.length > 0) {
+            const normalItems = data.announcements.filter(item => item && item.title && !["important", "urgent"].includes(item.importance));
 
-        const data =
-            await response.json();
-
-        if (
-            data.ok &&
-            Array.isArray(data.announcements) &&
-            data.announcements.length > 0
-        ) {
-
-            messages =
-                data.announcements.map(item => {
-
-                    let prefix = "";
-
-                    switch (item.importance) {
-
-                        case "urgent":
-                            prefix = "🚨";
-                            break;
-
-                        case "important":
-                            prefix = "⚠️";
-                            break;
-
-                        default:
-                            prefix = "ℹ️";
-                    }
-
-                    return `${prefix} ${item.title}`;
-                });
+            if (normalItems.length > 0) {
+                messages = normalItems.map(item => `ℹ️ ${item.title}`);
+            }
         }
-
     } catch (error) {
-
-        console.error(
-            "お知らせ取得エラー",
-            error
-        );
+        console.error("お知らせ取得エラー", error);
     }
 
-    if (messages.length === 0) {
-
-        messages = [
-            "📢 現在のお知らせはありません"
-        ];
-    }
-
-    startTicker(messages);
+    startTicker(normalTicker, messages);
 }
 
-function startTicker(messages) {
-
-    const ticker =
-        document.getElementById(
-            "ticker-content"
-        );
-
-    if (!ticker) return;
+function startTicker(ticker, messages) {
+    if (!ticker || !Array.isArray(messages) || messages.length === 0) return;
 
     let index = 0;
 
     async function showNext() {
-
-        const text =
-            messages[index];
-
+        const text = messages[index];
         ticker.textContent = text;
 
-        await new Promise(resolve =>
-            requestAnimationFrame(resolve)
-        );
+        await new Promise(resolve => requestAnimationFrame(resolve));
 
-        const containerWidth =
-            ticker.parentElement.offsetWidth;
+        const containerWidth = ticker.parentElement ? ticker.parentElement.offsetWidth : ticker.offsetWidth;
+        const textWidth = ticker.scrollWidth;
 
-        const textWidth =
-            ticker.offsetWidth;
+        if (textWidth <= 0) {
+            index = (index + 1) % messages.length;
+            setTimeout(showNext, 1200);
+            return;
+        }
 
-        const startX =
-            containerWidth;
-
-        const endX =
-            -textWidth;
-
+        const startX = containerWidth + 20;
+        const endX = -(textWidth + 20);
         const speed = 120;
-
-        const duration =
-            ((startX - endX) /
-                speed) *
-            1000;
+        const duration = Math.max(4000, ((startX - endX) / speed) * 1000);
 
         ticker.animate(
             [
-                {
-                    transform:
-                        `translate(${startX}px,-50%)`
-                },
-                {
-                    transform:
-                        `translate(${endX}px,-50%)`
-                }
+                { transform: `translate(${startX}px, 0)` },
+                { transform: `translate(${endX}px, 0)` }
             ],
             {
                 duration,
@@ -356,17 +374,8 @@ function startTicker(messages) {
             }
         );
 
-        await new Promise(resolve =>
-            setTimeout(
-                resolve,
-                duration
-            )
-        );
-
-        index =
-            (index + 1) %
-            messages.length;
-
+        await new Promise(resolve => setTimeout(resolve, duration));
+        index = (index + 1) % messages.length;
         showNext();
     }
 
@@ -380,11 +389,26 @@ const AnnouncementPost = (() => {
 
   const API = "/api/announcements";
   const ADMIN_API = "/api/admin/announcements";
+  let initialized = false;
+
+  function updatePublicationInputs() {
+    const alwaysPublish = document.getElementById("announcementAlwaysPublish");
+    const publishedAt = document.getElementById("announcementPublishedAt");
+    const expiresAt = document.getElementById("announcementExpiresAt");
+    if (!alwaysPublish || !publishedAt || !expiresAt) return;
+
+    const disabled = alwaysPublish.checked;
+    publishedAt.disabled = disabled;
+    expiresAt.disabled = disabled;
+    publishedAt.required = !disabled;
+    expiresAt.required = !disabled;
+  }
 
   function init() {
 
     const form = document.getElementById("announcementForm");
-    if (!form) return;
+    if (!form || initialized) return;
+    initialized = true;
 
     const content = document.getElementById("announcementContent");
 
@@ -394,6 +418,10 @@ const AnnouncementPost = (() => {
     });
 
     form.addEventListener("submit", submitAnnouncement);
+
+    const alwaysPublish = document.getElementById("announcementAlwaysPublish");
+    alwaysPublish?.addEventListener("change", updatePublicationInputs);
+    updatePublicationInputs();
 
     loadAnnouncements();
   }
@@ -417,11 +445,13 @@ const AnnouncementPost = (() => {
     const expires_at =
       document.getElementById("announcementExpiresAt").value;
 
+    const always_publish =
+      document.getElementById("announcementAlwaysPublish")?.checked || false;
+
     if (
       !title ||
       !content ||
-      !published_at ||
-      !expires_at
+      (!always_publish && (!published_at || !expires_at))
     ) {
 
       showMessage(
@@ -429,6 +459,11 @@ const AnnouncementPost = (() => {
         "error"
       );
 
+      return;
+    }
+
+    if (!always_publish && new Date(published_at) >= new Date(expires_at)) {
+      showMessage("公開終了日時は公開開始日時より後にしてください", "error");
       return;
     }
 
@@ -448,7 +483,8 @@ const AnnouncementPost = (() => {
           content,
           importance,
           published_at,
-          expires_at
+          expires_at,
+          always_publish
 
         })
 
@@ -472,6 +508,8 @@ const AnnouncementPost = (() => {
       );
 
       e.target.reset();
+
+      updatePublicationInputs();
 
       document.getElementById("charCount").textContent = "0";
 
@@ -539,8 +577,7 @@ const AnnouncementPost = (() => {
           <h4>${escapeHtml(a.title)}</h4>
 
           <div class="manage-meta">
-            ${formatDate(a.published_at)}
-            ～ ${formatDate(a.expires_at)}
+            ${a.always_publish ? "常時公開" : `${formatDate(a.published_at)} ～ ${formatDate(a.expires_at)}`}
           </div>
 
           <p>${escapeHtml(a.content)}</p>

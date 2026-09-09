@@ -1,0 +1,42 @@
+[
+  {
+    "grade_num": 5,
+    "grade_name": "5等枠",
+    "items": [
+      { "item_num": 501, "item_name": "お菓子詰め合わせA", "image": "/images/header_ed.jpg", "description": "定番のスイーツが詰まったお楽しみセットです。" },
+      { "item_num": 502, "item_name": "お菓子詰め合わせB", "image": "/images/shop.jpg", "description": "おやつタイムにぴったりの甘味セットです。" }
+      
+    ]
+  },
+  {
+    "grade_num": 4,
+    "grade_name": "4等枠",
+    "items": [
+      { "item_num": 401, "item_name": "モバイルバッテリー", "image": "/images/header_ed.jpg", "description": "外出先でも安心の大容量充電器です。" },
+      { "item_num": 402, "item_name": "ワイヤレスマウス", "image": "/images/about.jpg", "description": "作業効率をアップする定番の無線マウスです。" }
+     
+    ]
+  },
+  {
+    "grade_num": 3,
+    "grade_name": "3等枠",
+    "items": [
+      { "item_num": 301, "item_name": "スマートスピーカー", "image": "/images/shop.jpg", "description": "音楽や動画をより楽しめる小型スピーカーです。" },
+      { "item_num": 302, "item_name": "骨伝導イヤホン", "image": "/images/guest.jpg", "description": "耳を塞がずに音楽を楽しめるイヤホンです。" }
+    ]
+  },
+  {
+    "grade_num": 2,
+    "grade_name": "2等枠",
+    "items": [
+      { "item_num": 201, "item_name": "スマートウォッチ", "image": "/images/header.jpg", "description": "健康管理と通知確認ができる便利な腕時計です。" }
+    ]
+  },
+  {
+    "grade_num": 1,
+    "grade_name": "1等枠",
+    "items": [
+      { "item_num": 101, "item_name": "豪華カタログギフト", "image": "/images/logo.png", "description": "抽選会の目玉となる特大景品です。" }
+    ]
+  }
+]

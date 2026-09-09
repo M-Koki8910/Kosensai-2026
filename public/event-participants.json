@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "event_id": "event1",
+      "name": "イベント1"
+    },
+    {
+      "event_id": "event2",
+      "name": "イベント2"
+    },
+    {
+      "event_id": "event3",
+      "name": "イベント3"
+    }
+  ]
+}
