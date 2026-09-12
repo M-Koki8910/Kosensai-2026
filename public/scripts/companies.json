@@ -1,6 +1,6 @@
 [
   {
-    "exhibition": false,
+    "exhibition": true,
     "id": "company-1",
     "name": "株式会社アイ・コミュニケーション",
     "note": "企業Aのブース前のQRコードを読み取る",
@@ -18,7 +18,7 @@
     "image": "../images/companies/1.png"
   },
   {
-    "exhibition": false,
+    "exhibition": true,
     "id": "company-2",
     "name": "奥村組土木興業（株）",
     "note": "企業Aのブース前のQRコードを読み取る",
@@ -36,7 +36,7 @@
     "image": "../images/companies/2.jpg"
   },
   {
-    "exhibition": false,
+    "exhibition": true,
     "id": "company-3",
     "name": "島根電工株式会社",
     "note": "企業Aのブース前のQRコードを読み取る",
@@ -54,7 +54,7 @@
     "image": "../images/companies/3.jpg"
   },
   {
-    "exhibition": false,
+    "exhibition": true,
     "id": "company-4",
     "name": "西尾レントオール株式会社",
     "note": "企業Aのブース前のQRコードを読み取る",
@@ -72,7 +72,7 @@
     "image": "../images/companies/4.png"
   },
   {
-    "exhibition": false,
+    "exhibition": true,
     "id": "company-5",
     "name": "株式会社　日進ProSOL(ヒカワ工場)",
     "note": "企業Aのブース前のQRコードを読み取る",
@@ -108,7 +108,7 @@
     "image": "../images/companies/6.png"
   },
   {
-    "exhibition": false,
+    "exhibition": true,
     "id": "company-7",
     "name": "株式会社守谷刃物研究所",
     "note": "企業Aのブース前のQRコードを読み取る",
@@ -177,7 +177,7 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/10.png"
+    "image": "../images/companies/10-2.png"
   },
   {
     "exhibition": false,
@@ -393,7 +393,7 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/noimage.png"
+    "image": "../images/companies/22.png"
   },
   {
     "exhibition": false,
@@ -447,7 +447,7 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/noimage.png"
+    "image": "../images/companies/25.png"
   },
   {
     "exhibition": false,
@@ -540,7 +540,7 @@
     "image": "../images/companies/30.jpg"
   },
   {
-    "exhibition": true,
+    "exhibition": false,
     "id": "company-31",
     "name": "秦精工株式会社",
     "note": "企業Aのブース前のQRコードを読み取る",
