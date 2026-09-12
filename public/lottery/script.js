@@ -11,11 +11,11 @@ const STATES = {
 };
 
 const WAITING_GUIDE_STEPS = [
-    '1. 抽選では、参加者の抽選番号と景品番号が一緒に抽選されます。',
-    '2. 4等から1等まで順番に抽選を行います。',
-    '3. 抽選は1回のターンで5つ同時に行います。',
-    '4. 当選された方は係員が景品をお渡ししますので、抽選番号を控えてお待ちください。',
-    '5. 当たってもはずれても、たくさん盛り上げてください。'
+    '1. 景品番号を確定します。',
+    '2. 景品番号確定と同時に景品名を表示します。',
+    '3. 抽選番号を確定します。',
+    '4. 4等から1等まで順番に抽選を行います。',
+    '5. 当選された方は抽選番号を控えてお待ちください。'
 ];
 
 const WAITING_NOTES = [
@@ -549,24 +549,6 @@ function setupBlankCards(count) {
 
             <div>
 
-                <div class="box-label ticket">
-                    抽選番号
-                </div>
-
-                <div class="ticket-box">
-
-                    <div class="flap-digit">?</div>
-                    <div class="flap-digit">?</div>
-                    <div class="flap-digit">?</div>
-                    <div class="flap-digit">?</div>
-
-                </div>
-
-            </div>
-
-
-            <div>
-
                 <div class="box-label item">
                     景品番号
                 </div>
@@ -584,6 +566,23 @@ function setupBlankCards(count) {
 
             <div class="item-text-name">
                 ???
+            </div>
+
+            <div>
+
+                <div class="box-label ticket">
+                    抽選番号
+                </div>
+
+                <div class="ticket-box">
+
+                    <div class="flap-digit">?</div>
+                    <div class="flap-digit">?</div>
+                    <div class="flap-digit">?</div>
+                    <div class="flap-digit">?</div>
+
+                </div>
+
             </div>
         `;
 
@@ -1245,10 +1244,10 @@ function animateFlaps() {
     });
 
 
-    const stepDelay = 3000;
+    const stepDelay = 1500;
 
 
-    // 4桁 + 3桁
+    // 景品番号3桁 → 景品名 → 抽選番号4桁
     for (
         let step = 0;
         step < 7;
@@ -1287,33 +1286,11 @@ function animateFlaps() {
                     let finalChar = "0";
 
 
-                    // 抽選番号
-                    if (step < 4) {
-
-                        targetDigit =
-                            ticketDigits[step];
-
-
-                        const fullStr =
-                            String(
-                                currentTurnResults[
-                                    cardIdx
-                                ].participantId
-                            ).padStart(4, '0');
-
-
-                        finalChar =
-                            fullStr[step];
-
-                    }
-
                     // 景品番号
-                    else {
+                    if (step < 3) {
 
                         targetDigit =
-                            itemDigits[
-                                step - 4
-                            ];
+                            itemDigits[step];
 
 
                         const fullStr =
@@ -1325,8 +1302,30 @@ function animateFlaps() {
 
 
                         finalChar =
+                            fullStr[step];
+
+                    }
+
+                    // 抽選番号
+                    else {
+
+                        targetDigit =
+                            ticketDigits[
+                                step - 3
+                            ];
+
+
+                        const fullStr =
+                            String(
+                                currentTurnResults[
+                                    cardIdx
+                                ].participantId
+                            ).padStart(4, '0');
+
+
+                        finalChar =
                             fullStr[
-                                step - 4
+                                step - 3
                             ];
                     }
 
@@ -1377,6 +1376,30 @@ function animateFlaps() {
             }
 
 
+            // 景品番号確定後に景品名を表示
+            if (step === 2) {
+
+                cards.forEach(
+                    (c, idx) => {
+
+                        if (
+                            currentTurnResults[
+                                idx
+                            ]
+                        ) {
+
+                            c.querySelector(
+                                '.item-text-name'
+                            ).textContent =
+                                currentTurnResults[
+                                    idx
+                                ].itemName;
+                        }
+                    }
+                );
+            }
+
+
             // 最終桁
             if (step === 6) {
 
@@ -1405,7 +1428,7 @@ function animateFlaps() {
                     }
 
 
-                    // 景品名表示
+                    // 抽選結果を保存
                     cards.forEach(
                         (c, idx) => {
 
@@ -1419,13 +1442,6 @@ function animateFlaps() {
                                     currentTurnResults[idx].participantId,
                                     currentTurnResults[idx].itemNum
                                 );
-
-                                c.querySelector(
-                                    '.item-text-name'
-                                ).textContent =
-                                    currentTurnResults[
-                                        idx
-                                    ].itemName;
                             }
                         }
                     );
