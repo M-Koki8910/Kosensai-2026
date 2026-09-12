@@ -1245,7 +1245,7 @@ function animateFlaps() {
     });
 
 
-    const stepDelay = 1500;
+    const stepDelay = 3000;
 
 
     // 4桁 + 3桁
