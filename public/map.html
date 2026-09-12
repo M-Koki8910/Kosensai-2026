@@ -376,6 +376,10 @@
                 3F
             </button>
 
+            <button type="button" class="map-floor-tab" data-map="building4f">
+                4棟4F
+            </button>
+
         </div>
 
 
@@ -441,8 +445,8 @@
                 //構内全体図
                 campus: {
                     url: './images/maps/1.svg',
-                    width: 4106,
-                    height: 2782,
+                    width: 4496,
+                    height: 2850,
 
                     markers: [],
 
@@ -469,8 +473,8 @@
                 //模擬店詳細図
                 stalls: {
                     url: './images/maps/2.svg',
-                    width: 3218,
-                    height: 2634,
+                    width: 4400,
+                    height: 2708,
 
                     markers: [],
 
@@ -490,8 +494,8 @@
                 //校舎1F
                 building1f: {
                     url: './images/maps/3.svg',
-                    width: 4286,
-                    height: 2535,
+                    width: 4400,
+                    height: 2480,
                     markers: [],
                     areas: []
                 },
@@ -499,8 +503,8 @@
                 //校舎2F
                 building2f: {
                     url: './images/maps/4.svg',
-                    width: 4286,
-                    height: 2535,
+                    width: 4400,
+                    height: 2475,
                     markers: [],
                     areas: []
                 },
@@ -508,8 +512,17 @@
                 //校舎3F
                 building3f: {
                     url: './images/maps/5.svg',
-                    width: 4286,
-                    height: 2535,
+                    width: 4400,
+                    height: 2475,
+                    markers: [],
+                    areas: []
+                },
+
+                //校舎4F
+                building4f: {
+                    url: './images/maps/6.svg',
+                    width: 2713,
+                    height: 954,
                     markers: [],
                     areas: []
                 }
@@ -784,7 +797,7 @@
 
             function applyMapSelection(selectedKey) {
 
-                const buildingKeys = ['building1f', 'building2f', 'building3f'];
+                const buildingKeys = ['building1f', 'building2f', 'building3f', 'building4f'];
                 const targetGroup = buildingKeys.includes(selectedKey)
                     ? 'building'
                     : (selectedKey === 'stalls' ? 'stalls' : 'campus');
