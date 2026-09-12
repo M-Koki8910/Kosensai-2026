@@ -177,7 +177,7 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/10.png"
+    "image": "../images/companies/10-2.png"
   },
   {
     "exhibition": false,
@@ -393,7 +393,7 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/noimage.png"
+    "image": "../images/companies/22.png"
   },
   {
     "exhibition": false,
@@ -447,7 +447,7 @@
     "message": "message",
     "address": "address",
     "website": "https://example.com",
-    "image": "../images/companies/noimage.png"
+    "image": "../images/companies/25.png"
   },
   {
     "exhibition": false,
