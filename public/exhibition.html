@@ -236,19 +236,11 @@
     </nav>
 
     <main class="exhibition-page">
-        <section class="exhibition-hero">
-            <div class="exhibition-hero-inner">
-                <p class="exhibition-eyebrow">EXHIBITION GUIDE</p>
-                <h1>展示紹介</h1>
-                <p class="exhibition-lead">
-                    見て、触れて、体験して、松江高専の学びとものづくりの楽しさを発見しよう。
-                </p>
-            </div>
-        </section>
+        
 
         <section class="exhibition-section">
             <div class="exhibition-heading">
-                <h2>ワクワク学科展示</h2>
+                <h2>ワクワク！学科体験</h2>
                 <p>5学科それぞれの学びを、楽しい体験を通して紹介します。</p>
             </div>
             <div id="department-exhibition-grid" class="exhibition-grid"></div>
@@ -256,7 +248,7 @@
 
         <section class="exhibition-section">
             <div class="exhibition-heading">
-                <h2>コンテスト展示</h2>
+                <h2>ひらめき！コンテスト体験</h2>
                 <p>学生たちが挑戦している、技術とアイデアの成果を紹介します。</p>
             </div>
             <div id="contest-exhibition-grid" class="exhibition-grid"></div>
@@ -268,7 +260,7 @@
                 <p>高専生の学びと社会の仕事がつながる、企業の展示・体験ブースです。</p>
             </div>
             <div id="company-exhibition-grid" class="exhibition-grid">
-                <p class="exhibition-empty">企業展示の情報を読み込んでいます。</p>
+              
             </div>
         </section>
 
@@ -328,58 +320,83 @@
         const departmentExhibitions = [
             {
                 title: '機械工学科',
-                product: '機械やロボットの動き、ものづくりの技術を体験できます。',
-                description: '機械の設計や加工、動く仕組みを学び、アイデアを形にする学科です。',
+                image: './images/m.jpg',
+                product: '',
+                description: '',
                 location: '校舎1階 展示ブース',
                 map: 'building1f'
             },
             {
-                title: '電気電子工学科',
-                product: '電気を使った実験や電子部品の展示を体験できます。',
-                description: '電気と電子の力で、暮らしを支えるエネルギーや機器について学ぶ学科です。',
+                title: '電気情報工学科',
+                image: './images/e.jpg',
+                product: '',
+                description: '',
                 location: '校舎1階 展示ブース',
                 map: 'building1f'
+            },
+            {
+                title: '電子制御学科',
+                image: './images/d.jpg',
+                product: '',
+                description: '',
+                location: '校舎3階 展示ブース',
+                map: 'building3f'
             },
             {
                 title: '情報工学科',
-                product: 'プログラムやデジタルコンテンツに触れて楽しめます。',
-                description: 'プログラミングやネットワークを学び、情報で社会を便利にする学科です。',
+                image: './images/j.jpg',
+                product: '',
+                description: '',
                 location: '校舎2階 展示ブース',
                 map: 'building2f'
             },
             {
                 title: '環境・建設工学科',
-                product: '測量やまちづくりに関する展示を体験できます。',
-                description: '自然環境と人の暮らしを支える、社会基盤やまちづくりについて学ぶ学科です。',
+                image: './images/c.jpg',
+                product: '',
+                description: '',
                 location: '校舎2階 展示ブース',
                 map: 'building2f'
-            },
-            {
-                title: '建築学科',
-                product: '建築模型や設計作品を見学し、空間デザインを楽しめます。',
-                description: '建物の設計や構造、住みやすい空間のつくり方を学ぶ学科です。',
-                location: '校舎3階 展示ブース',
-                map: 'building3f'
             }
+            
         ];
 
         const contestExhibitions = [
             {
-                title: '高専ロボットコンテスト',
+                title: 'ロボットコンテスト',
+                image: './images/noimage.png',
                 product: '実際のロボットを間近で見て、機構や動きを楽しめます。',
                 description: '学生がチームでロボットを設計・製作し、アイデアと技術を競うコンテストです。',
                 location: '体育館',
                 map: 'campus'
             },
             {
-                title: '高専プログラミングコンテスト',
+                title: 'プログラミングコンテスト',
+                image: './images/noimage.png',
                 product: '学生が開発したアプリやシステムを操作できます。',
                 description: 'コンピュータを活用して、社会の課題を解決する作品を生み出すコンテストです。',
                 location: '校舎2階 展示ブース',
                 map: 'building2f'
             },
             {
-                title: 'デザイン・ものづくり作品',
+                title: 'デザインコンテスト',
+                image: './images/noimage.png',
+                product: '作品を見ながら、制作の工夫や発想を楽しめます。',
+                description: '設計やデザインの力を活かして制作した、学生たちの創造的な作品を展示します。',
+                location: '校舎3階 展示ブース',
+                map: 'building3f'
+            },
+            {
+                title: 'レスキューコンテスト',
+                image: './images/noimage.png',
+                product: '作品を見ながら、制作の工夫や発想を楽しめます。',
+                description: '設計やデザインの力を活かして制作した、学生たちの創造的な作品を展示します。',
+                location: '校舎3階 展示ブース',
+                map: 'building3f'
+            },
+            {
+                title: 'エコラン',
+                image: './images/noimage.png',
                 product: '作品を見ながら、制作の工夫や発想を楽しめます。',
                 description: '設計やデザインの力を活かして制作した、学生たちの創造的な作品を展示します。',
                 location: '校舎3階 展示ブース',
@@ -402,7 +419,7 @@
             modalProduct.textContent = exhibition.product;
             modalDescription.textContent = exhibition.description;
             modalLocation.textContent = exhibition.location;
-            modalImage.src = noImage;
+            modalImage.src = exhibition.image || noImage;
             modalImage.alt = `${exhibition.title}の展示画像`;
             modalMapLink.href = `./map.html?map=${encodeURIComponent(exhibition.map)}`;
             modal.classList.add('open');
@@ -452,6 +469,7 @@
                 exhibitionCompanies.forEach(company => {
                     const card = createExhibitionCard({
                         title: company.name || '企業名未定',
+                        image: company.image || noImage,
                         product: company.note || '企業ブースで展示や体験をお楽しみいただけます。',
                         description: company.description || '企業紹介をお楽しみください。',
                         location: company.location || '企業展示ブース',

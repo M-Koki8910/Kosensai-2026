@@ -124,7 +124,19 @@ function initStampRally() {
                     linkText: String(item.linkText || '企業紹介へ'),
                     href: String(item.href || '/company.html'),
                     image: String(item.image || '/header_ed.jpg')
-                }));
+                }))
+                .concat(
+                    Array.isArray(window.stampRallyAdditionalLocations)
+                        ? window.stampRallyAdditionalLocations.map((item, index) => ({
+                            id: String(item.id || `additional-${index + 1}`),
+                            name: String(item.name || `追加団体${index + 1}`),
+                            note: String(item.note || '展示・活動をお楽しみください。'),
+                            linkText: String(item.linkText || '展示紹介へ'),
+                            href: String(item.href || './exhibition.html'),
+                            image: String(item.image || './images/noimage.png')
+                        }))
+                        : []
+                );
 
         } catch (error) {
             console.warn(
