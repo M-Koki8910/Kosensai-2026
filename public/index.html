@@ -100,6 +100,19 @@
             transform: translate(-50%, -50%) scale(0.8);
         }
 
+        /* PCでは拡大後もロゴが大きくなりすぎないように調整 */
+        @media (min-width: 769px) {
+            .step-logo {
+                top: 50%;
+            }
+
+            .hero-logo-img {
+                width: min(34vw, 480px);
+                max-width: 100%;
+                max-height: 70vh;
+            }
+        }
+
         /* スクロール誘導矢印（中央下部固定） */
         .scroll-indicator {
             position: absolute;
