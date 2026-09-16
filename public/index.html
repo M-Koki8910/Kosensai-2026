@@ -100,6 +100,19 @@
             transform: translate(-50%, -50%) scale(0.8);
         }
 
+        /* PCでは拡大後もロゴが大きくなりすぎないように調整 */
+        @media (min-width: 769px) {
+            .step-logo {
+                top: 50%;
+            }
+
+            .hero-logo-img {
+                width: min(34vw, 480px);
+                max-width: 100%;
+                max-height: 70vh;
+            }
+        }
+
         /* スクロール誘導矢印（中央下部固定） */
         .scroll-indicator {
             position: absolute;
@@ -110,7 +123,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
             letter-spacing: 2px;
             color: #94a3b8;
@@ -518,13 +531,13 @@
                     </div>
                 </a>
 
-                <a href="./exhibition.html" class="card">
+                <!-- <a href="./exhibition.html" class="card">
                     <img src="./images/kosensai-ilust.png" alt="展示紹介">
                     <div class="card-body">
                         <h3>展示紹介</h3>
                         <p>学科展示やコンテスト展示を体験しよう。</p>
                     </div>
-                </a>
+                </a> -->
 
                 <!-- <a href="./schedule.html" class="card">
                     <img src="./images/schedule.jpg" alt="イベントスケジュール">

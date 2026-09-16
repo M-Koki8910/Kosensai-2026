@@ -2,15 +2,19 @@
   "events": [
     {
       "event_id": "event1",
-      "name": "イベント1"
+      "name": "大食い"
     },
     {
       "event_id": "event2",
-      "name": "イベント2"
+      "name": "カラオケ"
     },
     {
       "event_id": "event3",
-      "name": "イベント3"
+      "name": "フィジーク"
+    },
+    {
+      "event_id": "event4",
+      "name": "腕相撲"
     }
   ]
 }
