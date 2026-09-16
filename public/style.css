@@ -2816,7 +2816,7 @@ body.modal-open {
 
 /* ヒーロー */
 .guest-hero {
-    height: 70vh;
+    height: 30vh;
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
     position: relative;
     color: white;
@@ -2989,7 +2989,7 @@ body.modal-open {
 }
 
 .social-link.twitter {
-    background: #1da1f2;
+    background: #000000;
 }
 
 .social-link.youtube {
@@ -3025,7 +3025,7 @@ body.modal-open {
 /* スマホ */
 @media (max-width: 700px) {
     .guest-hero {
-        height: 50vh;
+        height: 30vh;
     }
 
     .guest-hero h1 {
