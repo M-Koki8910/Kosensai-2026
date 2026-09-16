@@ -310,7 +310,7 @@ async function loadTicker() {
 
     if (importantTicker) {
         startTicker(importantTicker, [
-            "＊＊＊このページは開発用テストページです。＊＊＊　　履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。"
+            "履歴の削除、Cookieの削除は行わないください。記録が消失する可能性があります。"
         ]);
     }
 
