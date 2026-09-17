@@ -1060,9 +1060,9 @@ function initStampRally() {
             stampSheetFillEl.style.width = total ? `${(visitedCount / total) * 100}%` : '0%';
         }
 
-        summaryEl.textContent = total
+        /* summaryEl.textContent = total
             ? `現在 ${visitedCount} / ${total} 件の出展企業を訪問済みです（${progress}%）。スタンプシートは先頭から順に埋まり、この端末の履歴と集計は localStorage に保存されます。`
-            : '出展企業情報を読み込んでいます。';
+            : '出展企業情報を読み込んでいます。'; */
     }
 
     // サーバー側の訪問履歴は管理者向けに限定するため、公開ページでは取得しません。
