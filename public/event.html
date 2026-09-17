@@ -297,6 +297,9 @@
 
             const card = document.createElement('div');
             card.className = 'card event-card';
+            card.dataset.eventLocation = event.location === '体育館'
+                ? 'gym'
+                : 'courtyard';
 
             const productDisplay = event.product.length > 30
                 ? event.product.substring(0, 30) + '...'
@@ -348,6 +351,15 @@
                 section.appendChild(group);
                 eventGrid.appendChild(section);
             });
+        }
+
+        function scrollToEventLocation(locationKey) {
+            const locationCard = document.querySelector(
+                `[data-event-location="${locationKey}"]`
+            );
+            if (locationCard) {
+                locationCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         renderEventGroups();
@@ -427,9 +439,12 @@
 
         const initialEventId = new URLSearchParams(window.location.search).get('event');
         const initialEvent = events.find((event) => event.id === initialEventId);
+        const initialLocation = new URLSearchParams(window.location.search).get('location');
 
         if (initialEvent) {
             openEventModal(initialEvent);
+        } else if (initialLocation) {
+            scrollToEventLocation(initialLocation);
         }
     </script>
     <footer>

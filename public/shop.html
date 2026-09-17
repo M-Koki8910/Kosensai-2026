@@ -172,6 +172,7 @@
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'shop-tab';
+            button.id = shop.id;
             button.innerHTML = `
                 <span class="shop-tab-name">${shop.name}</span>
                 <span class="shop-tab-product">${shop.product || '販売内容'}</span>
@@ -198,6 +199,12 @@
                         : foodShopTabs;
                     shopTabs.appendChild(createShopTab(shop));
                 });
+
+                const requestedShopId = window.location.hash.slice(1);
+                const requestedShop = shops.find(shop => shop.id === requestedShopId);
+                if (requestedShop) {
+                    openModal(requestedShop);
+                }
             })
             .catch((error) => {
                 console.error(error);

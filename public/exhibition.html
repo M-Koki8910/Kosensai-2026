@@ -319,6 +319,7 @@
         const noImage = './images/noimage.png';
         const departmentExhibitions = [
             {
+                id: 'department-mechanical',
                 title: '機械工学科',
                 image: './images/m.jpg',
                 product: '',
@@ -327,6 +328,7 @@
                 map: 'building1f'
             },
             {
+                id: 'department-electrical',
                 title: '電気情報工学科',
                 image: './images/e.jpg',
                 product: '',
@@ -335,6 +337,7 @@
                 map: 'building1f'
             },
             {
+                id: 'department-electronic-control',
                 title: '電子制御学科',
                 image: './images/d.jpg',
                 product: '',
@@ -343,6 +346,7 @@
                 map: 'building3f'
             },
             {
+                id: 'department-information',
                 title: '情報工学科',
                 image: './images/j.jpg',
                 product: '',
@@ -351,6 +355,7 @@
                 map: 'building2f'
             },
             {
+                id: 'department-environmental',
                 title: '環境・建設工学科',
                 image: './images/c.jpg',
                 product: '',
@@ -363,6 +368,7 @@
 
         const contestExhibitions = [
             {
+                id: 'contest-robot',
                 title: 'ロボットコンテスト',
                 image: './images/noimage.png',
                 product: '実際のロボットを間近で見て、機構や動きを楽しめます。',
@@ -371,6 +377,7 @@
                 map: 'campus'
             },
             {
+                id: 'contest-programming',
                 title: 'プログラミングコンテスト',
                 image: './images/noimage.png',
                 product: '学生が開発したアプリやシステムを操作できます。',
@@ -379,6 +386,7 @@
                 map: 'building2f'
             },
             {
+                id: 'contest-design',
                 title: 'デザインコンテスト',
                 image: './images/noimage.png',
                 product: '作品を見ながら、制作の工夫や発想を楽しめます。',
@@ -387,6 +395,7 @@
                 map: 'building3f'
             },
             {
+                id: 'contest-rescue',
                 title: 'レスキューコンテスト',
                 image: './images/noimage.png',
                 product: '作品を見ながら、制作の工夫や発想を楽しめます。',
@@ -395,6 +404,7 @@
                 map: 'building3f'
             },
             {
+                id: 'contest-ecoran',
                 title: 'エコラン',
                 image: './images/noimage.png',
                 product: '作品を見ながら、制作の工夫や発想を楽しめます。',
@@ -433,12 +443,27 @@
             document.body.classList.remove('modal-open');
         }
 
+        function syncExhibitionUrl(exhibitionId) {
+            const url = new URL(window.location.href);
+            if (exhibitionId) {
+                url.searchParams.set('exhibition', exhibitionId);
+            } else {
+                url.searchParams.delete('exhibition');
+            }
+            window.history.replaceState({}, '', url);
+        }
+
         function createExhibitionCard(exhibition, tag) {
             const card = document.createElement('button');
             card.type = 'button';
             card.className = 'exhibition-card exhibition-feature';
+            card.id = exhibition.id || '';
             card.innerHTML = `<h3>${escapeHtml(exhibition.title)}</h3><p>${escapeHtml(exhibition.product)}</p>`;
-            card.addEventListener('click', () => openExhibitionModal({ ...exhibition, tag }));
+            card.addEventListener('click', () => {
+                const selectedExhibition = { ...exhibition, tag };
+                syncExhibitionUrl(selectedExhibition.id);
+                openExhibitionModal(selectedExhibition);
+            });
             return card;
         }
 
@@ -505,6 +530,13 @@
 
         renderExhibitions();
         loadExhibitionCompanies();
+
+        const initialExhibitionId = new URLSearchParams(window.location.search).get('exhibition');
+        const initialExhibition = [...departmentExhibitions, ...contestExhibitions]
+            .find(exhibition => exhibition.id === initialExhibitionId);
+        if (initialExhibition) {
+            openExhibitionModal(initialExhibition);
+        }
     </script>
 </body>
 
